@@ -4,16 +4,23 @@
 
 #include "common.h"
 #include "window.h"
+#include "timing.h"
 
 #include <windows.h>
+#include <string>
 
 class application
 {
 	private:
 
 	window		Window;
+	timing		Timing;
+	// TODO(Cristoffer): Implement next..
+	//Thread		Thread;
 	//Direct3D	Graphics;
-	//Timing		Timing;
+
+	// TODO(Cristoffer): Temp! Remove this later.
+	real64 TimeCheck;
 
 	bool Running;
 

@@ -4,11 +4,13 @@ LRESULT CALLBACK WindowProcedure(HWND WindowHandle, UINT MessageId, WPARAM W_Par
 {
 	if(MessageId == WM_CLOSE)
 	{
-		OutputDebugString(L"WM_CLOSE\n");
+		// TODO(Cristoffer): Handle closing the window.
+		OutputDebugStringW(L"WM_CLOSE\n");
 	}
 	else if(MessageId == WM_SIZE)
 	{
-		OutputDebugString(L"WM_SIZE\n");
+		// TODO(Cristoffer): Handle resizing of window.
+		OutputDebugStringW(L"WM_SIZE\n");
 	}
 	else if(MessageId == WM_KEYDOWN)
 	{

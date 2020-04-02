@@ -1,4 +1,4 @@
-// window.h: class for constructing the window, and some utility methods related to that
+// window.h: class for constructing the window, and some utility methods related to the window itself
 
 #pragma once
 
@@ -13,18 +13,17 @@ class window
 
 	HWND			WindowHandle;
 	HINSTANCE		WindowInstance;
-	LPCWSTR			WindowClassName;
 
 	void InitRawInputDevice();
 
 	public:
 
-	window(LPCWSTR Title, int32 Width, int32 Height);
+	window(const char *Title, int32 Width, int32 Height);
 	~window();
 
 	HWND GetHandle() const;
 
-	void SetTitle(LPCWSTR Title);
+	void SetTitle(const char *Title);
 
 	void ClipMouseCursor(bool Clip);
 	void ShowMouseCursor(bool Show);

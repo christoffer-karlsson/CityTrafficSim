@@ -1,8 +1,6 @@
 #include "window.h"
 
-window::window(LPCWSTR Title, int32 Width, int32 Height) :
-	WindowClassName(L"CitySimClass"), 
-	WindowInstance(GetModuleHandle(0))
+window::window(const char *Title, int32 Width, int32 Height) : WindowInstance(GetModuleHandle(0))
 {
 	WNDCLASSEX WindowClass = { };
 	WindowClass.cbSize = sizeof(WNDCLASSEX);
@@ -15,7 +13,7 @@ window::window(LPCWSTR Title, int32 Width, int32 Height) :
 	WindowClass.hCursor = NULL;
 	WindowClass.hbrBackground = NULL;
 	WindowClass.lpszMenuName = NULL;
-	WindowClass.lpszClassName = WindowClassName;
+	WindowClass.lpszClassName = "CitySimClass";
 	WindowClass.hIconSm = NULL;
 
 	RegisterClassEx(&WindowClass);
@@ -27,7 +25,7 @@ window::window(LPCWSTR Title, int32 Width, int32 Height) :
 	int32 DrawableRectWidth = WindowRect.right - WindowRect.left;
 	int32 DrawableRectHeight = WindowRect.bottom - WindowRect.top;
 
-	WindowHandle = CreateWindowEx(0, WindowClassName, Title, WindowStyle, CW_USEDEFAULT, CW_USEDEFAULT, DrawableRectWidth, DrawableRectHeight, 0, 0, GetModuleHandle(0), 0);
+	WindowHandle = CreateWindowEx(0, WindowClass.lpszClassName, Title, WindowStyle, CW_USEDEFAULT, CW_USEDEFAULT, DrawableRectWidth, DrawableRectHeight, 0, 0, GetModuleHandle(0), 0);
 
 	if(!WindowHandle)
 	{
@@ -47,7 +45,6 @@ window::window(LPCWSTR Title, int32 Width, int32 Height) :
 
 window::~window()
 {
-	UnregisterClass(WindowClassName, WindowInstance);
 }
 
 void window::InitRawInputDevice()
@@ -72,7 +69,7 @@ HWND window::GetHandle() const
 	return WindowHandle;
 }
 
-void window::SetTitle(LPCWSTR Title)
+void window::SetTitle(const char *Title)
 {
 	SetWindowText(WindowHandle, Title);
 }
