@@ -5,6 +5,7 @@
 #include "common.h"
 #include "window.h"
 #include "timing.h"
+#include "d3d.h"
 
 #include <windows.h>
 #include <string>
@@ -15,9 +16,10 @@ class application
 
 	window		Window;
 	timing		Timing;
+	d3d			Direct3D;
+
 	// TODO(Cristoffer): Implement next..
 	//Thread		Thread;
-	//Direct3D	Graphics;
 
 	// TODO(Cristoffer): Temp! Remove this later.
 	real64 TimeCheck;

@@ -2,7 +2,8 @@
 
 application::application() : 
 	Window("City Traffic Simulator and Planner | Mid Sweden University Thesis Project | Cristoffer Tanda", 1280, 720), 
-	//Graphics(Window.GetHandle(), 1280, 720),
+	// TODO(Cristoffer): What should d3d buffer size be based on?
+	Direct3D(Window.GetHandle(), 1280, 720),
 	Timing(), 
 	Running(true),
 	TimeCheck(0.0)
@@ -52,6 +53,8 @@ void application::Run()
 			OutputDebugStringW(sw);
 			OutputDebugStringW(L"\n");
 		}
+
+		Direct3D.EndFrame();
 
 
 		Timing.EndFrameTimer();
