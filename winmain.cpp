@@ -6,6 +6,9 @@
 
 int CALLBACK WinMain(HINSTANCE InstanceHandle, HINSTANCE PrevInstanceHandle, LPSTR CommandLine, int ShowCommand)
 {
+	// NOTE(Cristoffer): Initialize Microsoft COM Interface.
+	CoInitialize(NULL);
+
 	application CitySimulator;
 
 	CitySimulator.Run();

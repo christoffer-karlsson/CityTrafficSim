@@ -1,4 +1,4 @@
-#include "d3d_diagnostics.h"
+#include "diagnostics.h"
 
 void DiagnosticMessage(HRESULT Result)
 {

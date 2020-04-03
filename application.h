@@ -5,7 +5,6 @@
 #include "common.h"
 #include "window.h"
 #include "timing.h"
-#include "d3d.h"
 
 #include <windows.h>
 #include <string>
@@ -16,7 +15,6 @@ class application
 
 	window		Window;
 	timing		Timing;
-	d3d			Direct3D;
 
 	// TODO(Cristoffer): Implement next..
 	//Thread		Thread;
@@ -29,9 +27,9 @@ class application
 	public:
 
 	application();
-	~application();
-
-	DISABLE_INSTANCE_COPY(application);
+	~application() = default;
+	application(application const &Object) = delete;
+	void operator=(application const &Object) = delete;
 
 	void Run();
 };

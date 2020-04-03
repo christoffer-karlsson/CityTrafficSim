@@ -19,6 +19,18 @@
     <Filter Include="Header Files\graphics">
       <UniqueIdentifier>{68bdcd64-0550-4a5a-8bba-3e80072e8d04}</UniqueIdentifier>
     </Filter>
+    <Filter Include="External Libraries">
+      <UniqueIdentifier>{a5a9b322-3fac-4f11-acdc-db32e77d1f01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics\drawables">
+      <UniqueIdentifier>{af47c601-f608-4ee9-b5c0-d136d5a501f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\graphics\drawables">
+      <UniqueIdentifier>{3120dd6b-c6ba-404d-993e-fd6de85c18c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics\shaders">
+      <UniqueIdentifier>{23338537-ca4b-4ebe-91b2-960c39f51d63}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="winmain.cpp">
@@ -42,11 +54,38 @@
     <ClCompile Include="timing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="d3d.cpp">
+    <ClCompile Include="external\WICTextureLoader.cpp">
+      <Filter>External Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="drawable.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="d3d_diagnostics.cpp">
+    <ClCompile Include="diagnostics.cpp">
       <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="direct3d.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="global_device_info.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="constant_buffer.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="vertex_buffer.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="cube.cpp">
+      <Filter>Source Files\graphics\drawables</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -71,11 +110,52 @@
     <ClInclude Include="timing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="d3d.h">
+    <ClInclude Include="external\SpriteBatch.h">
+      <Filter>External Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SpriteFont.h">
+      <Filter>External Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="external\WICTextureLoader.h">
+      <Filter>External Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="drawable.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="d3d_diagnostics.h">
+    <ClInclude Include="diagnostics.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="direct3d.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="global_device_info.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="constant_buffer.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="vertex_buffer.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="cube.h">
+      <Filter>Header Files\graphics\drawables</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="cube_vs.hlsl">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="cube_ps.hlsl">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

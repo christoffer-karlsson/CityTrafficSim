@@ -1,6 +1,7 @@
 #include "window.h"
 
-window::window(const char *Title, int32 Width, int32 Height) : WindowInstance(GetModuleHandle(0))
+window::window(const char *Title, int32 Width, int32 Height) : 
+	WindowInstance(GetModuleHandle(0))
 {
 	WNDCLASSEX WindowClass = { };
 	WindowClass.cbSize = sizeof(WNDCLASSEX);
@@ -39,12 +40,9 @@ window::window(const char *Title, int32 Width, int32 Height) : WindowInstance(Ge
 	}
 
 	InitRawInputDevice();
+	InitGraphicsDevice();
 
 	ShowWindow(WindowHandle, SW_SHOW);
-}
-
-window::~window()
-{
 }
 
 void window::InitRawInputDevice()
@@ -64,9 +62,19 @@ void window::InitRawInputDevice()
 	RegisterRawInputDevices(Rid, 1, sizeof(Rid[0]));
 }
 
+void window::InitGraphicsDevice()
+{
+	Direct3D.Init(WindowHandle);
+}
+
 HWND window::GetHandle() const
 {
 	return WindowHandle;
+}
+
+direct3d &window::GetGraphicsDevice()
+{
+	return Direct3D;
 }
 
 void window::SetTitle(const char *Title)

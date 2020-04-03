@@ -20,8 +20,6 @@ typedef uint64_t uint64;
 typedef float  real32;
 typedef double real64;
 
-#define DISABLE_INSTANCE_COPY(x) x(x const&) = delete; void operator=(x const&) = delete;
-
 #if DEBUG_MODE
 
 #define ASSERT(Expression) assert(Expression);
