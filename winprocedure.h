@@ -4,6 +4,8 @@
 
 #include "keyboard.h"
 #include "mouse.h"
+#include "global_device_info.h"
+
 #include <windows.h>
 #include <windowsx.h>
 

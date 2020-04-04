@@ -5,6 +5,7 @@
 #include "common.h"
 #include "winprocedure.h"
 #include "direct3d.h"
+#include "global_device_info.h"
 
 #include <windows.h>
 

@@ -3,6 +3,9 @@
 window::window(const char *Title, int32 Width, int32 Height) : 
 	WindowInstance(GetModuleHandle(0))
 {
+	global_device_info::WindowWidth = Width;
+	global_device_info::WindowHeight = Height;
+
 	WNDCLASSEX WindowClass = { };
 	WindowClass.cbSize = sizeof(WNDCLASSEX);
 	WindowClass.style = CS_OWNDC;

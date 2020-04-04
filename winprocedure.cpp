@@ -10,7 +10,9 @@ LRESULT CALLBACK WindowProcedure(HWND WindowHandle, UINT MessageId, WPARAM W_Par
 	else if(MessageId == WM_SIZE)
 	{
 		// TODO(Cristoffer): Handle resizing of window.
-		OutputDebugStringW(L"WM_SIZE\n");
+		global_device_info::WindowWidth = GET_X_LPARAM(L_Param);
+		global_device_info::WindowHeight = GET_Y_LPARAM(L_Param);
+
 	}
 	else if(MessageId == WM_KEYDOWN)
 	{
@@ -71,8 +73,13 @@ LRESULT CALLBACK WindowProcedure(HWND WindowHandle, UINT MessageId, WPARAM W_Par
 	}
 	else if(MessageId == WM_INPUT)
 	{
-		UINT dwSize = 40;
-		static BYTE lpb[40];
+		// NOTE(Cristoffer): For 32-bit
+		//UINT dwSize = 40;
+		//static BYTE lpb[40];
+
+		// NOTE(Cristoffer): For 64-bit
+		UINT dwSize = 48;
+		static BYTE lpb[48];
 
 		GetRawInputData((HRAWINPUT)L_Param, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER));
 

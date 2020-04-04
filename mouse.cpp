@@ -1,6 +1,6 @@
 #include "mouse.h"
 
-mouse_state Mouse;
+static mouse_state Mouse = {};
 
 void UpdateMouse(int32 X, int32 Y, int32 ButtonCode, bool Status)
 {
@@ -12,23 +12,8 @@ void UpdateMouse(int32 X, int32 Y, int32 ButtonCode, bool Status)
 
 void UpdateRawMouse(int32 X, int32 Y)
 {
-	if(Mouse.RawX == X)
-	{
-		Mouse.RawX = 0;
-	}
-	else
-	{
-		Mouse.RawX = X;
-	}
-
-	if(Mouse.RawY == Y)
-	{
-		Mouse.RawY = 0;
-	}
-	else
-	{
-		Mouse.RawY = Y;
-	}
+	Mouse.RawX = X;
+	Mouse.RawY = Y;
 }
 
 int32 GetMouseX()
@@ -38,8 +23,8 @@ int32 GetMouseX()
 
 int32 GetMouseY()
 {
-	// TODO(Cristoffer): Get proper window width here, DANGEROUS BUG ATM!!!!.
-	return 720 - Mouse.Y;
+	// NOTE(Cristoffer): Invert zero location for Y.
+	return global_device_info::WindowHeight - Mouse.Y;
 }
 
 int32 GetMouseRawX()

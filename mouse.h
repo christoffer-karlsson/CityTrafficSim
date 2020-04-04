@@ -3,6 +3,7 @@
 #pragma once
 
 #include "common.h"
+#include "global_device_info.h"
 
 #define MBUTTON_LEFT	0x0001
 #define MBUTTON_RIGHT	0x0002

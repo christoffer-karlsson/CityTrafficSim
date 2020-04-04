@@ -10,10 +10,8 @@ application::application() :
 
 void application::Run()
 {
-	Window.ShowMouseCursor(1);
-	Window.ClipMouseCursor(0);
-
-	HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
+	Window.ShowMouseCursor(0);
+	Window.ClipMouseCursor(1);
 
 	while(Running)
 	{
@@ -82,17 +80,34 @@ void application::Run()
 		Window.GetGraphicsDevice().GetCamera().LookX(GetMouseRawX() * 0.001f);
 		Window.GetGraphicsDevice().GetCamera().LookY(GetMouseRawY() * 0.001f);
 
+		std::string StringValue;
+		std::wstring stemp;
+		LPCWSTR sw;
+
 		// TODO(Cristoffer): Temporary render test.
 		Window.GetGraphicsDevice().BeginFrame();
 		Window.GetGraphicsDevice().TestDraw();
 
-		std::string StringValue = "FPS: " + std::to_string(Timing.GetFramesPerSecond());
-
-		std::wstring stemp = std::wstring(StringValue.begin(), StringValue.end());
-		LPCWSTR sw = stemp.c_str();
-
 		Window.GetGraphicsDevice().BeginSpriteBatch();
+
+		StringValue = "FPS: " + std::to_string(Timing.GetFramesPerSecond());
+		stemp = std::wstring(StringValue.begin(), StringValue.end());
+		sw = stemp.c_str();
+
 		Window.GetGraphicsDevice().DrawSpriteString(sw, 0.0f, 0.0f);
+
+		StringValue = std::to_string(GetMouseRawX());
+		stemp = std::wstring(StringValue.begin(), StringValue.end());
+		sw = stemp.c_str();
+
+		Window.GetGraphicsDevice().DrawSpriteString(sw, 0.0f, 16.0f);
+
+		StringValue = std::to_string(GetMouseRawY());
+		stemp = std::wstring(StringValue.begin(), StringValue.end());
+		sw = stemp.c_str();
+
+		Window.GetGraphicsDevice().DrawSpriteString(sw, 0.0f, 32.0f);
+
 		Window.GetGraphicsDevice().EndSpriteBatch();
 
 		Window.GetGraphicsDevice().EndFrame();

@@ -10,6 +10,9 @@
 
 struct global_device_info
 {
+	static int32 WindowWidth;
+	static int32 WindowHeight;
+
 	static const real32 FrameBufferWidth;
 	static const real32 FrameBufferHeight;
 

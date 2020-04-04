@@ -1,5 +1,8 @@
 #include "global_device_info.h"
 
+int32 global_device_info::WindowWidth = 0;
+int32 global_device_info::WindowHeight = 0;
+
 real32 const global_device_info::FrameBufferWidth = 1280.0f;
 real32 const global_device_info::FrameBufferHeight = 720.0f;
 
