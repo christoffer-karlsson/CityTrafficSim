@@ -8,6 +8,8 @@
 #include "global_device_info.h"
 #include "cube.h"
 
+#include "external/SpriteFont.h"
+
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
@@ -36,6 +38,9 @@ class direct3d
 
 	camera Camera;
 
+	std::unique_ptr<SpriteBatch> spriteBatch;
+	std::unique_ptr<SpriteFont> spriteFont;
+
 	std::vector<std::unique_ptr<drawable>> Entities;
 
 	protected:
@@ -57,6 +62,11 @@ class direct3d
 	void ClearFrameBuffer(real32 Red, real32 Green, real32 Blue) const;
 	void BeginFrame() const;
 	void EndFrame() const;
+
+	// TODO(Cristoffer): Temporary methods for testing.
+	void BeginSpriteBatch();
+	void EndSpriteBatch();
+	void DrawSpriteString(const wchar_t *String, real32 PosX, real32 PosY);
 
 	// TODO(Cristoffer): Perhaps camera shouldn't be accessable from here..
 	camera &GetCamera();

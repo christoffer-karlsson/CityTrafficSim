@@ -12,6 +12,10 @@ void direct3d::Init(HWND WindowHandle)
 	SetDepthStencil();
 	SetViewport();
 
+	// TODO(Cristoffer): Init sprite batch.
+	spriteBatch = std::make_unique<SpriteBatch>(Context);
+	spriteFont = std::make_unique<SpriteFont>(Device, L"data/bahnschrift_14.spritefont");
+
 	// TODO(Cristoffer): Ownership of these pointers shared temporarily.
 	// Take a look further down the line.
 	global_device_info::Device = Device;
@@ -196,6 +200,23 @@ void direct3d::TestDraw()
 	{
 		(*Iterator)->Draw(Camera);
 	}
+}
+
+void direct3d::BeginSpriteBatch()
+{
+	spriteBatch->Begin();
+}
+
+void direct3d::EndSpriteBatch()
+{
+	spriteBatch->End();
+}
+
+void direct3d::DrawSpriteString(const wchar_t *String, real32 PosX, real32 PosY)
+{
+	XMVECTOR Color = Colors::White;
+
+	spriteFont->DrawString(spriteBatch.get(), String, XMFLOAT2(PosX, PosY), Color);
 }
 
 direct3d::~direct3d()

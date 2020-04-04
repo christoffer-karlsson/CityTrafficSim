@@ -32,12 +32,10 @@ void application::Run()
 			Running = FALSE;
 		}
 
-
-
 		real64 CurrentTime = Timing.GetWallclockSeconds();
 
 		// NOTE(Cristoffer): Run program here!!
-		if((CurrentTime - TimeCheck) > 1.0)
+		/*if((CurrentTime - TimeCheck) > 1.0)
 		{
 			TimeCheck = CurrentTime;
 
@@ -48,7 +46,7 @@ void application::Run()
 
 			OutputDebugStringW(sw);
 			OutputDebugStringW(L"\n");
-		}
+		}*/
 
 		// TODO(Cristoffer): Temporary input control for adjusting camera.
 		if(KeyPressed(KEY_W))
@@ -87,6 +85,16 @@ void application::Run()
 		// TODO(Cristoffer): Temporary render test.
 		Window.GetGraphicsDevice().BeginFrame();
 		Window.GetGraphicsDevice().TestDraw();
+
+		std::string StringValue = "FPS: " + std::to_string(Timing.GetFramesPerSecond());
+
+		std::wstring stemp = std::wstring(StringValue.begin(), StringValue.end());
+		LPCWSTR sw = stemp.c_str();
+
+		Window.GetGraphicsDevice().BeginSpriteBatch();
+		Window.GetGraphicsDevice().DrawSpriteString(sw, 0.0f, 0.0f);
+		Window.GetGraphicsDevice().EndSpriteBatch();
+
 		Window.GetGraphicsDevice().EndFrame();
 
 		Timing.EndFrameTimer();

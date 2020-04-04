@@ -72,7 +72,7 @@ cube::cube(real32 PosX, real32 PosY, real32 PosZ)
 	Shader->AddInputElement("AMBLIGHT", DXGI_FORMAT_R32G32B32A32_FLOAT);
 	Shader->CommitInputElements();
 
-	Texture = new texture(L"2x3_texture.png", 256, 256, 1, 1);
+	Texture = new texture(L"data/2x3_texture.png", 256, 256, 1, 1);
 
 	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), Vertices.size());
 	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint16), Indices.size());
