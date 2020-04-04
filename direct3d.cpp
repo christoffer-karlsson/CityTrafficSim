@@ -23,8 +23,21 @@ void direct3d::Init(HWND WindowHandle)
 	global_device_info::Target = Target;
 	global_device_info::Swap = Swap;
 
+	real32 Spacing = 1.0f;
+
+	for(int X = 0; X < 50; X++)
+	{
+		for(int Z = 0; Z < 50; Z++)
+		{
+			real32 XCoord = ((real32)X * Spacing) + (real32)X;
+			real32 ZCoord = ((real32)Z * Spacing) + (real32)Z;
+
+			Entities.push_back(std::make_unique<cube>(XCoord, 0.0f, ZCoord));
+		}
+	}
+
 	// TODO(Cristoffer): Temporary entity creation for testing.
-	Entities.push_back(std::make_unique<cube>(0.0f, 1.0f, 0.0f));
+	//Entities.push_back(std::make_unique<cube>(0.0f, 0.0f, 0.0f));
 }
 
 void direct3d::ClearFrameBuffer(real32 Red, real32 Green, real32 Blue) const
@@ -215,7 +228,6 @@ void direct3d::EndSpriteBatch()
 void direct3d::DrawSpriteString(const wchar_t *String, real32 PosX, real32 PosY)
 {
 	XMVECTOR Color = Colors::White;
-
 	spriteFont->DrawString(spriteBatch.get(), String, XMFLOAT2(PosX, PosY), Color);
 }
 

@@ -96,17 +96,15 @@ void application::Run()
 
 		Window.GetGraphicsDevice().DrawSpriteString(sw, 0.0f, 0.0f);
 
-		StringValue = std::to_string(GetMouseRawX());
+		StringValue = "Frame Time: " + std::to_string(Timing.GetFrameTimeDelta()) + " ms";
 		stemp = std::wstring(StringValue.begin(), StringValue.end());
 		sw = stemp.c_str();
 
 		Window.GetGraphicsDevice().DrawSpriteString(sw, 0.0f, 16.0f);
 
-		StringValue = std::to_string(GetMouseRawY());
-		stemp = std::wstring(StringValue.begin(), StringValue.end());
-		sw = stemp.c_str();
+		std::wstring Text = L"With the DirectX 11.1, you can also rely on \nDirect2D/DirectWrite being available which is\n recommended for true vector-font features\n such as high quality across a\n wide range of scales, for complex layouts, or large-alphabet fonts. ";
 
-		Window.GetGraphicsDevice().DrawSpriteString(sw, 0.0f, 32.0f);
+		Window.GetGraphicsDevice().DrawSpriteString(Text.c_str(), 0.0f, 64.0f);
 
 		Window.GetGraphicsDevice().EndSpriteBatch();
 

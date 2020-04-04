@@ -2,6 +2,7 @@
 
 real64 timing::WallclockSeconds = 0.0;
 real64 timing::WallclockMilliseconds = 0.0;
+real64 timing::FrameTimeDelta = 0.0;
 
 timing::timing() : 
 	StartingTime(), 
@@ -38,6 +39,8 @@ void timing::EndFrameTimer()
 	TimeElapsedMicroseconds = (real64)ElapsedMicroseconds.QuadPart;
 	TimeElapsedMilliseconds = TimeElapsedMicroseconds / (real64)(1000.0);
 	TimeElapsedSeconds = TimeElapsedMilliseconds / (real64)(1000.0);
+
+	FrameTimeDelta = TimeElapsedMilliseconds;
 
 	WallclockMilliseconds += TimeElapsedMilliseconds;
 	WallclockSeconds += TimeElapsedSeconds;
@@ -77,6 +80,11 @@ real64 timing::GetWallclockSeconds()
 real64 timing::GetWallclockMilliseconds()
 {
 	return WallclockMilliseconds;
+}
+
+real64 timing::GetFrameTimeDelta()
+{
+	return FrameTimeDelta;
 }
 
 real64 timing::GetFramesPerSecond() const
