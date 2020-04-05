@@ -37,9 +37,30 @@ void direct3d::Init(HWND WindowHandle)
 	}*/
 
 	// TODO(Cristoffer): Temporary entity creation for testing.
-	Entities.push_back(std::make_unique<building>(0.0f, 0.0f, 0.0f, 20.0f, 40.0f, 30.0f));
+	Entities.push_back(std::make_unique<building>(0.0f, 0.0f, 0.0f, 2.0f, 5.0f, 3.0f));
 
-	Entities.push_back(std::make_unique<ground>(0.0f, 0.0f, GRASS));
+	World.SetTile(5,10, ROAD_Z);
+	World.SetTile(5, 11, ROAD_Z);
+	World.SetTile(5, 12, ROAD_Z);
+	World.SetTile(5, 13, ROAD_Z);
+	World.SetTile(5, 14, CROSSROAD);
+	World.SetTile(5, 15, ROAD_Z);
+	World.SetTile(5, 16, ROAD_Z);
+	World.SetTile(5, 17, ROAD_Z);
+	World.SetTile(5, 18, ROAD_Z);
+	World.SetTile(5, 19, ROAD_Z);
+	World.SetTile(5, 20, ROAD_Z);
+	World.SetTile(5, 21, ROAD_Z);
+	World.SetTile(6, 14, ROAD_X);
+	World.SetTile(7, 14, ROAD_X);
+	World.SetTile(8, 14, ROAD_X);
+	World.SetTile(9, 14, ROAD_X);
+	World.SetTile(10, 14, ROAD_X);
+	World.SetTile(11, 14, ROAD_X);
+	World.SetTile(12, 14, ROAD_X);
+	World.SetTile(13, 14, ROAD_X);
+
+	Entities.push_back(std::make_unique<ground>(0.0f, 0.0f, World));
 
 	/*for(int X = 0; X < 100; X++)
 	{

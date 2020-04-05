@@ -105,6 +105,15 @@ void application::Run()
 
 		Window.GetGraphicsDevice().DrawSpriteString(sw, 0.0f, 16.0f);
 
+		StringValue = "Camera Position: " + 
+			std::to_string(Window.GetGraphicsDevice().GetCamera().GetPositionX()) + ", " +
+			std::to_string(Window.GetGraphicsDevice().GetCamera().GetPositionY()) + ", " +
+			std::to_string(Window.GetGraphicsDevice().GetCamera().GetPositionZ());
+		stemp = std::wstring(StringValue.begin(), StringValue.end());
+		sw = stemp.c_str();
+
+		Window.GetGraphicsDevice().DrawSpriteString(sw, 0.0f, 32.0f);
+
 		Window.GetGraphicsDevice().EndSpriteBatch();
 
 		Window.GetGraphicsDevice().EndFrame();

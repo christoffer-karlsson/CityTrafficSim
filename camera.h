@@ -55,6 +55,10 @@ class camera
 	void LookY(real32 Value);
 	void LookX(real32 Value);
 
+	real32 GetPositionX() const;
+	real32 GetPositionY() const;
+	real32 GetPositionZ() const;
+
 	const XMMATRIX &GetViewMatrix();
 	const XMMATRIX &GetProjectionMatrix();
 };

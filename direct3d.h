@@ -8,6 +8,7 @@
 #include "global_device_info.h"
 #include "building.h"
 #include "ground.h"
+#include "world.h"
 
 #include "external/SpriteFont.h"
 
@@ -37,12 +38,18 @@ class direct3d
 	ID3D11DepthStencilView *DepthStencilView;
 	ID3D11BlendState *AlphaBlendState;
 
+	// NOTE(Cristoffer): Temporary data here ////////////////
+
 	camera Camera;
 
 	std::unique_ptr<SpriteBatch> spriteBatch;
 	std::unique_ptr<SpriteFont> spriteFont;
 
 	std::vector<std::unique_ptr<drawable>> Entities;
+
+	world World = world(100, 100);
+
+	// NOTE(Cristoffer): Temporary data here ////////////////
 
 	protected:
 

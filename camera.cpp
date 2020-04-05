@@ -152,6 +152,21 @@ void camera::Update()
 		FXMVECTOR(XMLoadFloat3(&UpDirection)));
 }
 
+real32 camera::GetPositionX() const
+{
+	return Position.x;
+}
+
+real32 camera::GetPositionY() const
+{
+	return Position.y;
+}
+
+real32 camera::GetPositionZ() const
+{
+	return Position.z;
+}
+
 const XMMATRIX &camera::GetViewMatrix()
 {
 	return View;

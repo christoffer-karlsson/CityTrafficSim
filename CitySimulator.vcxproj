@@ -167,6 +167,7 @@
     <ClCompile Include="window.cpp" />
     <ClCompile Include="winmain.cpp" />
     <ClCompile Include="winprocedure.cpp" />
+    <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="timing.h" />
     <ClInclude Include="window.h" />
     <ClInclude Include="winprocedure.h" />
+    <ClInclude Include="world.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="cube_ps.hlsl">
@@ -228,6 +230,9 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="testmap.citysim" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

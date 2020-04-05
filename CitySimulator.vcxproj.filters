@@ -31,6 +31,9 @@
     <Filter Include="Source Files\graphics\shaders">
       <UniqueIdentifier>{23338537-ca4b-4ebe-91b2-960c39f51d63}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\data">
+      <UniqueIdentifier>{b5681021-cc48-4575-a7c6-99d2a90ca3b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="winmain.cpp">
@@ -89,6 +92,9 @@
     </ClCompile>
     <ClCompile Include="ground.cpp">
       <Filter>Source Files\graphics\drawables</Filter>
+    </ClCompile>
+    <ClCompile Include="world.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +161,9 @@
     <ClInclude Include="ground.h">
       <Filter>Header Files\graphics\drawables</Filter>
     </ClInclude>
+    <ClInclude Include="world.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="cube_vs.hlsl">
@@ -169,5 +178,10 @@
     <FxCompile Include="ground_ps.hlsl">
       <Filter>Source Files\graphics\shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="testmap.citysim">
+      <Filter>Source Files\data</Filter>
+    </None>
   </ItemGroup>
 </Project>
