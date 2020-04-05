@@ -3,6 +3,10 @@
 drawable::drawable()
 {
 	Model = XMMatrixIdentity();
+	Texture = nullptr;
+	Shader = nullptr;
+	VertexBuffer = nullptr;
+	ConstantBuffer = nullptr;
 }
 
 drawable::~drawable()

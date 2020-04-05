@@ -84,7 +84,10 @@
     <ClCompile Include="camera.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="cube.cpp">
+    <ClCompile Include="building.cpp">
+      <Filter>Source Files\graphics\drawables</Filter>
+    </ClCompile>
+    <ClCompile Include="ground.cpp">
       <Filter>Source Files\graphics\drawables</Filter>
     </ClCompile>
   </ItemGroup>
@@ -146,7 +149,10 @@
     <ClInclude Include="camera.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="cube.h">
+    <ClInclude Include="building.h">
+      <Filter>Header Files\graphics\drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="ground.h">
       <Filter>Header Files\graphics\drawables</Filter>
     </ClInclude>
   </ItemGroup>
@@ -155,6 +161,12 @@
       <Filter>Source Files\graphics\shaders</Filter>
     </FxCompile>
     <FxCompile Include="cube_ps.hlsl">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ground_vs.hlsl">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ground_ps.hlsl">
       <Filter>Source Files\graphics\shaders</Filter>
     </FxCompile>
   </ItemGroup>

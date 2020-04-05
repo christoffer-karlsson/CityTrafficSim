@@ -6,7 +6,8 @@
 #include "common.h"
 #include "diagnostics.h"
 #include "global_device_info.h"
-#include "cube.h"
+#include "building.h"
+#include "ground.h"
 
 #include "external/SpriteFont.h"
 

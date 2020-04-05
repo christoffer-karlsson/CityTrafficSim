@@ -14,7 +14,7 @@ void direct3d::Init(HWND WindowHandle)
 
 	// TODO(Cristoffer): Init sprite batch.
 	spriteBatch = std::make_unique<SpriteBatch>(Context);
-	spriteFont = std::make_unique<SpriteFont>(Device, L"data/bahnschrift_14.spritefont");
+	spriteFont = std::make_unique<SpriteFont>(Device, L"data/bahnschrift_12.spritefont");
 
 	// TODO(Cristoffer): Ownership of these pointers shared temporarily.
 	// Take a look further down the line.
@@ -25,7 +25,7 @@ void direct3d::Init(HWND WindowHandle)
 
 	real32 Spacing = 1.0f;
 
-	for(int X = 0; X < 50; X++)
+	/*for(int X = 0; X < 50; X++)
 	{
 		for(int Z = 0; Z < 50; Z++)
 		{
@@ -34,10 +34,22 @@ void direct3d::Init(HWND WindowHandle)
 
 			Entities.push_back(std::make_unique<cube>(XCoord, 0.0f, ZCoord));
 		}
-	}
+	}*/
 
 	// TODO(Cristoffer): Temporary entity creation for testing.
-	//Entities.push_back(std::make_unique<cube>(0.0f, 0.0f, 0.0f));
+	Entities.push_back(std::make_unique<building>(0.0f, 0.0f, 0.0f, 20.0f, 40.0f, 30.0f));
+
+	Entities.push_back(std::make_unique<ground>(0.0f, 0.0f, GRASS));
+
+	/*for(int X = 0; X < 100; X++)
+	{
+		for(int Y = 0; Y < 100; Y++)
+		{
+			Entities.push_back(std::make_unique<ground>((real32)X, (real32)Y, GRASS));
+		}
+	}*/
+
+	
 }
 
 void direct3d::ClearFrameBuffer(real32 Red, real32 Green, real32 Blue) const

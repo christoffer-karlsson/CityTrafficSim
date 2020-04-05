@@ -10,8 +10,8 @@ application::application() :
 
 void application::Run()
 {
-	Window.ShowMouseCursor(0);
-	Window.ClipMouseCursor(1);
+	Window.ShowMouseCursor(1);
+	Window.ClipMouseCursor(0);
 
 	while(Running)
 	{
@@ -47,38 +47,41 @@ void application::Run()
 		}*/
 
 		// TODO(Cristoffer): Temporary input control for adjusting camera.
+
+		real64 CameraMovementSpeed = Timing.GetFrameTimeDeltaSeconds() * (30.0f / 1.0f);
+
 		if(KeyPressed(KEY_W))
 		{
-			Window.GetGraphicsDevice().GetCamera().MoveForward(0.01f);
+			Window.GetGraphicsDevice().GetCamera().MoveForward(CameraMovementSpeed);
 		}
 
 		if(KeyPressed(KEY_S))
 		{
-			Window.GetGraphicsDevice().GetCamera().MoveBackward(0.01f);
+			Window.GetGraphicsDevice().GetCamera().MoveBackward(CameraMovementSpeed);
 		}
 
 		if(KeyPressed(KEY_A))
 		{
-			Window.GetGraphicsDevice().GetCamera().StrafeLeft(0.01f);
+			Window.GetGraphicsDevice().GetCamera().StrafeLeft(CameraMovementSpeed);
 		}
 
 		if(KeyPressed(KEY_D))
 		{
-			Window.GetGraphicsDevice().GetCamera().StrafeRight(0.01f);
+			Window.GetGraphicsDevice().GetCamera().StrafeRight(CameraMovementSpeed);
 		}
 
 		if(KeyPressed(KEY_SPACE))
 		{
-			Window.GetGraphicsDevice().GetCamera().MoveUp(0.01f);
+			Window.GetGraphicsDevice().GetCamera().MoveUp(CameraMovementSpeed);
 		}
 
 		if(KeyPressed(KEY_CONTROL))
 		{
-			Window.GetGraphicsDevice().GetCamera().MoveDown(0.01f);
+			Window.GetGraphicsDevice().GetCamera().MoveDown(CameraMovementSpeed);
 		}
 
-		Window.GetGraphicsDevice().GetCamera().LookX(GetMouseRawX() * 0.001f);
-		Window.GetGraphicsDevice().GetCamera().LookY(GetMouseRawY() * 0.001f);
+		Window.GetGraphicsDevice().GetCamera().LookX((Timing.GetFrameTimeDeltaSeconds() * GetMouseRawX() * 1.1f));
+		Window.GetGraphicsDevice().GetCamera().LookY((Timing.GetFrameTimeDeltaSeconds() * GetMouseRawY() * 1.1f));
 
 		std::string StringValue;
 		std::wstring stemp;
@@ -96,15 +99,11 @@ void application::Run()
 
 		Window.GetGraphicsDevice().DrawSpriteString(sw, 0.0f, 0.0f);
 
-		StringValue = "Frame Time: " + std::to_string(Timing.GetFrameTimeDelta()) + " ms";
+		StringValue = "Frame Time: " + std::to_string(Timing.GetFrameTimeDeltaMilliseconds()) + " ms";
 		stemp = std::wstring(StringValue.begin(), StringValue.end());
 		sw = stemp.c_str();
 
 		Window.GetGraphicsDevice().DrawSpriteString(sw, 0.0f, 16.0f);
-
-		std::wstring Text = L"With the DirectX 11.1, you can also rely on \nDirect2D/DirectWrite being available which is\n recommended for true vector-font features\n such as high quality across a\n wide range of scales, for complex layouts, or large-alphabet fonts. ";
-
-		Window.GetGraphicsDevice().DrawSpriteString(Text.c_str(), 0.0f, 64.0f);
 
 		Window.GetGraphicsDevice().EndSpriteBatch();
 

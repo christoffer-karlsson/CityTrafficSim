@@ -19,9 +19,10 @@ class timing
 
 	// NOTE(Cristoffer): Keeping this static for now, so that total time passed can be accessed 
 	// in any translation since first instantiation of this class.
-	static real64 WallclockMilliseconds;
 	static real64 WallclockSeconds;
-	static real64 FrameTimeDelta;
+	static real64 WallclockMilliseconds;
+	static real64 FrameTimeDeltaSeconds;
+	static real64 FrameTimeDeltaMilliseconds;
 
 	real64 FrameCounter;
 	real64 OneSecondElapsed;
@@ -40,7 +41,8 @@ class timing
 
 	static real64 GetWallclockSeconds();
 	static real64 GetWallclockMilliseconds();
-	static real64 GetFrameTimeDelta();
+	static real64 GetFrameTimeDeltaSeconds();
+	static real64 GetFrameTimeDeltaMilliseconds();
 
 	real64 GetFramesPerSecond() const;
 };

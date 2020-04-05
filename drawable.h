@@ -17,6 +17,16 @@
 
 using namespace DirectX;
 
+struct position
+{
+	real32 X, Y, Z;
+};
+
+struct color
+{
+	real32 R, G, B, A;
+};
+
 class drawable
 {
 	protected:
