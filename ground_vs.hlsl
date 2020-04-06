@@ -1,13 +1,15 @@
 struct input
 {
-	float3 Position				: POSITION;
-    float2 UV					: TEXCOORD;
+	float3 Position	: POSITION;
+    float2 UV		: TEXCOORD;
+    float1 IsPicked	: ISPICKED;
 };
 
 struct output
 {
-	float4 Position				: SV_POSITION;
-    float2 UV					: TEXCOORD;
+	float4 Position	: SV_POSITION;
+    float2 UV		: TEXCOORD;
+    float1 IsPicked	: ISPICKED;
 };
 
 cbuffer ConstantBuffer
@@ -23,6 +25,8 @@ output main( input Input )
 	Output.Position = mul(Output.Position, MVP);
 
 	Output.UV = Input.UV;
+	
+    Output.IsPicked = Input.IsPicked;
 
 	return Output;
 }

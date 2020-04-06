@@ -1,7 +1,6 @@
 #include "window.h"
 
-window::window(const char *Title, int32 Width, int32 Height) : 
-	WindowInstance(GetModuleHandle(0))
+window::window(const char *Title, int32 Width, int32 Height)
 {
 	global_device_info::WindowWidth = Width;
 	global_device_info::WindowHeight = Height;
@@ -12,9 +11,9 @@ window::window(const char *Title, int32 Width, int32 Height) :
 	WindowClass.lpfnWndProc = WindowProcedure;
 	WindowClass.cbClsExtra = 0;
 	WindowClass.cbWndExtra = 0;
-	WindowClass.hInstance = WindowInstance;
+	WindowClass.hInstance = GetModuleHandle(0);
 	WindowClass.hIcon = NULL;
-	WindowClass.hCursor = NULL;
+	WindowClass.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(32512));
 	WindowClass.hbrBackground = NULL;
 	WindowClass.lpszMenuName = NULL;
 	WindowClass.lpszClassName = "CitySimClass";
@@ -43,7 +42,6 @@ window::window(const char *Title, int32 Width, int32 Height) :
 	}
 
 	InitRawInputDevice();
-	InitGraphicsDevice();
 
 	ShowWindow(WindowHandle, SW_SHOW);
 }
@@ -65,19 +63,9 @@ void window::InitRawInputDevice()
 	RegisterRawInputDevices(Rid, 1, sizeof(Rid[0]));
 }
 
-void window::InitGraphicsDevice()
-{
-	Direct3D.Init(WindowHandle);
-}
-
 HWND window::GetHandle() const
 {
 	return WindowHandle;
-}
-
-direct3d &window::GetGraphicsDevice()
-{
-	return Direct3D;
 }
 
 void window::SetTitle(const char *Title)

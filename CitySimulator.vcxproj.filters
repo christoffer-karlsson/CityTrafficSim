@@ -90,11 +90,17 @@
     <ClCompile Include="building.cpp">
       <Filter>Source Files\graphics\drawables</Filter>
     </ClCompile>
-    <ClCompile Include="ground.cpp">
-      <Filter>Source Files\graphics\drawables</Filter>
-    </ClCompile>
     <ClCompile Include="world.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mouse_picker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="line.cpp">
+      <Filter>Source Files\graphics\drawables</Filter>
+    </ClCompile>
+    <ClCompile Include="terrain.cpp">
+      <Filter>Source Files\graphics\drawables</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -158,11 +164,20 @@
     <ClInclude Include="building.h">
       <Filter>Header Files\graphics\drawables</Filter>
     </ClInclude>
-    <ClInclude Include="ground.h">
-      <Filter>Header Files\graphics\drawables</Filter>
-    </ClInclude>
     <ClInclude Include="world.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mouse_picker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="line.h">
+      <Filter>Header Files\graphics\drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SimpleMath.h">
+      <Filter>External Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="terrain.h">
+      <Filter>Header Files\graphics\drawables</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +191,12 @@
       <Filter>Source Files\graphics\shaders</Filter>
     </FxCompile>
     <FxCompile Include="ground_ps.hlsl">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="line_vs.hlsl">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="line_ps.hlsl">
       <Filter>Source Files\graphics\shaders</Filter>
     </FxCompile>
   </ItemGroup>

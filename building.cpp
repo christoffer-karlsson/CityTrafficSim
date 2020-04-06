@@ -82,7 +82,7 @@ building::building(real32 PosX, real32 PosY, real32 PosZ, real32 SizeX, real32 S
 
 	Texture = new texture(L"data/2x3_texture-2.png", 256, 256, 1, 1);
 
-	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), Vertices.size());
+	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), Vertices.size(), STATIC);
 	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint16), Indices.size());
 
 	ConstantBuffer = new constant_buffer(&VS_Input, sizeof(cb));

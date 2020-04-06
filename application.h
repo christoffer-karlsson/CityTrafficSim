@@ -5,6 +5,8 @@
 #include "common.h"
 #include "window.h"
 #include "timing.h"
+#include "global_device_info.h"
+#include "direct3d.h"
 
 #include <windows.h>
 #include <string>
@@ -15,6 +17,7 @@ class application
 
 	window		Window;
 	timing		Timing;
+	direct3d	Graphics;
 
 	// TODO(Cristoffer): Implement next..
 	//Thread		Thread;

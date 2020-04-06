@@ -1,13 +1,13 @@
 #include "texture.h"
 
-texture::texture(const wchar_t *Filename, int32 Width, int32 Height, int32 SlicesX, int32 SlicesY) :
+texture::texture(const wchar_t *Filename, int32 AtlasWidth, int32 AtlasHeight, int32 SlicesInX, int32 SlicesInY) :
 	TextureView(nullptr), 
 	Sampler(nullptr),
 	Filename(Filename),
-	Width(0), 
-	Height(0), 
-	SlicesX(0), 
-	SlicesY(0)
+	AtlasWidth(AtlasWidth),
+	AtlasHeight(AtlasHeight),
+	SlicesInX(SlicesInX),
+	SlicesInY(SlicesInY)
 {
 	HRESULT HR = S_OK;
 
@@ -28,6 +28,18 @@ void texture::Bind()
 {
 	global_device_info::Context->PSSetShaderResources(0, 1, &TextureView);
 	global_device_info::Context->PSSetSamplers(0, 1, &Sampler);
+}
+
+uv_quad texture::GetUVFromSliceCoordinates(int32 X, int32 Y)
+{
+	uv_quad Result;
+
+	Result.TextureCoordinate[0] = { (0.0f + X) / 10.0f, (0.0f + Y) / 10.0f };
+	Result.TextureCoordinate[1] = { (1.0f + X) / 10.0f, (0.0f + Y) / 10.0f };
+	Result.TextureCoordinate[2] = { (0.0f + X) / 10.0f, (1.0f + Y) / 10.0f };
+	Result.TextureCoordinate[3] = { (1.0f + X) / 10.0f, (1.0f + Y) / 10.0f };
+
+	return Result;
 }
 
 texture::~texture()

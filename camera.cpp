@@ -5,7 +5,7 @@ camera::camera()
 	// TODO(Cristoffer): Perhaps need different projections when doing UI stuff later.
 	CameraType = CAM_PERSPECTIVE;
 
-	Position = XMFLOAT3(0.0f, 5.0f, -20.0f);
+	Position = XMFLOAT3(0.0f, 5.0f, 0.0f);
 	ViewDirection = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	UpDirection = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	SideDirection = XMFLOAT3(1.0f, 0.0f, 0.0f);

@@ -1,6 +1,7 @@
 #include "direct3d.h"
 
-void direct3d::Init(HWND WindowHandle)
+direct3d::direct3d(HWND WindowHandle) :
+	Camera()
 {
 	// TODO(Cristoffer): Implement some way to reinitialize this, for example
 	// if frame buffer size is changed mid run time?
@@ -37,30 +38,34 @@ void direct3d::Init(HWND WindowHandle)
 	}*/
 
 	// TODO(Cristoffer): Temporary entity creation for testing.
-	Entities.push_back(std::make_unique<building>(0.0f, 0.0f, 0.0f, 2.0f, 5.0f, 3.0f));
+	//Entities.push_back(std::make_unique<building>(0.0f, 0.0f, 0.0f, 2.0f, 5.0f, 3.0f));
 
-	World.SetTile(5,10, ROAD_Z);
-	World.SetTile(5, 11, ROAD_Z);
-	World.SetTile(5, 12, ROAD_Z);
-	World.SetTile(5, 13, ROAD_Z);
-	World.SetTile(5, 14, CROSSROAD);
-	World.SetTile(5, 15, ROAD_Z);
-	World.SetTile(5, 16, ROAD_Z);
-	World.SetTile(5, 17, ROAD_Z);
-	World.SetTile(5, 18, ROAD_Z);
-	World.SetTile(5, 19, ROAD_Z);
-	World.SetTile(5, 20, ROAD_Z);
-	World.SetTile(5, 21, ROAD_Z);
-	World.SetTile(6, 14, ROAD_X);
-	World.SetTile(7, 14, ROAD_X);
-	World.SetTile(8, 14, ROAD_X);
-	World.SetTile(9, 14, ROAD_X);
-	World.SetTile(10, 14, ROAD_X);
-	World.SetTile(11, 14, ROAD_X);
-	World.SetTile(12, 14, ROAD_X);
-	World.SetTile(13, 14, ROAD_X);
+	World->SetTile(5, 10, ROAD_Z);
+	World->SetTile(5, 11, ROAD_Z);
+	World->SetTile(5, 12, ROAD_Z);
+	World->SetTile(5, 13, ROAD_Z);
+	World->SetTile(5, 14, CROSSROAD);
+	World->SetTile(5, 15, ROAD_Z);
+	World->SetTile(5, 16, ROAD_Z);
+	World->SetTile(5, 17, ROAD_Z);
+	World->SetTile(5, 18, ROAD_Z);
+	World->SetTile(5, 19, ROAD_Z);
+	World->SetTile(5, 20, ROAD_Z);
+	World->SetTile(5, 21, ROAD_Z);
+	World->SetTile(6, 14, ROAD_X);
+	World->SetTile(7, 14, ROAD_X);
+	World->SetTile(8, 14, ROAD_X);
+	World->SetTile(9, 14, ROAD_X);
+	World->SetTile(10, 14, ROAD_X);
+	World->SetTile(11, 14, ROAD_X);
+	World->SetTile(12, 14, ROAD_X);
+	World->SetTile(13, 14, ROAD_X);
 
-	Entities.push_back(std::make_unique<ground>(0.0f, 0.0f, World));
+	Terrain = std::make_unique<terrain>(0.0f, 0.0f, World);
+
+	Graph.push_back(std::make_unique<line>(10.0f, 5.0f, 10.0f, 10.0f, 0.0f, 10.0f));
+
+	TestEntity = std::make_unique<building>(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 
 	/*for(int X = 0; X < 100; X++)
 	{
@@ -69,37 +74,6 @@ void direct3d::Init(HWND WindowHandle)
 			Entities.push_back(std::make_unique<ground>((real32)X, (real32)Y, GRASS));
 		}
 	}*/
-
-	
-}
-
-void direct3d::ClearFrameBuffer(real32 Red, real32 Green, real32 Blue) const
-{
-	const real32 Color[4] = { Red, Green, Blue, 1.0f };
-	Context->ClearRenderTargetView(Target, Color);
-}
-
-void direct3d::BeginFrame() const
-{
-	// TODO(Cristoffer): Might need different setups and topologies depending
-	// on what is rendered in future.
-
-	real32 Color[4] = { 0.05f, 0.05f, 0.08f, 1.0f };
-
-	Context->RSSetViewports(1, &Viewport);
-
-	Context->ClearRenderTargetView(Target, Color);
-	Context->ClearDepthStencilView(DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	Context->OMSetRenderTargets(1, &Target, DepthStencilView);
-	Context->OMSetDepthStencilState(DepthStencilState, 1);
-	Context->OMSetBlendState(AlphaBlendState, 0, 0xffffffff);
-
-	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-}
-
-void direct3d::EndFrame() const
-{
-	Swap->Present(0, 0);
 }
 
 camera &direct3d::GetCamera()
@@ -238,14 +212,60 @@ void direct3d::SetViewport()
 	Viewport.TopLeftY = 0.0f;
 }
 
+void direct3d::ClearFrameBuffer(real32 Red, real32 Green, real32 Blue) const
+{
+	const real32 Color[4] = { Red, Green, Blue, 1.0f };
+	Context->ClearRenderTargetView(Target, Color);
+}
+
+void direct3d::BeginFrame() const
+{
+	// TODO(Cristoffer): Might need different setups and topologies depending
+	// on what is rendered in future.
+
+	real32 Color[4] = { 0.05f, 0.05f, 0.08f, 1.0f };
+
+	Context->RSSetViewports(1, &Viewport);
+
+	Context->ClearRenderTargetView(Target, Color);
+	Context->ClearDepthStencilView(DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	Context->OMSetRenderTargets(1, &Target, DepthStencilView);
+	Context->OMSetDepthStencilState(DepthStencilState, 1);
+	Context->OMSetBlendState(AlphaBlendState, 0, 0xffffffff);
+
+	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
+void direct3d::EndFrame() const
+{
+	Swap->Present(0, 0);
+}
+
 void direct3d::TestDraw()
 {
-	for(auto Iterator = Entities.begin();
-		Iterator != Entities.end();
+	Terrain->Draw(Camera);
+
+
+	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+
+	for(auto Iterator = Graph.begin();
+		Iterator != Graph.end();
 		Iterator++)
 	{
 		(*Iterator)->Draw(Camera);
 	}
+}
+
+void direct3d::TestDrawEntity(real32 X, real32 Y, real32 Z)
+{
+	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	TestEntity.get()->MoveModelPosition(X, Y, Z);
+	TestEntity.get()->Draw(Camera);
+}
+
+void direct3d::TestUpdateBuffer(int32 X, int32 Y)
+{
+	Terrain->UpdateBuffer(X, Y);
 }
 
 void direct3d::BeginSpriteBatch()

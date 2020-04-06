@@ -6,6 +6,16 @@
 
 #include <d3d11.h>
 
+// NOTE(Cristoffer): Allows to create a dynamic of static buffer.
+// If dynamic buffer is instantiated, then use the function to update
+// the vertex buffer on demand.
+
+enum ACCESSIBILITY
+{
+	DYNAMIC,
+	STATIC,
+};
+
 class vertex_buffer
 {
 	private:
@@ -18,14 +28,17 @@ class vertex_buffer
 	uint32			IndexBufferStride;
 	uint32			IndexBufferSize;
 
+	ACCESSIBILITY	CPUAccess;
+
 	public:
 
-	vertex_buffer(void *Vertices, uint32 Stride, uint32 Size);
+	vertex_buffer(void *VertexData, uint32 Stride, uint32 Size, ACCESSIBILITY CPUAccess);
 	~vertex_buffer();
 
-	void AddIndexBuffer(void *Indices, uint32 Stride, uint32 Size);
+	void AddIndexBuffer(void *IndicesData, uint32 Stride, uint32 Size);
 
 	void Bind();
+	void UpdateDynamicBuffer(void *VertexData, uint32 Stride, uint32 Size);
 
 	uint32 GetVertexCount() const;
 	uint32 GetIndexCount() const;

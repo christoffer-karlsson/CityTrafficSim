@@ -7,10 +7,13 @@
 #include "diagnostics.h"
 #include "global_device_info.h"
 #include "building.h"
-#include "ground.h"
+#include "terrain.h"
+#include "line.h"
 #include "world.h"
+#include "mouse_picker.h"
 
 #include "external/SpriteFont.h"
+#include "external/SimpleMath.h"
 
 #include <d3d11.h>
 #include <d3dcompiler.h>
@@ -19,6 +22,8 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 #pragma comment(lib, "dxguid.lib")
+
+using namespace DirectX::SimpleMath;
 
 class direct3d
 {
@@ -42,12 +47,15 @@ class direct3d
 
 	camera Camera;
 
-	std::unique_ptr<SpriteBatch> spriteBatch;
-	std::unique_ptr<SpriteFont> spriteFont;
+	
 
-	std::vector<std::unique_ptr<drawable>> Entities;
+	std::unique_ptr<terrain> Terrain;
 
-	world World = world(100, 100);
+	std::vector<std::unique_ptr<drawable>> Graph;
+
+	std::unique_ptr<drawable> TestEntity;;
+
+	world *World = new world(100, 100);
 
 	// NOTE(Cristoffer): Temporary data here ////////////////
 
@@ -61,12 +69,14 @@ class direct3d
 
 	public:
 
-	direct3d() = default;
+	std::unique_ptr<SpriteBatch> spriteBatch;
+	std::unique_ptr<SpriteFont> spriteFont;
+
+	direct3d(HWND WindowHandle);
 	~direct3d();
 	direct3d(direct3d const &Object) = delete;
 	void operator=(direct3d const &Object) = delete;
 
-	void Init(HWND WindowHandle);
 	void ClearFrameBuffer(real32 Red, real32 Green, real32 Blue) const;
 	void BeginFrame() const;
 	void EndFrame() const;
@@ -80,4 +90,6 @@ class direct3d
 	camera &GetCamera();
 
 	void TestDraw();
+	void TestDrawEntity(real32 X, real32 Y, real32 Z);
+	void TestUpdateBuffer(int32 X, int32 Y);
 };

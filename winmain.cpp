@@ -15,3 +15,12 @@ int CALLBACK WinMain(HINSTANCE InstanceHandle, HINSTANCE PrevInstanceHandle, LPS
 
 	return 0;
 };
+
+/* TODO(Cristoffer): Long term todo-list, what should be implemented with time.
+
+		- Memory management for tracking memory usage
+		- Simulation region, simulate a reasonable region
+		- Asset system
+		- Dynamic asset loading
+
+*/

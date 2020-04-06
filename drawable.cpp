@@ -19,10 +19,16 @@ drawable::~drawable()
 
 void drawable::SetModelPosition(real32 X, real32 Y, real32 Z)
 {
-	Model = Model * XMMatrixTranslation(X, Y, Z);
+	Model = XMMatrixTranslation(X, Y, Z);
+	
 }
 
 void drawable::SetModelScale(real32 X, real32 Y, real32 Z)
 {
 	Model = Model * XMMatrixScaling(X, Y, Z);
+}
+
+void drawable::MoveModelPosition(real32 X, real32 Y, real32 Z)
+{
+	Model = Model * XMMatrixTranslation(X, Y, Z);
 }

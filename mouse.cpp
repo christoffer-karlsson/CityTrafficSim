@@ -24,7 +24,7 @@ int32 GetMouseX()
 int32 GetMouseY()
 {
 	// NOTE(Cristoffer): Invert zero location for Y.
-	return global_device_info::WindowHeight - Mouse.Y;
+	return Mouse.Y;
 }
 
 int32 GetMouseRawX()

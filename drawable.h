@@ -47,6 +47,7 @@ class drawable
 
 	void SetModelPosition(real32 X, real32 Y, real32 Z);
 	void SetModelScale(real32 X, real32 Y, real32 Z);
+	void MoveModelPosition(real32 X, real32 Y, real32 Z);
 
 	// NOTE(Cristoffer): Needed for 16-byte alignments due to DirectX::XMMATRIX, when allocating to heap.
 

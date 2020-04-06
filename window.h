@@ -4,7 +4,6 @@
 
 #include "common.h"
 #include "winprocedure.h"
-#include "direct3d.h"
 #include "global_device_info.h"
 
 #include <windows.h>
@@ -14,12 +13,10 @@ class window
 	private:
 
 	HWND			WindowHandle;
-	HINSTANCE		WindowInstance;
 
-	direct3d		Direct3D;
+	protected:
 
 	void InitRawInputDevice();
-	void InitGraphicsDevice();
 
 	public:
 
@@ -29,7 +26,6 @@ class window
 	void operator=(window const &Object) = delete;
 
 	HWND GetHandle() const;
-	direct3d &GetGraphicsDevice();
 
 	void SetTitle(const char *Title);
 
