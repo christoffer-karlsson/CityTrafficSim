@@ -130,6 +130,64 @@ void terrain::Draw(camera &Camera)
 	global_device_info::Context->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
 }
 
+void terrain::TestMouseIntersect(camera &Camera)
+{
+	XMMATRIX World, View, Projection;
+
+	World = Model;
+	View = Camera.GetViewMatrix();
+	Projection = Camera.GetProjectionMatrix();
+
+	XMVECTOR RayOriginScreen, RayDirectionScreen;
+	XMVECTOR RayOrigin, RayDirection;
+
+	RayOriginScreen = XMVectorSet(GetMouseX(), GetMouseY(), 0.0f, 1.0f);
+	RayDirectionScreen = XMVectorSet(GetMouseX(), GetMouseY(), 1.0f, 1.0f);
+
+	RayOrigin = XMVector3Unproject(RayOriginScreen, 0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 1.0f, Projection, View, World);
+	RayDirection = XMVector3Unproject(RayDirectionScreen, 0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 1.0f, Projection, View, World);
+
+	RayDirection = XMVector3Normalize(RayDirection - RayOrigin);
+
+	SimpleMath::Ray Ray(RayOrigin, RayDirection);
+
+	bool RayHit = false;
+
+	for(size_t Index = 20000; Index < Vertices.size(); Index += 4)
+	{
+		XMFLOAT3 V0, V1, V2, V3;
+		V0.x = Vertices.at(Index + 0).Position.X;
+		V0.y = Vertices.at(Index + 0).Position.Y;
+		V0.z = Vertices.at(Index + 0).Position.Z;
+		V1.x = Vertices.at(Index + 1).Position.X;
+		V1.y = Vertices.at(Index + 1).Position.Y;
+		V1.z = Vertices.at(Index + 1).Position.Z;
+		V2.x = Vertices.at(Index + 2).Position.X;
+		V2.y = Vertices.at(Index + 2).Position.Y;
+		V2.z = Vertices.at(Index + 2).Position.Z;
+		V3.x = Vertices.at(Index + 3).Position.X;
+		V3.y = Vertices.at(Index + 3).Position.Y;
+		V3.z = Vertices.at(Index + 3).Position.Z;
+		
+		real32 Distance;
+
+		RayHit = Ray.Intersects(V0, V1, V2, Distance);
+		RayHit = Ray.Intersects(V1, V3, V2, Distance);
+
+		if(RayHit)
+		{
+			Vertices.at(Index + 0).IsPicked = 1.0f;
+			Vertices.at(Index + 1).IsPicked = 1.0f;
+			Vertices.at(Index + 2).IsPicked = 1.0f;
+			Vertices.at(Index + 3).IsPicked = 1.0f;
+
+			VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(vertex), Vertices.size());
+
+			break;
+		}
+	}
+}
+
 void terrain::UpdateBuffer(int32 X, int32 Y)
 {
 	int32 Pitch = World->GetWidth() * 4 * Y;

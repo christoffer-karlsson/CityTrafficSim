@@ -1,9 +1,16 @@
 #include "window.h"
 
-window::window(const char *Title, int32 Width, int32 Height)
+window::window(std::string Title, int32 Width, int32 Height)
 {
 	global_device_info::WindowWidth = Width;
 	global_device_info::WindowHeight = Height;
+
+	if(SHOW_BUILD_NUMBER)
+	{
+		Title += " | Build " + std::to_string(BUILD_NUMBER);
+	}
+
+	LPCSTR NarrowConvertedTitle = Title.c_str();
 
 	WNDCLASSEX WindowClass = { };
 	WindowClass.cbSize = sizeof(WNDCLASSEX);
@@ -28,7 +35,7 @@ window::window(const char *Title, int32 Width, int32 Height)
 	int32 DrawableRectWidth = WindowRect.right - WindowRect.left;
 	int32 DrawableRectHeight = WindowRect.bottom - WindowRect.top;
 
-	WindowHandle = CreateWindowEx(0, WindowClass.lpszClassName, Title, WindowStyle, CW_USEDEFAULT, CW_USEDEFAULT, DrawableRectWidth, DrawableRectHeight, 0, 0, GetModuleHandle(0), 0);
+	WindowHandle = CreateWindowEx(0, WindowClass.lpszClassName, NarrowConvertedTitle, WindowStyle, CW_USEDEFAULT, CW_USEDEFAULT, DrawableRectWidth, DrawableRectHeight, 0, 0, GetModuleHandle(0), 0);
 
 	if(!WindowHandle)
 	{

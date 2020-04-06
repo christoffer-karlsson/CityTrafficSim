@@ -1,6 +1,6 @@
 #include "mouse_picker.h"
 
-void mouse_picker::Update()
+/*void mouse_picker::Update()
 {
 	// NOTE(Cristoffer): Normalise mouse window coordinate.
 	real32 X = (2.0f * GetMouseX()) / global_device_info::FrameBufferWidth - 1.0f;
@@ -31,26 +31,68 @@ void mouse_picker::Update()
 	FXMVECTOR RayWorldVector = FXMVECTOR(XMLoadFloat3(&RayWorld));
 	FXMVECTOR RayWorldNormalized = XMVector3Normalize(RayWorldVector);
 	XMStoreFloat3(&RayWorld, RayWorldNormalized);
-
-	//XMVector3Unproject
-}
+}*/
 
 real32 mouse_picker::GetRayX() const
 {
-	return RayWorld.x;
+	return X;
 }
 
 real32 mouse_picker::GetRayY() const
 {
-	return RayWorld.y;
+	return Y;
 }
 
 real32 mouse_picker::GetRayZ() const
 {
-	return RayWorld.z;
+	return Z;
 }
 
-mouse_picker::mouse_picker(camera *Camera)
+void mouse_picker::TestIntersection()
 {
-	this->Camera = Camera;
+	XMMATRIX World, View, Projection;
+
+	World = XMMatrixIdentity();
+	View = Camera->GetViewMatrix();
+	Projection = Camera->GetProjectionMatrix();
+
+	XMVECTOR RayOriginScreen, RayDirectionScreen;
+	XMVECTOR RayOrigin, RayDirection;
+
+	RayOriginScreen = XMVectorSet(GetMouseX(),GetMouseY(), 0.0f, 1.0f);
+	RayDirectionScreen = XMVectorSet(GetMouseX(), GetMouseY(), 1.0f, 1.0f);
+
+	RayOrigin = XMVector3Unproject(RayOriginScreen, 0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 1.0f, Projection, View, World);
+	RayDirection = XMVector3Unproject(RayDirectionScreen, 0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 1.0f, Projection, View, World);
+
+	RayDirection = XMVector3Normalize(RayDirection - RayOrigin);
+
+	SimpleMath::Ray Ray(RayOrigin, RayDirection);
+
+	bool RayHit = false;
+
+	//for(size_t TriIndex = 0; TriIndex < billboard2.size(); TriIndex++)
+	//{
+		//real32 Distance;
+
+		//RayHit = Ray.Intersects();
+	//}
+
+	//XMFLOAT3 IntersectionVector;
+	//XMStoreFloat3(&IntersectionVector, XMVectorAdd(RayOrigin, RayDirection) * 10.0f);
+
+	//XMFLOAT3 Test;
+	//XMStoreFloat3(&Test, RayDirection);
+
+	//X = IntersectionVector.x;
+	//Y = IntersectionVector.y;
+	//Z = IntersectionVector.z;
+	//X = Ray.position.x;
+	//Y = Ray.position.y;
+	//Z = Ray.position.z;
+}
+
+mouse_picker::mouse_picker(camera *Camera) :
+	Camera(Camera)
+{
 }

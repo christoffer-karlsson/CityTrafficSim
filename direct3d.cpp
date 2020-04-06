@@ -243,6 +243,7 @@ void direct3d::EndFrame() const
 
 void direct3d::TestDraw()
 {
+	Terrain->TestMouseIntersect(Camera);
 	Terrain->Draw(Camera);
 
 
@@ -259,7 +260,7 @@ void direct3d::TestDraw()
 void direct3d::TestDrawEntity(real32 X, real32 Y, real32 Z)
 {
 	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	TestEntity.get()->MoveModelPosition(X, Y, Z);
+	TestEntity.get()->SetModelPosition(X, Y, Z);
 	TestEntity.get()->Draw(Camera);
 }
 

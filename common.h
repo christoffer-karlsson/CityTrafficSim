@@ -5,6 +5,9 @@
 #include <stdint.h>
 #include <cassert>
 
+#define BUILD_NUMBER 11
+#define SHOW_BUILD_NUMBER 1
+
 #define DEBUG_MODE 1
 
 typedef int8_t  int8;

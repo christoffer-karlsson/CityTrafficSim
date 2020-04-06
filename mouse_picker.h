@@ -5,6 +5,7 @@
 #include "mouse.h"
 #include "global_device_info.h"
 
+#include "external/SimpleMath.h"
 #include <DirectXMath.h>
 
 class mouse_picker
@@ -13,19 +14,18 @@ class mouse_picker
 
 	camera *Camera;
 
-	XMFLOAT3 RayNormalised;
-	XMFLOAT4 RayClip;
-	XMFLOAT4 RayCamera;
-	XMFLOAT3 RayWorld;
+	real32 X, Y, Z;
 
 	public:
 
 	mouse_picker(camera *Camera);
 	~mouse_picker() = default;
 
-	void Update();
+	//void Update();
 
 	real32 GetRayX() const;
 	real32 GetRayY() const;
 	real32 GetRayZ() const;
+
+	void TestIntersection();
 };

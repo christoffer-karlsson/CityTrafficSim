@@ -6,6 +6,7 @@
 #include "winprocedure.h"
 #include "global_device_info.h"
 
+#include <string>
 #include <windows.h>
 
 class window
@@ -20,7 +21,7 @@ class window
 
 	public:
 
-	window(const char *Title, int32 Width, int32 Height);
+	window(std::string Title, int32 Width, int32 Height);
 	~window() = default;
 	window(window const &Object) = delete;
 	void operator=(window const &Object) = delete;

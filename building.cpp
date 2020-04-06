@@ -97,6 +97,7 @@ void building::Draw(camera &Camera)
 
 	} VS_Input;
 
+	// NOTE(Cristoffer): Matricies need to be transposed before shader can handle them.
 	VS_Input.MVP = XMMatrixTranspose(Model * XMMATRIX(Camera.GetViewMatrix()) * XMMATRIX(Camera.GetProjectionMatrix()));
 	VS_Input.AmbientLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 

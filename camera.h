@@ -23,6 +23,7 @@ class camera
 
 	XMMATRIX View;
 	XMMATRIX Projection;
+	XMMATRIX Ortho;
 
 	XMFLOAT3 Position;
 	XMFLOAT3 ViewDirection;
@@ -31,8 +32,8 @@ class camera
 
 	real32 FieldOfView;
 	real32 AspectRatio;
-	real32 DrawStartZ;
-	real32 DrawDistanceZ;
+	real32 NearZ;
+	real32 FarZ;
 
 	protected:
 
@@ -61,4 +62,5 @@ class camera
 
 	const XMMATRIX &GetViewMatrix();
 	const XMMATRIX &GetProjectionMatrix();
+	const XMMATRIX &GetOrthographicMatrix();
 };

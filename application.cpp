@@ -14,8 +14,6 @@ void application::Run()
 	Window.ShowMouseCursor(0);
 	Window.ClipMouseCursor(1);
 
-	mouse_picker MousePicker(&Graphics.GetCamera());
-
 	bool EditMode = false;
 	real32 MoveX = 0.0f;
 	real32 MoveY = 0.0f;
@@ -118,14 +116,12 @@ void application::Run()
 		std::wstring stemp;
 		LPCWSTR sw;
 
-		MousePicker.Update();
-
 		// TODO(Cristoffer): Temporary render test.
 		Graphics.BeginFrame();
 		Graphics.TestDraw();
 		//Graphics.TestDrawEntity(MousePicker.GetRayX(), MousePicker.GetRayY(), MousePicker.GetRayZ()+5.0f);
 
-		Graphics.TestDrawEntity(0.0f + MoveX, 0.0f, 0.0f + MoveZ);
+		Graphics.TestDrawEntity(0.0f, 0.0f, 0.0f);
 
 		MoveX = 0.0f;
 		MoveY = 0.0f;
@@ -154,13 +150,13 @@ void application::Run()
 
 		Graphics.DrawSpriteString(sw, 0.0f, 32.0f);
 
-		StringValue = "Mouse Picker: " +
+		/*StringValue = "Mouse Picker: " +
 			std::to_string(MousePicker.GetRayX()) + ", " +
 			std::to_string(MousePicker.GetRayY()) + ", " +
 			std::to_string(MousePicker.GetRayZ());
 		stemp = std::wstring(StringValue.begin(), StringValue.end());
 		sw = stemp.c_str();
-		Graphics.DrawSpriteString(sw, 0.0f, 48.0f);
+		Graphics.DrawSpriteString(sw, 0.0f, 48.0f);*/
 
 
 		if(EditMode)

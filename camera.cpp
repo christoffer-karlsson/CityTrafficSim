@@ -3,21 +3,25 @@
 camera::camera()
 {
 	// TODO(Cristoffer): Perhaps need different projections when doing UI stuff later.
-	CameraType = CAM_PERSPECTIVE;
+	//CameraType = CAM_PERSPECTIVE;
 
-	Position = XMFLOAT3(0.0f, 5.0f, 0.0f);
+	Position = XMFLOAT3(0.0f, 10.0f, 0.0f);
 	ViewDirection = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	UpDirection = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	SideDirection = XMFLOAT3(1.0f, 0.0f, 0.0f);
 
 	FieldOfView = 70.0f;
 	AspectRatio = global_device_info::FrameBufferWidth / global_device_info::FrameBufferHeight;
-	DrawStartZ = 0.1f;
-	DrawDistanceZ = 1000.0f;
+	NearZ = 0.1f;
+	FarZ = 1000.0f;
 
 	LookY(0.3f);
 
-	if(CameraType == CAM_ORTHOGRAPHIC)
+	Projection = XMMatrixPerspectiveFovLH(FieldOfView, AspectRatio, NearZ, FarZ);
+
+	Ortho = XMMatrixOrthographicLH((real32)global_device_info::FrameBufferWidth, (real32)global_device_info::FrameBufferHeight, NearZ, FarZ);
+
+	/*if(CameraType == CAM_ORTHOGRAPHIC)
 	{
 		Projection = XMMatrixOrthographicLH(16.0f, 9.0f, -1.0f, 20.0f);
 	}
@@ -28,7 +32,7 @@ camera::camera()
 	else
 	{
 		Projection = XMMatrixIdentity();
-	}
+	}*/
 
 	Update();
 }
@@ -175,4 +179,9 @@ const XMMATRIX &camera::GetViewMatrix()
 const XMMATRIX &camera::GetProjectionMatrix()
 {
 	return Projection;
+}
+
+const XMMATRIX &camera::GetOrthographicMatrix()
+{
+	return Ortho;
 }
