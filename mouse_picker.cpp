@@ -14,7 +14,7 @@ mouse_picker::mouse_picker(terrain *Terrain, camera *Camera) :
 {
 }
 
-bool mouse_picker::ThreadTest(mouse_picker *Instance)
+void mouse_picker::RayTriangleIntersectWork(mouse_picker *Instance)
 {
 	position NewMousePositionInWorld = { 0, 0 };
 
@@ -83,28 +83,30 @@ bool mouse_picker::ThreadTest(mouse_picker *Instance)
 		Instance->MousePositionInWorld.Y = NewMousePositionInWorld.Y;
 	}
 
-	return 1;
+	//using namespace std::literals::chrono_literals;
+	//std::this_thread::sleep_for(100ms);
+
+	Instance->ThreadBusy = false;
 }
 
 void mouse_picker::Init(terrain *Terrain, camera *Camera)
 {
+	this->ThreadBusy = false;
 	this->Terrain = Terrain;
 	this->Camera = Camera;
 }
 
-void mouse_picker::RayIntersectTest()
+void mouse_picker::TestMouseCollision()
 {
 	global_data_collector::CurrentlyPickedTileX = MousePositionInWorld.X;
 	global_data_collector::CurrentlyPickedTileY = MousePositionInWorld.Y;
-	
-	if(!InitializedThreading)
+
+	// TODO(Cristoffer): Organize threading.
+	if(!ThreadBusy)
 	{
-		InitializedThreading = 1;
-		Job = std::async(std::launch::async, ThreadTest, this);
-	}
-	else if(Job.get() == 1)
-	{
-		Job = std::async(std::launch::async, ThreadTest, this);
+		ThreadBusy = true;
+		std::thread t(RayTriangleIntersectWork, this);
+		t.detach();
 	}
 }
 

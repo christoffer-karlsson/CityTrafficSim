@@ -8,6 +8,8 @@
 #include "global_data_collector.h"
 
 #include <future>
+#include <thread>
+#include <atomic>
 
 #include "external/SimpleMath.h"
 #include <DirectXMath.h>
@@ -16,17 +18,16 @@ class mouse_picker
 {
 	private:
 
-	terrain *Terrain;
-	camera *Camera;
+	terrain	*Terrain;
+	camera	*Camera;
 
-	std::mutex Mutex;
-	std::future<bool> Job;
-
-	bool InitializedThreading = 0;
+	std::mutex			Mutex;
+	std::future<bool>	Job;
+	std::atomic<bool>	ThreadBusy;
 
 	position MousePositionInWorld;
 
-	static bool ThreadTest(mouse_picker *Instance);
+	static void RayTriangleIntersectWork(mouse_picker *Instance);
 
 	public:
 
@@ -39,7 +40,7 @@ class mouse_picker
 
 	void Init(terrain *Terrain, camera *Camera);
 
-	void RayIntersectTest();
+	void TestMouseCollision();
 
 	position &GetMousePositionInWorld();
 };

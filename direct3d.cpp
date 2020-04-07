@@ -224,7 +224,7 @@ void direct3d::EndFrame() const
 
 void direct3d::TestDoWorkStuff()
 {
-	TerrainPicker.RayIntersectTest();
+	TerrainPicker.TestMouseCollision();
 }
 
 void direct3d::TestDraw()
