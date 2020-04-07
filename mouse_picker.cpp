@@ -1,65 +1,33 @@
 #include "mouse_picker.h"
 
-/*void mouse_picker::Update()
+mouse_picker::mouse_picker() :
+	MousePositionInWorld({ 0, 0 }),
+	Terrain(nullptr),
+	Camera(nullptr)
 {
-	// NOTE(Cristoffer): Normalise mouse window coordinate.
-	real32 X = (2.0f * GetMouseX()) / global_device_info::FrameBufferWidth - 1.0f;
-	real32 Y = 1.0f - (2.0f * GetMouseY()) / global_device_info::FrameBufferHeight;
-	real32 Z = 1.0f;
-
-	RayNormalised.x = X;
-	RayNormalised.y = Y;
-	RayNormalised.z = Z;
-
-	// NOTE(Cristoffer): Make the ray point forward.
-	RayClip = XMFLOAT4(RayNormalised.x, RayNormalised.y, -1.0f, 1.0f);
-
-	// NOTE(Cristoffer): Inverse Camera Projection Matrx * RayClip Vector
-	// This is to get from camera space to clip space.
-	FXMVECTOR RayClipVector = FXMVECTOR(XMLoadFloat4(&RayClip));
-	XMMATRIX InverseCameraProjection = XMMatrixInverse(nullptr, Camera->GetProjectionMatrix());
-	FXMVECTOR RayClipTransform = XMVector4Transform(RayClipVector, InverseCameraProjection);
-	XMStoreFloat4(&RayCamera, RayClipTransform);
-
-	// NOTE(Cristoffer): Inverse Camera View Matrx * RayEye Vector
-	FXMVECTOR RayCameraVector = FXMVECTOR(XMLoadFloat4(&RayCamera));
-	XMMATRIX InverseCameraView = XMMatrixInverse(nullptr, Camera->GetViewMatrix());
-	FXMVECTOR RayCameraTransform = XMVector4Transform(RayCameraVector, InverseCameraProjection);
-	XMStoreFloat3(&RayWorld, RayCameraTransform);
-
-	// NOTE(Cristoffer): RayWorld = Normalize(RayWorld)
-	FXMVECTOR RayWorldVector = FXMVECTOR(XMLoadFloat3(&RayWorld));
-	FXMVECTOR RayWorldNormalized = XMVector3Normalize(RayWorldVector);
-	XMStoreFloat3(&RayWorld, RayWorldNormalized);
-}*/
-
-real32 mouse_picker::GetRayX() const
-{
-	return X;
 }
 
-real32 mouse_picker::GetRayY() const
+mouse_picker::mouse_picker(terrain *Terrain, camera *Camera) :
+	MousePositionInWorld({ 0, 0 }),
+	Terrain(Terrain),
+	Camera(Camera)
 {
-	return Y;
 }
 
-real32 mouse_picker::GetRayZ() const
+bool mouse_picker::ThreadTest(mouse_picker *Instance)
 {
-	return Z;
-}
+	position NewMousePositionInWorld = { 0, 0 };
 
-void mouse_picker::TestIntersection()
-{
 	XMMATRIX World, View, Projection;
 
-	World = XMMatrixIdentity();
-	View = Camera->GetViewMatrix();
-	Projection = Camera->GetProjectionMatrix();
+	World = Instance->Terrain->GetModel();
+	View = Instance->Camera->GetViewMatrix();
+	Projection = Instance->Camera->GetProjectionMatrix();
 
 	XMVECTOR RayOriginScreen, RayDirectionScreen;
 	XMVECTOR RayOrigin, RayDirection;
 
-	RayOriginScreen = XMVectorSet(GetMouseX(),GetMouseY(), 0.0f, 1.0f);
+	RayOriginScreen = XMVectorSet(GetMouseX(), GetMouseY(), 0.0f, 1.0f);
 	RayDirectionScreen = XMVectorSet(GetMouseX(), GetMouseY(), 1.0f, 1.0f);
 
 	RayOrigin = XMVector3Unproject(RayOriginScreen, 0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 1.0f, Projection, View, World);
@@ -69,30 +37,78 @@ void mouse_picker::TestIntersection()
 
 	SimpleMath::Ray Ray(RayOrigin, RayDirection);
 
-	bool RayHit = false;
+	for(size_t Index = 0; Index < Instance->Terrain->GetVertexData().size(); Index += 4)
+	{
+		XMFLOAT3 V0, V1, V2, V3;
+		V0.x = Instance->Terrain->GetVertexData().at(Index + 0).Position.X;
+		V0.y = Instance->Terrain->GetVertexData().at(Index + 0).Position.Y;
+		V0.z = Instance->Terrain->GetVertexData().at(Index + 0).Position.Z;
+		V1.x = Instance->Terrain->GetVertexData().at(Index + 1).Position.X;
+		V1.y = Instance->Terrain->GetVertexData().at(Index + 1).Position.Y;
+		V1.z = Instance->Terrain->GetVertexData().at(Index + 1).Position.Z;
+		V2.x = Instance->Terrain->GetVertexData().at(Index + 2).Position.X;
+		V2.y = Instance->Terrain->GetVertexData().at(Index + 2).Position.Y;
+		V2.z = Instance->Terrain->GetVertexData().at(Index + 2).Position.Z;
+		V3.x = Instance->Terrain->GetVertexData().at(Index + 3).Position.X;
+		V3.y = Instance->Terrain->GetVertexData().at(Index + 3).Position.Y;
+		V3.z = Instance->Terrain->GetVertexData().at(Index + 3).Position.Z;
 
-	//for(size_t TriIndex = 0; TriIndex < billboard2.size(); TriIndex++)
-	//{
-		//real32 Distance;
+		real32 Distance;
 
-		//RayHit = Ray.Intersects();
-	//}
+		// NOTE(Cristoffer): Do the intersection test with triangle coordinates.
+		if(Ray.Intersects(V0, V1, V2, Distance) ||
+		   Ray.Intersects(V1, V3, V2, Distance))
+		{
+			NewMousePositionInWorld = Instance->Terrain->GetWorldCoordinate(Index);
 
-	//XMFLOAT3 IntersectionVector;
-	//XMStoreFloat3(&IntersectionVector, XMVectorAdd(RayOrigin, RayDirection) * 10.0f);
+			break;
+		}
+	}
+	
+	// NOTE(Cristoffer): Check if the mouse is on same coordinate as before, or at same.
+	// Update as needed.
+	bool IsOldLocation = (NewMousePositionInWorld.X == Instance->MousePositionInWorld.X && 
+						  NewMousePositionInWorld.Y == Instance->MousePositionInWorld.Y);
 
-	//XMFLOAT3 Test;
-	//XMStoreFloat3(&Test, RayDirection);
+	if(!IsOldLocation)
+	{
+		std::lock_guard<std::mutex> Lock(Instance->Mutex);
 
-	//X = IntersectionVector.x;
-	//Y = IntersectionVector.y;
-	//Z = IntersectionVector.z;
-	//X = Ray.position.x;
-	//Y = Ray.position.y;
-	//Z = Ray.position.z;
+		// NOTE(Cristoffer): Since mouse have moved to new world coordinate, remove the
+		// old tile highlight effect, and highlight the new tile.
+		Instance->Terrain->SetTilePicked(Instance->MousePositionInWorld.X, Instance->MousePositionInWorld.Y, 0.0f);
+		Instance->Terrain->SetTilePicked(NewMousePositionInWorld.X, NewMousePositionInWorld.Y, 1.0f);
+
+		Instance->MousePositionInWorld.X = NewMousePositionInWorld.X;
+		Instance->MousePositionInWorld.Y = NewMousePositionInWorld.Y;
+	}
+
+	return 1;
 }
 
-mouse_picker::mouse_picker(camera *Camera) :
-	Camera(Camera)
+void mouse_picker::Init(terrain *Terrain, camera *Camera)
 {
+	this->Terrain = Terrain;
+	this->Camera = Camera;
+}
+
+void mouse_picker::RayIntersectTest()
+{
+	global_data_collector::CurrentlyPickedTileX = MousePositionInWorld.X;
+	global_data_collector::CurrentlyPickedTileY = MousePositionInWorld.Y;
+	
+	if(!InitializedThreading)
+	{
+		InitializedThreading = 1;
+		Job = std::async(std::launch::async, ThreadTest, this);
+	}
+	else if(Job.get() == 1)
+	{
+		Job = std::async(std::launch::async, ThreadTest, this);
+	}
+}
+
+position &mouse_picker::GetMousePositionInWorld()
+{
+	return MousePositionInWorld;
 }

@@ -18,6 +18,7 @@ class terrain : public drawable
 {
 	private:
 
+	std::vector<position> WorldCoordinate;
 	std::vector<vertex> Vertices;
 	std::vector<uint16> Indices;
 
@@ -25,11 +26,13 @@ class terrain : public drawable
 
 	public:
 
-	terrain(real32 PosX, real32 PosY, world *World);
+	terrain(world *World);
 
 	void Draw(camera &Camera) override;
 
-	void TestMouseIntersect(camera &Camera) override;
+	void SetTilePicked(int32 X, int32 Y, real32 IsPicked);
 
-	void UpdateBuffer(int32 X, int32 Y);
+	std::vector<vertex> &GetVertexData();
+
+	position GetWorldCoordinate(uint32 Index);
 };

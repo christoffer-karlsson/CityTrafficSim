@@ -45,17 +45,15 @@ class direct3d
 
 	// NOTE(Cristoffer): Temporary data here ////////////////
 
-	camera Camera;
-
-	
-
-	std::unique_ptr<terrain> Terrain;
-
 	std::vector<std::unique_ptr<drawable>> Graph;
 
 	std::unique_ptr<drawable> TestEntity;;
 
-	world *World = new world(100, 100);
+	camera Camera;
+	world	*World;
+	terrain *Terrain;
+
+	mouse_picker TerrainPicker;
 
 	// NOTE(Cristoffer): Temporary data here ////////////////
 
@@ -89,7 +87,8 @@ class direct3d
 	// TODO(Cristoffer): Perhaps camera shouldn't be accessable from here..
 	camera &GetCamera();
 
+	void TestDoWorkStuff();
 	void TestDraw();
 	void TestDrawEntity(real32 X, real32 Y, real32 Z);
-	void TestUpdateBuffer(int32 X, int32 Y);
+	void TestDrawTerrain();
 };

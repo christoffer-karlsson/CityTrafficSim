@@ -6,6 +6,7 @@
 #include "window.h"
 #include "timing.h"
 #include "global_device_info.h"
+#include "global_data_collector.h"
 #include "direct3d.h"
 
 #include <windows.h>

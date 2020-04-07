@@ -45,13 +45,13 @@ class drawable
 
 	virtual void Draw(camera &Camera) = 0;
 
-	virtual void TestMouseIntersect(camera &Camera)
-	{
-	};
+	virtual void TestMouseIntersect(camera &Camera){};
 
 	void SetModelPosition(real32 X, real32 Y, real32 Z);
 	void SetModelScale(real32 X, real32 Y, real32 Z);
 	void MoveModelPosition(real32 X, real32 Y, real32 Z);
+
+	XMMATRIX &GetModel();
 
 	// NOTE(Cristoffer): Needed for 16-byte alignments due to DirectX::XMMATRIX, when allocating to heap.
 

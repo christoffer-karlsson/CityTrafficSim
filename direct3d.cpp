@@ -1,7 +1,9 @@
 #include "direct3d.h"
 
 direct3d::direct3d(HWND WindowHandle) :
-	Camera()
+	Camera(),
+	World(new world(100, 100)),
+	TerrainPicker()
 {
 	// TODO(Cristoffer): Implement some way to reinitialize this, for example
 	// if frame buffer size is changed mid run time?
@@ -13,10 +15,6 @@ direct3d::direct3d(HWND WindowHandle) :
 	SetDepthStencil();
 	SetViewport();
 
-	// TODO(Cristoffer): Init sprite batch.
-	spriteBatch = std::make_unique<SpriteBatch>(Context);
-	spriteFont = std::make_unique<SpriteFont>(Device, L"data/bahnschrift_12.spritefont");
-
 	// TODO(Cristoffer): Ownership of these pointers shared temporarily.
 	// Take a look further down the line.
 	global_device_info::Device = Device;
@@ -24,21 +22,11 @@ direct3d::direct3d(HWND WindowHandle) :
 	global_device_info::Target = Target;
 	global_device_info::Swap = Swap;
 
+	// TODO(Cristoffer): Init sprite batch.
+	spriteBatch = std::make_unique<SpriteBatch>(Context);
+	spriteFont = std::make_unique<SpriteFont>(Device, L"data/bahnschrift_12.spritefont");
+
 	real32 Spacing = 1.0f;
-
-	/*for(int X = 0; X < 50; X++)
-	{
-		for(int Z = 0; Z < 50; Z++)
-		{
-			real32 XCoord = ((real32)X * Spacing) + (real32)X;
-			real32 ZCoord = ((real32)Z * Spacing) + (real32)Z;
-
-			Entities.push_back(std::make_unique<cube>(XCoord, 0.0f, ZCoord));
-		}
-	}*/
-
-	// TODO(Cristoffer): Temporary entity creation for testing.
-	//Entities.push_back(std::make_unique<building>(0.0f, 0.0f, 0.0f, 2.0f, 5.0f, 3.0f));
 
 	World->SetTile(5, 10, ROAD_Z);
 	World->SetTile(5, 11, ROAD_Z);
@@ -61,19 +49,12 @@ direct3d::direct3d(HWND WindowHandle) :
 	World->SetTile(12, 14, ROAD_X);
 	World->SetTile(13, 14, ROAD_X);
 
-	Terrain = std::make_unique<terrain>(0.0f, 0.0f, World);
+	Terrain = new terrain(World);
+	TerrainPicker.Init(Terrain, &Camera);
 
-	Graph.push_back(std::make_unique<line>(10.0f, 5.0f, 10.0f, 10.0f, 0.0f, 10.0f));
+	//Graph.push_back(std::make_unique<line>(10.0f, 5.0f, 10.0f, 10.0f, 0.0f, 10.0f));
 
-	TestEntity = std::make_unique<building>(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
-
-	/*for(int X = 0; X < 100; X++)
-	{
-		for(int Y = 0; Y < 100; Y++)
-		{
-			Entities.push_back(std::make_unique<ground>((real32)X, (real32)Y, GRASS));
-		}
-	}*/
+	//TestEntity = std::make_unique<building>(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 }
 
 camera &direct3d::GetCamera()
@@ -241,12 +222,13 @@ void direct3d::EndFrame() const
 	Swap->Present(0, 0);
 }
 
+void direct3d::TestDoWorkStuff()
+{
+	TerrainPicker.RayIntersectTest();
+}
+
 void direct3d::TestDraw()
 {
-	Terrain->TestMouseIntersect(Camera);
-	Terrain->Draw(Camera);
-
-
 	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	for(auto Iterator = Graph.begin();
@@ -264,9 +246,10 @@ void direct3d::TestDrawEntity(real32 X, real32 Y, real32 Z)
 	TestEntity.get()->Draw(Camera);
 }
 
-void direct3d::TestUpdateBuffer(int32 X, int32 Y)
+void direct3d::TestDrawTerrain()
 {
-	Terrain->UpdateBuffer(X, Y);
+	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	Terrain->Draw(Camera);
 }
 
 void direct3d::BeginSpriteBatch()

@@ -1,6 +1,6 @@
 #include "terrain.h"
 
-terrain::terrain(real32 PosX, real32 PosY, world *World) :
+terrain::terrain(world *World) :
 	World(World)
 {
 	// NOTE(Cristoffer): Since it is easier to think about ground in X,Y space,
@@ -22,13 +22,6 @@ terrain::terrain(real32 PosX, real32 PosY, world *World) :
 	{
 		for(int32 Y = 0; Y < World->GetHeight(); Y++)
 		{
-			real32 IsPicked = 0.0f;
-
-			if(X == 10 && Y == 10)
-			{
-				IsPicked = 1.0f;
-			}
-
 			uv_quad Atlas;
 			tile CurrentTile = World->GetTile(X, Y);
 
@@ -56,33 +49,38 @@ terrain::terrain(real32 PosX, real32 PosY, world *World) :
 			Vertex[0].Position.Z = (real32)Y - 0.5f;
 			Vertex[0].TextureCoordinate.U = Atlas.TextureCoordinate[0].U;
 			Vertex[0].TextureCoordinate.V = Atlas.TextureCoordinate[0].V;
-			Vertex[0].IsPicked = IsPicked;
+			Vertex[0].IsPicked = 0.0f;
 
 			Vertex[1].Position.X = (real32)X - 0.5f;
 			Vertex[1].Position.Y = 0.0f;
 			Vertex[1].Position.Z = (real32)Y + 0.5f;
 			Vertex[1].TextureCoordinate.U = Atlas.TextureCoordinate[1].U;
 			Vertex[1].TextureCoordinate.V = Atlas.TextureCoordinate[1].V;
-			Vertex[1].IsPicked = IsPicked;
+			Vertex[1].IsPicked = 0.0f;
 
 			Vertex[2].Position.X = (real32)X + 0.5f;
 			Vertex[2].Position.Y = 0.0f;
 			Vertex[2].Position.Z = (real32)Y - 0.5f;
 			Vertex[2].TextureCoordinate.U = Atlas.TextureCoordinate[2].U;
 			Vertex[2].TextureCoordinate.V = Atlas.TextureCoordinate[2].V;
-			Vertex[2].IsPicked = IsPicked;
+			Vertex[2].IsPicked = 0.0f;
 
 			Vertex[3].Position.X = (real32)X + 0.5f;
 			Vertex[3].Position.Y = 0.0f;
 			Vertex[3].Position.Z = (real32)Y + 0.5f;
 			Vertex[3].TextureCoordinate.U = Atlas.TextureCoordinate[3].U;
 			Vertex[3].TextureCoordinate.V = Atlas.TextureCoordinate[3].V;
-			Vertex[3].IsPicked = IsPicked;
+			Vertex[3].IsPicked = 0.0f;
 
 			Vertices.push_back(Vertex[0]);
 			Vertices.push_back(Vertex[1]);
 			Vertices.push_back(Vertex[2]);
 			Vertices.push_back(Vertex[3]);
+
+			WorldCoordinate.push_back({ (real32)X, (real32)Y });
+			WorldCoordinate.push_back({ (real32)X, (real32)Y });
+			WorldCoordinate.push_back({ (real32)X, (real32)Y });
+			WorldCoordinate.push_back({ (real32)X, (real32)Y });
 
 			QuadCount++;
 		}
@@ -121,6 +119,10 @@ void terrain::Draw(camera &Camera)
 
 	VS_Input.MVP = XMMatrixTranspose(Model * XMMATRIX(Camera.GetViewMatrix()) * XMMATRIX(Camera.GetProjectionMatrix()));
 
+	// TODO(Cristoffer): Is it bad to update the dynamic buffer before drawing?
+	// Should it be done earlier?
+	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(vertex), Vertices.size());
+
 	Texture->Bind();
 	VertexBuffer->Bind();
 	Shader->Bind();
@@ -130,79 +132,30 @@ void terrain::Draw(camera &Camera)
 	global_device_info::Context->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
 }
 
-void terrain::TestMouseIntersect(camera &Camera)
+void terrain::SetTilePicked(int32 X, int32 Y, real32 IsPicked)
 {
-	XMMATRIX World, View, Projection;
+	int32 Pitch = World->GetWidth() * 4 * X;
 
-	World = Model;
-	View = Camera.GetViewMatrix();
-	Projection = Camera.GetProjectionMatrix();
-
-	XMVECTOR RayOriginScreen, RayDirectionScreen;
-	XMVECTOR RayOrigin, RayDirection;
-
-	RayOriginScreen = XMVectorSet(GetMouseX(), GetMouseY(), 0.0f, 1.0f);
-	RayDirectionScreen = XMVectorSet(GetMouseX(), GetMouseY(), 1.0f, 1.0f);
-
-	RayOrigin = XMVector3Unproject(RayOriginScreen, 0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 1.0f, Projection, View, World);
-	RayDirection = XMVector3Unproject(RayDirectionScreen, 0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 1.0f, Projection, View, World);
-
-	RayDirection = XMVector3Normalize(RayDirection - RayOrigin);
-
-	SimpleMath::Ray Ray(RayOrigin, RayDirection);
-
-	bool RayHit = false;
-
-	for(size_t Index = 20000; Index < Vertices.size(); Index += 4)
-	{
-		XMFLOAT3 V0, V1, V2, V3;
-		V0.x = Vertices.at(Index + 0).Position.X;
-		V0.y = Vertices.at(Index + 0).Position.Y;
-		V0.z = Vertices.at(Index + 0).Position.Z;
-		V1.x = Vertices.at(Index + 1).Position.X;
-		V1.y = Vertices.at(Index + 1).Position.Y;
-		V1.z = Vertices.at(Index + 1).Position.Z;
-		V2.x = Vertices.at(Index + 2).Position.X;
-		V2.y = Vertices.at(Index + 2).Position.Y;
-		V2.z = Vertices.at(Index + 2).Position.Z;
-		V3.x = Vertices.at(Index + 3).Position.X;
-		V3.y = Vertices.at(Index + 3).Position.Y;
-		V3.z = Vertices.at(Index + 3).Position.Z;
-		
-		real32 Distance;
-
-		RayHit = Ray.Intersects(V0, V1, V2, Distance);
-		RayHit = Ray.Intersects(V1, V3, V2, Distance);
-
-		if(RayHit)
-		{
-			Vertices.at(Index + 0).IsPicked = 1.0f;
-			Vertices.at(Index + 1).IsPicked = 1.0f;
-			Vertices.at(Index + 2).IsPicked = 1.0f;
-			Vertices.at(Index + 3).IsPicked = 1.0f;
-
-			VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(vertex), Vertices.size());
-
-			break;
-		}
-	}
-}
-
-void terrain::UpdateBuffer(int32 X, int32 Y)
-{
-	int32 Pitch = World->GetWidth() * 4 * Y;
-
-	int32 Index = Pitch + (X * 4);
+	int32 Index = Pitch + (Y * 4);
 
 	if(Index + 4 > Vertices.size() || Index < 0)
 	{
 		return;
 	}
 
-	Vertices.at(Index + 0).IsPicked = 1.0f;
-	Vertices.at(Index + 1).IsPicked = 1.0f;
-	Vertices.at(Index + 2).IsPicked = 1.0f;
-	Vertices.at(Index + 3).IsPicked = 1.0f;
+	Vertices.at(Index + 0).IsPicked = IsPicked;
+	Vertices.at(Index + 1).IsPicked = IsPicked;
+	Vertices.at(Index + 2).IsPicked = IsPicked;
+	Vertices.at(Index + 3).IsPicked = IsPicked;
 
-	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(vertex), Vertices.size());
+}
+
+std::vector<vertex> &terrain::GetVertexData()
+{
+	return Vertices;
+}
+
+position terrain::GetWorldCoordinate(uint32 Index)
+{
+	return WorldCoordinate.at(Index);
 }

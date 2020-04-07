@@ -31,3 +31,8 @@ void drawable::MoveModelPosition(real32 X, real32 Y, real32 Z)
 {
 	Model = Model * XMMatrixTranslation(X, Y, Z);
 }
+
+XMMATRIX &drawable::GetModel()
+{
+	return Model;
+}

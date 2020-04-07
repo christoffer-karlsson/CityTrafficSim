@@ -33,11 +33,11 @@ void texture::Bind()
 uv_quad texture::GetUVFromSliceCoordinates(int32 X, int32 Y)
 {
 	uv_quad Result;
-
-	Result.TextureCoordinate[0] = { (0.0f + X) / 10.0f, (0.0f + Y) / 10.0f };
-	Result.TextureCoordinate[1] = { (1.0f + X) / 10.0f, (0.0f + Y) / 10.0f };
-	Result.TextureCoordinate[2] = { (0.0f + X) / 10.0f, (1.0f + Y) / 10.0f };
-	Result.TextureCoordinate[3] = { (1.0f + X) / 10.0f, (1.0f + Y) / 10.0f };
+	
+	Result.TextureCoordinate[0] = { (0.0f + X) / (real32)SlicesInX, (0.0f + Y) / (real32)SlicesInY };
+	Result.TextureCoordinate[1] = { (1.0f + X) / (real32)SlicesInX, (0.0f + Y) / (real32)SlicesInY };
+	Result.TextureCoordinate[2] = { (0.0f + X) / (real32)SlicesInX, (1.0f + Y) / (real32)SlicesInY };
+	Result.TextureCoordinate[3] = { (1.0f + X) / (real32)SlicesInX, (1.0f + Y) / (real32)SlicesInY };
 
 	return Result;
 }

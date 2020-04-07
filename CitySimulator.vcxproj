@@ -155,6 +155,7 @@
     <ClCompile Include="constant_buffer.cpp" />
     <ClCompile Include="diagnostics.cpp" />
     <ClCompile Include="drawable.cpp" />
+    <ClCompile Include="global_data_collector.cpp" />
     <ClCompile Include="global_device_info.cpp" />
     <ClCompile Include="terrain.cpp" />
     <ClCompile Include="line.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="diagnostics.h" />
     <ClInclude Include="drawable.h" />
     <ClInclude Include="external\SimpleMath.h" />
+    <ClInclude Include="global_data_collector.h" />
     <ClInclude Include="global_device_info.h" />
     <ClInclude Include="terrain.h" />
     <ClInclude Include="line.h" />

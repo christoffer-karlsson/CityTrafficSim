@@ -52,7 +52,7 @@ void application::Run()
 
 		if(!EditMode)
 		{
-			real64 CameraMovementSpeed = Timing.GetFrameTimeDeltaSeconds() * (30.0f / 1.0f);
+			real32 CameraMovementSpeed = (real32)Timing.GetFrameTimeDeltaSeconds() * (30.0f / 1.0f);
 
 			if(KeyPressed(KEY_W))
 			{
@@ -84,15 +84,14 @@ void application::Run()
 				Graphics.GetCamera().MoveDown(CameraMovementSpeed);
 			}
 
-			Graphics.GetCamera().LookX((Timing.GetFrameTimeDeltaSeconds() * GetMouseRawX() * 1.1f));
-			Graphics.GetCamera().LookY((Timing.GetFrameTimeDeltaSeconds() * GetMouseRawY() * 1.1f));
+			Graphics.GetCamera().LookX(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawX() * 1.1f));
+			Graphics.GetCamera().LookY(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawY() * 1.1f));
 		}
 
 		if(KeyReleased(KEY_ARROWUP))
 		{
 			MoveZ += 1.0f;
 			Y++;
-			Graphics.TestUpdateBuffer(0.0f + X, 0.0f + Y);
 		}
 
 		if(KeyReleased(KEY_ARROWDOWN))
@@ -109,23 +108,23 @@ void application::Run()
 		{
 			MoveX += 1.0f;
 			X++;
-			Graphics.TestUpdateBuffer(0.0f + X, 0.0f + Y);
 		}
+
+		MoveX = 0.0f;
+		MoveY = 0.0f;
+		MoveZ = 0.0f;
 
 		std::string StringValue;
 		std::wstring stemp;
 		LPCWSTR sw;
 
-		// TODO(Cristoffer): Temporary render test.
+		// NOTE(Cristoffer): Temporary work stuff.
+		Graphics.TestDoWorkStuff();
+
+		// NOTE(Cristoffer): Temporary render test.
 		Graphics.BeginFrame();
+		Graphics.TestDrawTerrain();
 		Graphics.TestDraw();
-		//Graphics.TestDrawEntity(MousePicker.GetRayX(), MousePicker.GetRayY(), MousePicker.GetRayZ()+5.0f);
-
-		Graphics.TestDrawEntity(0.0f, 0.0f, 0.0f);
-
-		MoveX = 0.0f;
-		MoveY = 0.0f;
-		MoveZ = 0.0f;
 
 		Graphics.BeginSpriteBatch();
 
@@ -150,13 +149,18 @@ void application::Run()
 
 		Graphics.DrawSpriteString(sw, 0.0f, 32.0f);
 
-		/*StringValue = "Mouse Picker: " +
-			std::to_string(MousePicker.GetRayX()) + ", " +
-			std::to_string(MousePicker.GetRayY()) + ", " +
-			std::to_string(MousePicker.GetRayZ());
+		StringValue = "Mouse Picker: " +
+			std::to_string(global_data_collector::CurrentlyPickedTileX) + ", " +
+			std::to_string(global_data_collector::CurrentlyPickedTileY);
 		stemp = std::wstring(StringValue.begin(), StringValue.end());
 		sw = stemp.c_str();
-		Graphics.DrawSpriteString(sw, 0.0f, 48.0f);*/
+		Graphics.DrawSpriteString(sw, 0.0f, 48.0f);
+
+		StringValue = "THREAD JOBS: " +
+			std::to_string(global_data_collector::JobCount);
+		stemp = std::wstring(StringValue.begin(), StringValue.end());
+		sw = stemp.c_str();
+		Graphics.DrawSpriteString(sw, 0.0f, 64.0f);
 
 
 		if(EditMode)

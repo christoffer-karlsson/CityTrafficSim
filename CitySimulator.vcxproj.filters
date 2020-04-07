@@ -102,6 +102,9 @@
     <ClCompile Include="terrain.cpp">
       <Filter>Source Files\graphics\drawables</Filter>
     </ClCompile>
+    <ClCompile Include="global_data_collector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -178,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="terrain.h">
       <Filter>Header Files\graphics\drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="global_data_collector.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
