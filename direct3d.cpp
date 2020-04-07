@@ -224,6 +224,11 @@ void direct3d::EndFrame() const
 
 void direct3d::TestDoWorkStuff()
 {
+	
+}
+
+void direct3d::TestDoEditorWorkStuff()
+{
 	TerrainPicker.TestMouseCollision();
 }
 
@@ -250,6 +255,12 @@ void direct3d::TestDrawTerrain()
 {
 	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	Terrain->Draw(Camera);
+}
+
+void direct3d::TestSetTile(int32 PositionX, int32 PositionY, TILE_TYPE Type)
+{
+	World->SetTile(PositionX, PositionY, Type);
+	Terrain->SetTileType(PositionX, PositionY, Type);
 }
 
 void direct3d::BeginSpriteBatch()

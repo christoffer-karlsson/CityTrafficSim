@@ -24,6 +24,10 @@ class terrain : public drawable
 
 	world *World;
 
+	protected:
+
+	uv_quad GetTextureCoordinateFromTileType(TILE_TYPE Type);
+
 	public:
 
 	terrain(world *World);
@@ -31,6 +35,7 @@ class terrain : public drawable
 	void Draw(camera &Camera) override;
 
 	void SetTilePicked(int32 X, int32 Y, real32 IsPicked);
+	void SetTileType(int32 X, int32 Y, TILE_TYPE Type);
 
 	std::vector<vertex> &GetVertexData();
 

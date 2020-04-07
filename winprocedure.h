@@ -9,4 +9,4 @@
 #include <windows.h>
 #include <windowsx.h>
 
-LRESULT CALLBACK WindowProcedure(HWND WindowHandle, UINT MessageId, WPARAM W_Param, LPARAM L_Param);
+LRESULT CALLBACK WindowProcedure(HWND WindowHandle, UINT MessageId, WPARAM WParam, LPARAM LParam);

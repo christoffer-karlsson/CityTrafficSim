@@ -22,5 +22,7 @@ int CALLBACK WinMain(HINSTANCE InstanceHandle, HINSTANCE PrevInstanceHandle, LPS
 		- Simulation region, simulate a reasonable region
 		- Asset system
 		- Dynamic asset loading
+		- User interface
+		- File system to load and save maps
 
 */

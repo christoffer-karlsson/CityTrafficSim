@@ -88,7 +88,10 @@ class direct3d
 	camera &GetCamera();
 
 	void TestDoWorkStuff();
+	void TestDoEditorWorkStuff();
+
 	void TestDraw();
 	void TestDrawEntity(real32 X, real32 Y, real32 Z);
 	void TestDrawTerrain();
+	void TestSetTile(int32 PositionX, int32 PositionY, TILE_TYPE Type);
 };

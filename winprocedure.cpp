@@ -1,6 +1,6 @@
 #include "winprocedure.h"
 
-LRESULT CALLBACK WindowProcedure(HWND WindowHandle, UINT MessageId, WPARAM W_Param, LPARAM L_Param)
+LRESULT CALLBACK WindowProcedure(HWND WindowHandle, UINT MessageId, WPARAM WParam, LPARAM LParam)
 {
 	if(MessageId == WM_CLOSE)
 	{
@@ -10,66 +10,45 @@ LRESULT CALLBACK WindowProcedure(HWND WindowHandle, UINT MessageId, WPARAM W_Par
 	else if(MessageId == WM_SIZE)
 	{
 		// TODO(Cristoffer): Handle resizing of window.
-		global_device_info::WindowWidth = GET_X_LPARAM(L_Param);
-		global_device_info::WindowHeight = GET_Y_LPARAM(L_Param);
+		global_device_info::WindowWidth = GET_X_LPARAM(LParam);
+		global_device_info::WindowHeight = GET_Y_LPARAM(LParam);
 
 	}
 	else if(MessageId == WM_KEYDOWN)
 	{
-		UpdateKeyDown(W_Param);
+		UpdateKeyDown(WParam);
 	}
 	else if(MessageId == WM_KEYUP)
 	{
-		UpdateKeyUp(W_Param);
+		UpdateKeyUp(WParam);
 	}
 	else if(MessageId == WM_LBUTTONDOWN)
 	{
-		int32 X = GET_X_LPARAM(L_Param);
-		int32 Y = GET_Y_LPARAM(L_Param);
-
-		UpdateMouse(X, Y, W_Param, 1);
+		UpdateMouse(LParam, WParam);
 	}
 	else if(MessageId == WM_RBUTTONDOWN)
 	{
-		int32 X = GET_X_LPARAM(L_Param);
-		int32 Y = GET_Y_LPARAM(L_Param);
-
-		UpdateMouse(X, Y, W_Param, 1);
+		UpdateMouse(LParam, WParam);
 	}
 	else if(MessageId == WM_MBUTTONDOWN)
 	{
-		int32 X = GET_X_LPARAM(L_Param);
-		int32 Y = GET_Y_LPARAM(L_Param);
-
-		UpdateMouse(X, Y, W_Param, 1);
+		UpdateMouse(LParam, WParam);
 	}
 	else if(MessageId == WM_LBUTTONUP)
 	{
-		int32 X = GET_X_LPARAM(L_Param);
-		int32 Y = GET_Y_LPARAM(L_Param);
-
-		UpdateMouse(X, Y, W_Param, 0);
+		UpdateMouse(LParam, WParam);
 	}
 	else if(MessageId == WM_RBUTTONUP)
 	{
-		int32 X = GET_X_LPARAM(L_Param);
-		int32 Y = GET_Y_LPARAM(L_Param);
-
-		UpdateMouse(X, Y, W_Param, 0);
+		UpdateMouse(LParam, WParam);
 	}
 	else if(MessageId == WM_MBUTTONUP)
 	{
-		int32 X = GET_X_LPARAM(L_Param);
-		int32 Y = GET_Y_LPARAM(L_Param);
-
-		UpdateMouse(X, Y, W_Param, 0);
+		UpdateMouse(LParam, WParam);
 	}
 	else if(MessageId == WM_MOUSEMOVE)
 	{
-		int32 X = GET_X_LPARAM(L_Param);
-		int32 Y = GET_Y_LPARAM(L_Param);
-
-		UpdateMouse(X, Y, W_Param, 0);
+		UpdateMouse(LParam, WParam);
 	}
 	else if(MessageId == WM_INPUT)
 	{
@@ -81,7 +60,7 @@ LRESULT CALLBACK WindowProcedure(HWND WindowHandle, UINT MessageId, WPARAM W_Par
 		UINT dwSize = 48;
 		static BYTE lpb[48];
 
-		GetRawInputData((HRAWINPUT)L_Param, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER));
+		GetRawInputData((HRAWINPUT)LParam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER));
 
 		RAWINPUT *RawInput = (RAWINPUT *)lpb;
 
@@ -95,7 +74,7 @@ LRESULT CALLBACK WindowProcedure(HWND WindowHandle, UINT MessageId, WPARAM W_Par
 	}
 	else
 	{
-		return DefWindowProc(WindowHandle, MessageId, W_Param, L_Param);
+		return DefWindowProc(WindowHandle, MessageId, WParam, LParam);
 	}
 
 	return 0;

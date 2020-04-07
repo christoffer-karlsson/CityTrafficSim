@@ -5,9 +5,11 @@
 #include "common.h"
 #include "global_device_info.h"
 
-#define MBUTTON_LEFT	0x0001
-#define MBUTTON_RIGHT	0x0002
-#define MBUTTON_MIDDLE	0x0010
+#include "windowsx.h"
+
+#define MOUSE_BUTTON_LEFT	0x0001
+#define MOUSE_BUTTON_RIGHT	0x0002
+#define MOUSE_BUTTON_MIDDLE	0x0010
 
 struct mouse_state
 {
@@ -18,7 +20,7 @@ struct mouse_state
 	bool Button[255];
 };
 
-void UpdateMouse(int32 X, int32 Y, int32 ButtonCode, bool Status);
+void UpdateMouse(int32 LParam, int32 WParam);
 void UpdateRawMouse(int32 X, int32 Y);
 
 int32 GetMouseX();
@@ -26,4 +28,4 @@ int32 GetMouseY();
 int32 GetMouseRawX();
 int32 GetMouseRawY();
 
-bool MouseButtonPressed(int32 ButtonCode);
+bool MousePressed(int32 ButtonCode);

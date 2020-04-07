@@ -1,5 +1,29 @@
 #include "terrain.h"
 
+uv_quad terrain::GetTextureCoordinateFromTileType(TILE_TYPE Type)
+{
+	uv_quad Result;
+
+	if(Type == GRASS)
+	{
+		Result = Texture->GetUVFromSliceCoordinates(0, 0);
+	}
+	else if(Type == ROAD_Z)
+	{
+		Result = Texture->GetUVFromSliceCoordinates(2, 0);
+	}
+	else if(Type == ROAD_X)
+	{
+		Result = Texture->GetUVFromSliceCoordinates(1, 0);
+	}
+	else if(Type == CROSSROAD)
+	{
+		Result = Texture->GetUVFromSliceCoordinates(3, 0);
+	}
+
+	return Result;
+}
+
 terrain::terrain(world *World) :
 	World(World)
 {
@@ -18,29 +42,17 @@ terrain::terrain(world *World) :
 
 	int32 QuadCount = 0;
 
+	uv_quad Atlas;
+
+	tile CurrentTile;
+
 	for(int32 X = 0; X < World->GetWidth(); X++)
 	{
 		for(int32 Y = 0; Y < World->GetHeight(); Y++)
 		{
-			uv_quad Atlas;
-			tile CurrentTile = World->GetTile(X, Y);
+			CurrentTile = World->GetTile(X, Y);
 
-			if(CurrentTile.Type == GRASS)
-			{
-				Atlas = Texture->GetUVFromSliceCoordinates(0, 0);
-			}
-			else if(CurrentTile.Type == ROAD_Z)
-			{
-				Atlas = Texture->GetUVFromSliceCoordinates(2, 0);
-			}
-			else if(CurrentTile.Type == ROAD_X)
-			{
-				Atlas = Texture->GetUVFromSliceCoordinates(1, 0);
-			}
-			else if(CurrentTile.Type == CROSSROAD)
-			{
-				Atlas = Texture->GetUVFromSliceCoordinates(3, 0);
-			}
+			Atlas = GetTextureCoordinateFromTileType(CurrentTile.Type);
 
 			vertex Vertex[4];
 
@@ -147,7 +159,29 @@ void terrain::SetTilePicked(int32 X, int32 Y, real32 IsPicked)
 	Vertices.at(Index + 1).IsPicked = IsPicked;
 	Vertices.at(Index + 2).IsPicked = IsPicked;
 	Vertices.at(Index + 3).IsPicked = IsPicked;
+}
 
+void terrain::SetTileType(int32 X, int32 Y, TILE_TYPE Type)
+{
+	uv_quad Atlas = GetTextureCoordinateFromTileType(Type);
+
+	int32 Pitch = World->GetWidth() * 4 * X;
+
+	int32 Index = Pitch + (Y * 4);
+
+	if(Index + 4 > Vertices.size() || Index < 0)
+	{
+		return;
+	}
+
+	Vertices.at(Index + 0).TextureCoordinate.U = Atlas.TextureCoordinate[0].U;
+	Vertices.at(Index + 0).TextureCoordinate.V = Atlas.TextureCoordinate[0].V;
+	Vertices.at(Index + 1).TextureCoordinate.U = Atlas.TextureCoordinate[1].U;
+	Vertices.at(Index + 1).TextureCoordinate.V = Atlas.TextureCoordinate[1].V;
+	Vertices.at(Index + 2).TextureCoordinate.U = Atlas.TextureCoordinate[2].U;
+	Vertices.at(Index + 2).TextureCoordinate.V = Atlas.TextureCoordinate[2].V;
+	Vertices.at(Index + 3).TextureCoordinate.U = Atlas.TextureCoordinate[3].U;
+	Vertices.at(Index + 3).TextureCoordinate.V = Atlas.TextureCoordinate[3].V;
 }
 
 std::vector<vertex> &terrain::GetVertexData()

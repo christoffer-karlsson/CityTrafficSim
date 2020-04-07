@@ -4,7 +4,7 @@
 
 #include <vector>
 
-enum GROUND_TYPE
+enum TILE_TYPE
 {
 	GRASS,
 	ROAD_Z,
@@ -16,7 +16,7 @@ enum GROUND_TYPE
 
 struct tile
 {
-	GROUND_TYPE Type = GRASS;
+	TILE_TYPE Type = GRASS;
 };
 
 class world
@@ -34,7 +34,7 @@ class world
 	world(int32 Width, int32 Height);
 	~world();
 
-	void SetTile(int32 PositionX, int32 PositionY, GROUND_TYPE Type);
+	void SetTile(int32 PositionX, int32 PositionY, TILE_TYPE Type);
 
 	int32 GetWidth() const;
 	int32 GetHeight() const;

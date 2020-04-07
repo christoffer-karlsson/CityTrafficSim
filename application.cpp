@@ -87,32 +87,26 @@ void application::Run()
 			Graphics.GetCamera().LookX(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawX() * 1.1f));
 			Graphics.GetCamera().LookY(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawY() * 1.1f));
 		}
-
-		if(KeyReleased(KEY_ARROWUP))
+		
+		if(EditMode)
 		{
-			MoveZ += 1.0f;
-			Y++;
-		}
+			Graphics.TestDoEditorWorkStuff();
 
-		if(KeyReleased(KEY_ARROWDOWN))
-		{
-			MoveZ -= 1.0f;
-		}
+			if(MousePressed(MOUSE_BUTTON_LEFT))
+			{
+				Graphics.TestSetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, ROAD_Z);
+			}
 
-		if(KeyReleased(KEY_ARROWLEFT))
-		{
-			MoveX -= 1.0f;
-		}
+			if(MousePressed(MOUSE_BUTTON_RIGHT))
+			{
+				Graphics.TestSetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, ROAD_X);
+			}
 
-		if(KeyReleased(KEY_ARROWRIGHT))
-		{
-			MoveX += 1.0f;
-			X++;
+			if(MousePressed(MOUSE_BUTTON_MIDDLE))
+			{
+				Graphics.TestSetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, CROSSROAD);
+			}
 		}
-
-		MoveX = 0.0f;
-		MoveY = 0.0f;
-		MoveZ = 0.0f;
 
 		std::string StringValue;
 		std::wstring stemp;

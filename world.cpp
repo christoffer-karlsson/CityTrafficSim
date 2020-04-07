@@ -13,7 +13,7 @@ world::~world()
 	delete [] Tiles;
 }
 
-void world::SetTile(int32 PositionX, int32 PositionY, GROUND_TYPE Type)
+void world::SetTile(int32 PositionX, int32 PositionY, TILE_TYPE Type)
 {
 	int32 Pitch = Width * PositionY;
 
