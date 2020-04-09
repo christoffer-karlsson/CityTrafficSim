@@ -28,6 +28,8 @@ class application
 
 	bool Running;
 
+	void UserInterface();
+
 	public:
 
 	application();

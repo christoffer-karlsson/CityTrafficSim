@@ -112,7 +112,6 @@ terrain::terrain(world *World) :
 	Shader->AddInputElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
 	Shader->AddInputElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
 	Shader->AddInputElement("ISPICKED", DXGI_FORMAT_R32_FLOAT);
-
 	Shader->CommitInputElements();
 
 	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), Vertices.size(), DYNAMIC);

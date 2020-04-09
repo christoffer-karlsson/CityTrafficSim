@@ -11,9 +11,9 @@
 #include "line.h"
 #include "world.h"
 #include "mouse_picker.h"
+#include "user_interface.h"
 
 #include "external/SpriteFont.h"
-#include "external/SimpleMath.h"
 
 #include <d3d11.h>
 #include <d3dcompiler.h>
@@ -22,8 +22,6 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 #pragma comment(lib, "dxguid.lib")
-
-using namespace DirectX::SimpleMath;
 
 class direct3d
 {
@@ -47,11 +45,12 @@ class direct3d
 
 	std::vector<std::unique_ptr<drawable>> Graph;
 
-	std::unique_ptr<drawable> TestEntity;;
+	std::unique_ptr<drawable> TestEntity;
 
 	camera Camera;
 	world	*World;
 	terrain *Terrain;
+	user_interface *UI;
 
 	mouse_picker TerrainPicker;
 
@@ -67,9 +66,6 @@ class direct3d
 
 	public:
 
-	std::unique_ptr<SpriteBatch> spriteBatch;
-	std::unique_ptr<SpriteFont> spriteFont;
-
 	direct3d(HWND WindowHandle);
 	~direct3d();
 	direct3d(direct3d const &Object) = delete;
@@ -79,13 +75,9 @@ class direct3d
 	void BeginFrame() const;
 	void EndFrame() const;
 
-	// TODO(Cristoffer): Temporary methods for testing.
-	void BeginSpriteBatch();
-	void EndSpriteBatch();
-	void DrawSpriteString(const wchar_t *String, real32 PosX, real32 PosY);
-
 	// TODO(Cristoffer): Perhaps camera shouldn't be accessable from here..
 	camera &GetCamera();
+	user_interface *GetUI() const;
 
 	void TestDoWorkStuff();
 	void TestDoEditorWorkStuff();
@@ -93,5 +85,6 @@ class direct3d
 	void TestDraw();
 	void TestDrawEntity(real32 X, real32 Y, real32 Z);
 	void TestDrawTerrain();
+	void TestDrawUI();
 	void TestSetTile(int32 PositionX, int32 PositionY, TILE_TYPE Type);
 };

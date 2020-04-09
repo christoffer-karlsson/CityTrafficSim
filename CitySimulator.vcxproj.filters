@@ -105,6 +105,9 @@
     <ClCompile Include="global_data_collector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="user_interface.cpp">
+      <Filter>Source Files\graphics\drawables</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -185,6 +188,9 @@
     <ClInclude Include="global_data_collector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="user_interface.h">
+      <Filter>Header Files\graphics\drawables</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="cube_vs.hlsl">
@@ -203,6 +209,12 @@
       <Filter>Source Files\graphics\shaders</Filter>
     </FxCompile>
     <FxCompile Include="line_ps.hlsl">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="user_interface_ps.hlsl">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="user_interface_vs.hlsl">
       <Filter>Source Files\graphics\shaders</Filter>
     </FxCompile>
   </ItemGroup>

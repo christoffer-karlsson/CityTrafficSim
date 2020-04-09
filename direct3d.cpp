@@ -22,10 +22,6 @@ direct3d::direct3d(HWND WindowHandle) :
 	global_device_info::Target = Target;
 	global_device_info::Swap = Swap;
 
-	// TODO(Cristoffer): Init sprite batch.
-	spriteBatch = std::make_unique<SpriteBatch>(Context);
-	spriteFont = std::make_unique<SpriteFont>(Device, L"data/bahnschrift_12.spritefont");
-
 	real32 Spacing = 1.0f;
 
 	World->SetTile(5, 10, ROAD_Z);
@@ -52,6 +48,8 @@ direct3d::direct3d(HWND WindowHandle) :
 	Terrain = new terrain(World);
 	TerrainPicker.Init(Terrain, &Camera);
 
+	UI = new user_interface();
+
 	//Graph.push_back(std::make_unique<line>(10.0f, 5.0f, 10.0f, 10.0f, 0.0f, 10.0f));
 
 	//TestEntity = std::make_unique<building>(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
@@ -60,6 +58,11 @@ direct3d::direct3d(HWND WindowHandle) :
 camera &direct3d::GetCamera()
 {
 	return Camera;
+}
+
+user_interface *direct3d::GetUI() const
+{
+	return UI;
 }
 
 void direct3d::SetDevice()
@@ -257,26 +260,17 @@ void direct3d::TestDrawTerrain()
 	Terrain->Draw(Camera);
 }
 
+void direct3d::TestDrawUI()
+{
+	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	UI->Draw(Camera);
+	UI->DrawStrings();
+}
+
 void direct3d::TestSetTile(int32 PositionX, int32 PositionY, TILE_TYPE Type)
 {
 	World->SetTile(PositionX, PositionY, Type);
 	Terrain->SetTileType(PositionX, PositionY, Type);
-}
-
-void direct3d::BeginSpriteBatch()
-{
-	spriteBatch->Begin();
-}
-
-void direct3d::EndSpriteBatch()
-{
-	spriteBatch->End();
-}
-
-void direct3d::DrawSpriteString(const wchar_t *String, real32 PosX, real32 PosY)
-{
-	XMVECTOR Color = Colors::White;
-	spriteFont->DrawString(spriteBatch.get(), String, XMFLOAT2(PosX, PosY), Color);
 }
 
 direct3d::~direct3d()
