@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <cassert>
 
-#define BUILD_NUMBER 16
+#define BUILD_NUMBER 17
 #define SHOW_BUILD_NUMBER 1
 
 // NOTE(Cristoffer): Enable debug stuff, such as assertions. Turn off

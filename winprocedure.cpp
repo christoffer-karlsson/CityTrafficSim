@@ -66,8 +66,8 @@ LRESULT CALLBACK WindowProcedure(HWND WindowHandle, UINT MessageId, WPARAM WPara
 
 		if(RawInput->header.dwType == RIM_TYPEMOUSE)
 		{
-			int RawDeltaX = RawInput->data.mouse.lLastX;
-			int RawDeltaY = RawInput->data.mouse.lLastY;
+			real32 RawDeltaX = (real32)RawInput->data.mouse.lLastX;
+			real32 RawDeltaY = (real32)RawInput->data.mouse.lLastY;
 
 			UpdateRawMouse(RawDeltaX, RawDeltaY);
 		}

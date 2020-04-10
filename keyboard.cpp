@@ -2,12 +2,12 @@
 
 key_state Key[255];
 
-void UpdateKeyDown(int32 KeyCode)
+void UpdateKeyDown(WPARAM KeyCode)
 {
 	Key[KeyCode].IsDown = 1;
 }
 
-void UpdateKeyUp(int32 KeyCode)
+void UpdateKeyUp(WPARAM KeyCode)
 {
 	Key[KeyCode].IsDown = 0;
 	Key[KeyCode].WasDown = 1;

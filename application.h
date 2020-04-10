@@ -21,9 +21,6 @@ class application
 	timing		Timing;
 	direct3d	Graphics;
 
-	// TODO(Cristoffer): Temp! Remove this later.
-	real64 TimeCheck;
-
 	bool Running;
 
 	void UserInterface();

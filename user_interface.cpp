@@ -63,7 +63,7 @@ user_interface::user_interface() :
 		Element[ElementID]->IsHighlighted = false;
 		Element[ElementID]->IsHidden = false;
 
-		Element[ElementID]->MegaString = "NULL";
+		Element[ElementID]->MegaString.clear();
 
 		for(uint32 TextID = 0; TextID < MAX_TEXT_ELEMENTS; TextID++)
 		{
@@ -97,14 +97,14 @@ user_interface::user_interface() :
 		QuadCount++;
 	}
 
-	for(int32 Quad = 0; Quad < QuadCount; Quad++)
+	for(uint32 Index = 0; Index < QuadCount; Index++)
 	{
-		Indices.push_back(0 + (Quad * 4));
-		Indices.push_back(1 + (Quad * 4));
-		Indices.push_back(2 + (Quad * 4));
-		Indices.push_back(1 + (Quad * 4));
-		Indices.push_back(3 + (Quad * 4));
-		Indices.push_back(2 + (Quad * 4));
+		Indices.push_back(0 + (Index * 4));
+		Indices.push_back(1 + (Index * 4));
+		Indices.push_back(2 + (Index * 4));
+		Indices.push_back(1 + (Index * 4));
+		Indices.push_back(3 + (Index * 4));
+		Indices.push_back(2 + (Index * 4));
 	}
 
 	Shader = new shader(L"user_interface_vs.cso", L"user_interface_ps.cso");
@@ -113,8 +113,8 @@ user_interface::user_interface() :
 	Shader->AddInputElement("ISHIGHLIGHTED", DXGI_FORMAT_R32_FLOAT);
 	Shader->CommitInputElements();
 
-	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(ui_vertex), Vertices.size(), DYNAMIC);
-	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint16), Indices.size());
+	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(ui_vertex), (uint32)Vertices.size(), DYNAMIC);
+	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint16), (uint32)Indices.size());
 
 	ConstantBuffer = nullptr;
 	Texture = nullptr;
@@ -176,10 +176,13 @@ void user_interface::UpdateText(uint32 ElementID, uint32 TextID, std::string Tex
 {
 	if(!CheckValidStringID(ElementID, TextID)) return;
 
+	Element[ElementID]->Text[TextID]->TextMeasurementWidth = XMVectorGetX(DXTKSpriteFont->MeasureString(Text.c_str()));
+	Element[ElementID]->Text[TextID]->TextMeasurementHeight = XMVectorGetY(DXTKSpriteFont->MeasureString(Text.c_str()));
+
 	Element[ElementID]->Text[TextID]->String = Text;
 }
 
-void user_interface::SetMargin(uint32 ElementID, uint16 Margin)
+void user_interface::SetMargin(uint32 ElementID, real32 Margin)
 {
 	if(!CheckValidID(ElementID)) return;
 
@@ -257,7 +260,6 @@ void user_interface::CalculateTextPositions()
 		if(Element[EID]->IsHidden)
 		{
 			Element[EID]->MegaString.clear();
-
 			continue;
 		}
 
@@ -370,20 +372,11 @@ void user_interface::CalculateTextPositions()
 		{
 			Element[EID]->Width = LongestStringWidth + (2.0f * Element[EID]->Margin);
 		}
-
-		NewHeight = ElementHeight;
 	}
 
 	// NOTE(Cristoffer): Calculate the actual screen position of text depending on anchors and offsets.
 	for(uint32 EID = 0; EID < ElementCount; EID++)
 	{
-		if(Element[EID]->IsHidden)
-		{
-			Element[EID]->MegaString.clear();
-
-			continue;
-		}
-
 		real32 OffsetX = Element[EID]->OffsetX + Element[EID]->Margin;
 		real32 OffsetY = Element[EID]->OffsetY + Element[EID]->Margin;
 		real32 ScreenWidth = global_device_info::FrameBufferWidth;
@@ -441,6 +434,11 @@ void user_interface::CalculateTextPositions()
 			Element[EID]->TextPositionX = ScreenWidth - Width;
 			Element[EID]->TextPositionY = (ScreenHeight / 2.0f) - (Height / 2.0f) - OffsetX + TextHeight;
 		}
+		else if(Element[EID]->Anchor == MOUSE)
+		{
+			Element[EID]->TextPositionX = OffsetX + GetMouseX();
+			Element[EID]->TextPositionY = OffsetY + GetMouseY();
+		}
 		else
 		{
 			Element[EID]->TextPositionX = OffsetX;
@@ -469,6 +467,13 @@ void user_interface::CalculateVertices()
 			Vertex[1].IsHighlighted = 1.0f;
 			Vertex[2].IsHighlighted = 1.0f;
 			Vertex[3].IsHighlighted = 1.0f;
+		}
+		else
+		{
+			Vertex[0].IsHighlighted = 0.0f;
+			Vertex[1].IsHighlighted = 0.0f;
+			Vertex[2].IsHighlighted = 0.0f;
+			Vertex[3].IsHighlighted = 0.0f;
 		}
 
 		if(Element[ID]->IsHidden)
@@ -574,6 +579,19 @@ void user_interface::CalculateVertices()
 			TopY = Height / ScreenHeight;
 			BottomY = -1.0f * (Height / (ScreenHeight));
 		}
+		else if(Element[ID]->Anchor == MOUSE)
+		{
+			real32 MouseX = 1.0f * (2.0f * GetMouseX() / ScreenWidth);
+			real32 MouseY = -(2.0f * GetMouseY()) / ScreenHeight;
+
+			OffsetX = (2.0f * Element[ID]->OffsetX) / ScreenWidth;
+			OffsetY = -(2.0f * Element[ID]->OffsetY) / ScreenHeight;
+
+			LeftX = -1.0f + MouseX;
+			RightX = (2.0f * Width) / ScreenWidth - 1.0f + MouseX;
+			TopY = 1.0f + MouseY;
+			BottomY = 1.0f - (2.0f * Height) / ScreenHeight + MouseY;
+		}
 		else
 		{
 			OffsetX = (2.0f * Element[ID]->OffsetX) / ScreenWidth;
@@ -619,6 +637,8 @@ void user_interface::BuildElements()
 				// may stretch out elements etc.
 				CalculateTextPositions();
 				CalculateVertices();
+
+				UpdateDraw = true;
 			});
 		}
 	}
@@ -631,7 +651,12 @@ void user_interface::BuildElements()
 
 void user_interface::Draw(camera &Camera)
 {
-	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(ui_vertex), Vertices.size());
+	if(UpdateDraw)
+	{
+		VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(ui_vertex), (uint32)Vertices.size());
+		UpdateDraw = false;
+	}
+	
 
 	VertexBuffer->Bind();
 	Shader->Bind();
@@ -650,10 +675,7 @@ void user_interface::DrawStrings()
 	{
 		XMVECTOR Color = Colors::White;
 		
-		for(uint32 TextID = 0; TextID < Element[ID]->TextCount; TextID++)
-		{
-			DXTKSpriteFont->DrawString(DXTKSpriteBatch.get(), Element[ID]->MegaString.c_str(), XMFLOAT2(Element[ID]->TextPositionX, Element[ID]->TextPositionY), Color);
-		}
+		DXTKSpriteFont->DrawString(DXTKSpriteBatch.get(), Element[ID]->MegaString.c_str(), XMFLOAT2(Element[ID]->TextPositionX, Element[ID]->TextPositionY), Color);
 	}
 
 	DXTKSpriteBatch->End();

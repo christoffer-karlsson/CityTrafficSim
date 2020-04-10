@@ -31,7 +31,7 @@ void shader::CommitInputElements()
 {
 	HRESULT HR = S_OK;
 
-	HR = global_device_info::Device->CreateInputLayout(Layout.data(), Layout.size(), Blob->GetBufferPointer(), Blob->GetBufferSize(), &InputLayout);
+	HR = global_device_info::Device->CreateInputLayout(Layout.data(), (uint32)Layout.size(), Blob->GetBufferPointer(), Blob->GetBufferSize(), &InputLayout);
 }
 
 void shader::Bind()

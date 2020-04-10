@@ -2,10 +2,10 @@
 
 static mouse_state Mouse = {};
 
-void UpdateMouse(int32 LParam, int32 WParam)
+void UpdateMouse(LPARAM LParam, WPARAM WParam)
 {
-	Mouse.X = GET_X_LPARAM(LParam);
-	Mouse.Y = GET_Y_LPARAM(LParam);
+	Mouse.X = (real32)GET_X_LPARAM(LParam);
+	Mouse.Y = (real32)GET_Y_LPARAM(LParam);
 
 	WORD KeyState = GET_KEYSTATE_WPARAM(WParam);
 
@@ -40,41 +40,41 @@ void UpdateMouse(int32 LParam, int32 WParam)
 	}
 }
 
-void UpdateRawMouse(int32 X, int32 Y)
+void UpdateRawMouse(real32 X, real32 Y)
 {
 	Mouse.RawX = X;
 	Mouse.RawY = Y;
 }
 
-int32 GetMouseX()
+real32 GetMouseX()
 {
 	return Mouse.X;
 }
 
-int32 GetMouseY()
+real32 GetMouseY()
 {
 	return Mouse.Y;
 }
 
-int32 GetMouseRawX()
+real32 GetMouseRawX()
 {
 	// TODO(Cristoffer): Clearing raw input to zero everytime its being fetched makes
 	// it so that it only can get fetched once per frame. Think about this later down
 	// the road!!
 	// Problem solved by this: Removing "gliding" caused by old input.
 
-	int32 Result = Mouse.RawX;
+	real32 Result = Mouse.RawX;
 
-	Mouse.RawX = 0;
+	Mouse.RawX = 0.0f;
 
 	return Result;
 }
 
-int32 GetMouseRawY()
+real32 GetMouseRawY()
 {
-	int32 Result = Mouse.RawY;
+	real32 Result = Mouse.RawY;
 
-	Mouse.RawY = 0;
+	Mouse.RawY = 0.0f;
 
 	return Result;
 }

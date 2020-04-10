@@ -274,10 +274,10 @@ void direct3d::TestDrawUI()
 	UI->DrawStrings();
 }
 
-void direct3d::TestSetTile(int32 PositionX, int32 PositionY, TILE_TYPE Type)
+void direct3d::TestSetTile(real32 PositionX, real32 PositionY, TILE_TYPE Type)
 {
-	World->SetTile(PositionX, PositionY, Type);
-	Terrain->SetTileType(PositionX, PositionY, Type);
+	World->SetTile((int32)PositionX, (int32)PositionY, Type);
+	Terrain->SetTileType((int32)PositionX, (int32)PositionY, Type);
 }
 
 direct3d::~direct3d()

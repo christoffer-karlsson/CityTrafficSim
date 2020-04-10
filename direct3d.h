@@ -41,20 +41,22 @@ class direct3d
 	ID3D11DepthStencilView *DepthStencilView;
 	ID3D11BlendState *AlphaBlendState;
 
-	// NOTE(Cristoffer): Temporary data here ////////////////
+	// TODO(Cristoffer): Temporary data here ////////////////
 
 	std::vector<std::unique_ptr<drawable>> Graph;
 
 	std::unique_ptr<drawable> TestEntity;
 
 	camera Camera;
-	world	*World;
 	terrain *Terrain;
 	user_interface *UI;
-
 	mouse_picker TerrainPicker;
 
-	// NOTE(Cristoffer): Temporary data here ////////////////
+	public:
+
+	world	*World;
+
+	// TODO(Cristoffer): Temporary data here ////////////////
 
 	protected:
 
@@ -86,5 +88,5 @@ class direct3d
 	void TestDrawEntity(real32 X, real32 Y, real32 Z);
 	void TestDrawTerrain();
 	void TestDrawUI();
-	void TestSetTile(int32 PositionX, int32 PositionY, TILE_TYPE Type);
+	void TestSetTile(real32 PositionX, real32 PositionY, TILE_TYPE Type);
 };

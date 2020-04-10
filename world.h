@@ -2,7 +2,10 @@
 
 #include "common.h"
 
+#include <string>
 #include <vector>
+
+#define MAX_TILE_NAMES 50
 
 enum TILE_TYPE
 {
@@ -27,6 +30,8 @@ class world
 	int32 Height;
 	const real32 Size = 1.0f;
 
+	std::string TileName[MAX_TILE_NAMES];
+
 	tile *Tiles;
 
 	public:
@@ -38,5 +43,6 @@ class world
 
 	int32 GetWidth() const;
 	int32 GetHeight() const;
+	std::string &GetTileName(int32 PositionX, int32 PositionY);
 	tile &GetTile(int32 PositionX, int32 PositionY);
 };

@@ -4,18 +4,8 @@ application::application() :
 	Window("City Traffic Simulator and Planner | Mid Sweden University Thesis Project | Cristoffer Tanda", 1280, 720), 
 	Timing(), 
 	Running(true),
-	TimeCheck(0.0),
 	Graphics(Window.GetHandle())
 {
-}
-
-
-void BadFunc()
-{
-	while(true)
-	{
-		int A = 5 + 3;
-	}
 }
 
 void application::Run()
@@ -81,6 +71,14 @@ void application::Run()
 		Graphics.GetUI()->SetMargin(TopRight, 10.0f);
 		Graphics.GetUI()->SetAdjustWidthToText(TopRight, true);
 	}
+
+	uint32 MouseTip = Graphics.GetUI()->CreateElement(MOUSE, 70.0f, 10.0f);
+	Graphics.GetUI()->SetBackgroundColor(MouseTip, { 0.25f, 0.25f, 0.25f, 0.75f });
+	Graphics.GetUI()->SetOffset(MouseTip, 10.0f, 10.0f);
+	Graphics.GetUI()->SetMargin(MouseTip, 10.0f);
+	Graphics.GetUI()->SetAdjustWidthToText(MouseTip, true);
+	Graphics.GetUI()->SetHidden(MouseTip, true);
+	uint32 MouseTipText = Graphics.GetUI()->AddNewText(MouseTip, "Info");
 
 	/*uint32 BottomMiddle = Graphics.GetUI()->CreateElement(BOTTOM_MIDDLE, 100.0f, 100.0f);
 	Graphics.GetUI()->SetBackgroundColor(BottomMiddle, { 0.25f, 0.25f, 0.25f, 0.75f });
@@ -153,7 +151,7 @@ void application::Run()
 			if(!EditMode) Window.ShowMouseCursor(0);
 		}
 
-		real32 CameraMovementSpeed = (real32)Timing.GetFrameTimeDeltaMilliseconds() * (8.0f / 1000.0f);
+		real32 CameraMovementSpeed = (real32)Timing.GetFrameTimeDeltaMilliseconds() * (15.0f / 1000.0f);
 
 		if(KeyPressed(KEY_SHIFT))
 		{
@@ -162,8 +160,8 @@ void application::Run()
 
 		if(!EditMode)
 		{
-			Graphics.GetCamera().LookX(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawX() * 30.0f / 1000.0f));
-			Graphics.GetCamera().LookY(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawY() * 30.0f / 1000.0f));
+			Graphics.GetCamera().LookX(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawX() * 300.0f / 1000.0f));
+			Graphics.GetCamera().LookY(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawY() * 300.0f / 1000.0f));
 		}
 		
 		if(EditMode)
@@ -216,11 +214,6 @@ void application::Run()
 			Graphics.GetCamera().MoveDown(CameraMovementSpeed);
 		}
 
-		//uint32 T1 = Graphics.GetUI()->AddNewText(SystemInfoElement, "FPS");
-		//uint32 T2 = Graphics.GetUI()->AddNewText(SystemInfoElement, "Frame Time");
-		//uint32 T3 = Graphics.GetUI()->AddNewText(SystemInfoElement, "Camera Position");
-		//uint32 T4 = Graphics.GetUI()->AddNewText(SystemInfoElement, "Mouse World Position");
-		
 		Graphics.GetUI()->UpdateText(SystemInfoElement, T1, ("Frame Per Second: " + 
 															 std::to_string(Timing.GetFramesPerSecond())));
 
@@ -239,10 +232,16 @@ void application::Run()
 		if(EditMode)
 		{
 			Graphics.GetUI()->SetHidden(EditModeElement, false);
+
+			Graphics.GetUI()->SetHidden(MouseTip, false);
+
+			Graphics.GetUI()->UpdateText(MouseTip, MouseTipText, 
+			Graphics.World->GetTileName((int32)global_data_collector::CurrentlyPickedTileX, (int32)global_data_collector::CurrentlyPickedTileY));
 		}
 		else
 		{
 			Graphics.GetUI()->SetHidden(EditModeElement, true);
+			Graphics.GetUI()->SetHidden(MouseTip, true);
 		}
 
 		Graphics.GetUI()->BuildElements();

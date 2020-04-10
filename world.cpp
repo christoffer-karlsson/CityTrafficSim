@@ -6,18 +6,32 @@ world::world(int32 Width, int32 Height)
 	this->Height = Height;
 
 	Tiles = new tile[Width * Height];
+
+	for(uint32 Index = 0;
+		Index < MAX_TILE_NAMES;
+		Index++)
+	{
+		TileName[Index];
+	}
+
+	TileName[GRASS] = "Grass";
+	TileName[ROAD_Z] = "Road in Z direction";
+	TileName[ROAD_X] = "Road in X direction";
+	TileName[CROSSROAD] = "Crossroad";
+	TileName[SIDEWALK] = "Sidewalk";
+	TileName[WATER] = "Water";
 }
 
 world::~world()
 {
-	delete [] Tiles;
+	delete[] Tiles;
 }
 
-void world::SetTile(int32 PositionX, int32 PositionY, TILE_TYPE Type)
+void world::SetTile(int32 X, int32 Y, TILE_TYPE Type)
 {
-	int32 Pitch = Width * PositionY;
+	int32 Pitch = Width * Y;
 
-	Tiles[Pitch + PositionX].Type = Type;
+	Tiles[Pitch + X].Type = Type;
 }
 
 int32 world::GetWidth() const
@@ -30,9 +44,16 @@ int32 world::GetHeight() const
 	return Height;
 }
 
-tile &world::GetTile(int32 PositionX, int32 PositionY)
+std::string &world::GetTileName(int32 X, int32 Y)
 {
-	int32 Pitch = Width * PositionY;
+	tile &Tile = GetTile(X, Y);
 
-	return Tiles[Pitch + PositionX];
+	return TileName[Tile.Type];
+}
+
+tile &world::GetTile(int32 X, int32 Y)
+{
+	int32 Pitch = Width * Y;
+
+	return Tiles[Pitch + X];
 }

@@ -29,7 +29,7 @@ line::line(real32 PositionX1, real32 PositionY1, real32 PositionZ1, real32 Posit
 
 	Texture = nullptr;
 
-	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), Vertices.size(), STATIC);
+	VertexBuffer = new vertex_buffer(Vertices.data(), (uint32)sizeof(vertex), (uint32)Vertices.size(), STATIC);
 
 	ConstantBuffer = new constant_buffer(&VS_Input, sizeof(VS_Input));
 }

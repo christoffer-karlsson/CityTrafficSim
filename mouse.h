@@ -13,19 +13,19 @@
 
 struct mouse_state
 {
-	int32 X = 0;
-	int32 Y = 0;
-	int32 RawX = 0;
-	int32 RawY = 0;
+	real32 X = 0;
+	real32 Y = 0;
+	real32 RawX = 0;
+	real32 RawY = 0;
 	bool Button[255];
 };
 
-void UpdateMouse(int32 LParam, int32 WParam);
-void UpdateRawMouse(int32 X, int32 Y);
+void UpdateMouse(LPARAM LParam, WPARAM WParam);
+void UpdateRawMouse(real32 X, real32 Y);
 
-int32 GetMouseX();
-int32 GetMouseY();
-int32 GetMouseRawX();
-int32 GetMouseRawY();
+real32 GetMouseX();
+real32 GetMouseY();
+real32 GetMouseRawX();
+real32 GetMouseRawY();
 
 bool MousePressed(int32 ButtonCode);

@@ -4,14 +4,16 @@
 
 #include "common.h"
 
+#include <windows.h>
+
 struct key_state
 {
 	bool IsDown = 0;
 	bool WasDown = 0;
 };
 
-void UpdateKeyDown(int32 KeyCode);
-void UpdateKeyUp(int32 KeyCode);
+void UpdateKeyDown(WPARAM KeyCode);
+void UpdateKeyUp(WPARAM KeyCode);
 
 bool KeyPressed(int32 KeyCode);
 bool KeyReleased(int32 KeyCode);

@@ -37,7 +37,7 @@ void mouse_picker::RayTriangleIntersectWork()
 
 	SimpleMath::Ray Ray(RayOrigin, RayDirection);
 
-	for(size_t Index = 0; Index < Terrain->GetVertexData().size(); Index += 4)
+	for(uint32 Index = 0; Index < Terrain->GetVertexData().size(); Index += 4)
 	{
 		XMFLOAT3 V0, V1, V2, V3;
 		V0.x = Terrain->GetVertexData().at(Index + 0).Position.X;
@@ -74,8 +74,8 @@ void mouse_picker::RayTriangleIntersectWork()
 	{
 		// NOTE(Cristoffer): Since mouse have moved to new world coordinate, remove the
 		// old tile highlight effect, and highlight the new tile.
-		Terrain->SetTilePicked(MousePositionInWorld.X, MousePositionInWorld.Y, 0.0f);
-		Terrain->SetTilePicked(NewMousePositionInWorld.X, NewMousePositionInWorld.Y, 1.0f);
+		Terrain->SetTilePicked((int32)MousePositionInWorld.X, (int32)MousePositionInWorld.Y, 0.0f);
+		Terrain->SetTilePicked((int32)NewMousePositionInWorld.X, (int32)NewMousePositionInWorld.Y, 1.0f);
 
 		MousePositionInWorld.X = NewMousePositionInWorld.X;
 		MousePositionInWorld.Y = NewMousePositionInWorld.Y;

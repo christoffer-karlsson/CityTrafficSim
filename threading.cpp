@@ -42,8 +42,6 @@ threading::threading() :
 		}
 	};
 
-	// TODO(Cristoffer): Replace hard-coded ranges.
-
 	for(uint32 Index = 0; Index < MAX_SYNCED_JOBS; Index++)
 	{
 		WorkID.push(Index);

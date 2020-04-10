@@ -114,8 +114,8 @@ terrain::terrain(world *World) :
 	Shader->AddInputElement("ISPICKED", DXGI_FORMAT_R32_FLOAT);
 	Shader->CommitInputElements();
 
-	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), Vertices.size(), DYNAMIC);
-	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint16), Indices.size());
+	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), (uint32)Vertices.size(), DYNAMIC);
+	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint16), (uint32)Indices.size());
 
 	ConstantBuffer = new constant_buffer(&VS_Input, sizeof(VS_Input));
 }
@@ -132,7 +132,7 @@ void terrain::Draw(camera &Camera)
 
 	// TODO(Cristoffer): Is it bad to update the dynamic buffer before drawing?
 	// Should it be done earlier?
-	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(vertex), Vertices.size());
+	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(vertex), (uint32)Vertices.size());
 
 	Texture->Bind();
 	VertexBuffer->Bind();
