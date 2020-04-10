@@ -1,6 +1,7 @@
 #pragma once
 
 #include "drawable.h"
+#include "threading.h"
 #include "global_device_info.h"
 #include "common.h"
 
@@ -76,9 +77,12 @@ class user_interface : public drawable
 	element *Element[MAX_UI_ELEMENTS];
 	uint32 ElementCount;
 
+	uint32 ThreadWorkID;
+
 	bool CheckValidID(uint32 ElementID);
 	bool CheckValidStringID(uint32 ElementID, uint32 StringID);
 	void CalculateTextPositions();
+	void CalculateVertices();
 
 	public:
 

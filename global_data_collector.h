@@ -9,5 +9,5 @@ class global_data_collector
 	static real32 CurrentlyPickedTileX;
 	static real32 CurrentlyPickedTileY;
 
-	static uint32 JobCount;
+	static bool *ThreadIsWorking;
 };

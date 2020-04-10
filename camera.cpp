@@ -5,7 +5,7 @@ camera::camera()
 	// TODO(Cristoffer): Perhaps need different projections when doing UI stuff later.
 	//CameraType = CAM_PERSPECTIVE;
 
-	Position = XMFLOAT3(0.0f, 10.0f, 0.0f);
+	Position = XMFLOAT3(50.0f, 60.0f, 0.0f);
 	ViewDirection = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	UpDirection = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	SideDirection = XMFLOAT3(1.0f, 0.0f, 0.0f);
@@ -15,7 +15,7 @@ camera::camera()
 	NearZ = 0.1f;
 	FarZ = 1000.0f;
 
-	LookY(0.3f);
+	LookY(0.6f);
 
 	Projection = XMMatrixPerspectiveFovLH(FieldOfView, AspectRatio, NearZ, FarZ);
 

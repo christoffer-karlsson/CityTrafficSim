@@ -39,6 +39,8 @@ bool user_interface::CheckValidStringID(uint32 ElementID, uint32 TextID)
 user_interface::user_interface() :
 	ElementCount(0)
 {
+	ThreadWorkID = threading::GetInstance().GenerateUniqueWorkID();
+
 	// NOTE(Cristoffer): Pre-allocate everything with reasonable default values,
 	// so that everything looks decent even if nothing is changed.
 
@@ -153,6 +155,17 @@ uint32 user_interface::AddNewText(uint32 ElementID, std::string Text)
 	Element[ElementID]->TextCount++;
 
 	Element[ElementID]->Text[TextID]->String = Text;
+
+	// NOTE(Cristoffer): Since newline is measured as zero height, need to adjust it here, so it
+	// gets accounted for when adjusting element heights.
+	if(Text.at(0) == '\n')
+	{
+		Element[ElementID]->Text[TextID]->TextMeasurementWidth = 0.0f;
+		Element[ElementID]->Text[TextID]->TextMeasurementHeight = XMVectorGetY(DXTKSpriteFont->MeasureString("n"));
+
+		return TextID;
+	}
+
 	Element[ElementID]->Text[TextID]->TextMeasurementWidth = XMVectorGetX(DXTKSpriteFont->MeasureString(Text.c_str()));
 	Element[ElementID]->Text[TextID]->TextMeasurementHeight = XMVectorGetY(DXTKSpriteFont->MeasureString(Text.c_str()));
 	
@@ -237,9 +250,7 @@ uint32 user_interface::GetElementCount()
 
 void user_interface::CalculateTextPositions()
 {
-	// NOTE(Cristoffer): Pre-calculate all the text positions so we don't do it
-	// at a performance critical place, and can thread it.
-
+	// NOTE(Cristoffer): Calculate all the text position and adjust the elements.
 	for(uint32 EID = 0; EID < ElementCount; EID++)
 	{
 		// NOTE(Cristoffer): No point in processing the text if hidden.
@@ -250,73 +261,7 @@ void user_interface::CalculateTextPositions()
 			continue;
 		}
 
-		// NOTE(Cristoffer): Calculate the actual screen position of text depending on anchors and offsets.
-
-		real32 OffsetX = Element[EID]->OffsetX + Element[EID]->Margin;
-		real32 OffsetY = Element[EID]->OffsetY + Element[EID]->Margin;
-		real32 ScreenWidth = global_device_info::FrameBufferWidth;
-		real32 ScreenHeight = global_device_info::FrameBufferHeight;
-		real32 Width = Element[EID]->Width;
-		real32 Height = Element[EID]->Height;
-
-		if(Element[EID]->Anchor == TOP_MIDDLE)
-		{
-			Element[EID]->TextPositionX = (ScreenWidth / 2.0f) - (Width / 2.0f) + OffsetX;
-			Element[EID]->TextPositionY = OffsetY;
-		}
-		else if(Element[EID]->Anchor == TOP_RIGHT)
-		{
-			Element[EID]->TextPositionX = ScreenWidth - Width;
-			Element[EID]->TextPositionY = OffsetY;
-		}
-		else if(Element[EID]->Anchor == BOTTOM_LEFT)
-		{
-			real32 TextHeight = Element[EID]->Text[0]->TextMeasurementHeight;
-
-			Element[EID]->TextPositionX = OffsetX;
-			Element[EID]->TextPositionY = ScreenHeight - OffsetY - Height + TextHeight;
-		}
-		else if(Element[EID]->Anchor == BOTTOM_MIDDLE)
-		{
-			real32 TextHeight = Element[EID]->Text[0]->TextMeasurementHeight;
-
-			Element[EID]->TextPositionX = (ScreenWidth / 2.0f) - (Width / 2.0f) + OffsetX;
-			Element[EID]->TextPositionY = ScreenHeight - OffsetY - Height + TextHeight;
-		}
-		else if(Element[EID]->Anchor == BOTTOM_RIGHT)
-		{
-			real32 TextHeight = Element[EID]->Text[0]->TextMeasurementHeight;
-
-			Element[EID]->TextPositionX = ScreenWidth - Width;
-			Element[EID]->TextPositionY = ScreenHeight - OffsetY - Height + TextHeight;
-		}
-		else if(Element[EID]->Anchor == MIDDLE_LEFT)
-		{
-			real32 TextHeight = Element[EID]->Text[0]->TextMeasurementHeight;
-
-			Element[EID]->TextPositionX = OffsetX;
-			Element[EID]->TextPositionY = (ScreenHeight / 2.0f) - (Height / 2.0f) - OffsetX + TextHeight;
-		}
-		else if(Element[EID]->Anchor == MIDDLE_MIDDLE)
-		{
-			Element[EID]->TextPositionX = (ScreenWidth / 2.0f) - (Width / 2.0f) + OffsetX;
-			Element[EID]->TextPositionY = (ScreenHeight / 2.0f) - (Height / 2.0f) + OffsetX;
-		}
-		else if(Element[EID]->Anchor == MIDDLE_RIGHT)
-		{
-			real32 TextHeight = Element[EID]->Text[0]->TextMeasurementHeight;
-
-			Element[EID]->TextPositionX = ScreenWidth - Width;
-			Element[EID]->TextPositionY = (ScreenHeight / 2.0f) - (Height / 2.0f) - OffsetX + TextHeight;
-		}
-		else
-		{
-			Element[EID]->TextPositionX = OffsetX;
-			Element[EID]->TextPositionY = OffsetY;
-		}
-
 		// NOTE(Cristoffer): Calculate if line breaks are needed to fit in the element below.
-
 		real32 ElementWidth = Element[EID]->Width - (2.0f * Element[EID]->Margin);
 		real32 ElementHeight = Element[EID]->Height - (2.0f * Element[EID]->Margin);
 
@@ -390,7 +335,6 @@ void user_interface::CalculateTextPositions()
 			{
 				// NOTE(Cristoffer): If stretching in width is allowed, just store all text
 				// and measure which line is the longest.
-
 				real32 StringWidth = XMVectorGetX(DXTKSpriteFont->MeasureString(String.c_str()));
 
 				if(StringWidth > LongestStringWidth)
@@ -407,7 +351,14 @@ void user_interface::CalculateTextPositions()
 			Index < Lines.size();
 			Index++)
 		{
-			Element[EID]->MegaString += Lines.at(Index) + '\n';
+			if(Lines.at(Index).at(0) == '\n')
+			{
+				Element[EID]->MegaString += Lines.at(Index);
+			}
+			else
+			{
+				Element[EID]->MegaString += Lines.at(Index) + '\n';
+			}
 		}
 
 		if(NewHeight > ElementHeight)
@@ -422,15 +373,84 @@ void user_interface::CalculateTextPositions()
 
 		NewHeight = ElementHeight;
 	}
+
+	// NOTE(Cristoffer): Calculate the actual screen position of text depending on anchors and offsets.
+	for(uint32 EID = 0; EID < ElementCount; EID++)
+	{
+		if(Element[EID]->IsHidden)
+		{
+			Element[EID]->MegaString.clear();
+
+			continue;
+		}
+
+		real32 OffsetX = Element[EID]->OffsetX + Element[EID]->Margin;
+		real32 OffsetY = Element[EID]->OffsetY + Element[EID]->Margin;
+		real32 ScreenWidth = global_device_info::FrameBufferWidth;
+		real32 ScreenHeight = global_device_info::FrameBufferHeight;
+		real32 Width = Element[EID]->Width;
+		real32 Height = Element[EID]->Height;
+
+		if(Element[EID]->Anchor == TOP_MIDDLE)
+		{
+			Element[EID]->TextPositionX = (ScreenWidth / 2.0f) - (Width / 2.0f) + OffsetX;
+			Element[EID]->TextPositionY = OffsetY;
+		}
+		else if(Element[EID]->Anchor == TOP_RIGHT)
+		{
+			Element[EID]->TextPositionX = ScreenWidth - Width;
+			Element[EID]->TextPositionY = OffsetY;
+		}
+		else if(Element[EID]->Anchor == BOTTOM_LEFT)
+		{
+			real32 TextHeight = Element[EID]->Text[0]->TextMeasurementHeight;
+
+			Element[EID]->TextPositionX = OffsetX;
+			Element[EID]->TextPositionY = ScreenHeight - OffsetY - Height + TextHeight;
+		}
+		else if(Element[EID]->Anchor == BOTTOM_MIDDLE)
+		{
+			real32 TextHeight = Element[EID]->Text[0]->TextMeasurementHeight;
+
+			Element[EID]->TextPositionX = (ScreenWidth / 2.0f) - (Width / 2.0f) + OffsetX;
+			Element[EID]->TextPositionY = ScreenHeight - OffsetY - Height + TextHeight;
+		}
+		else if(Element[EID]->Anchor == BOTTOM_RIGHT)
+		{
+			real32 TextHeight = Element[EID]->Text[0]->TextMeasurementHeight;
+
+			Element[EID]->TextPositionX = ScreenWidth - Width;
+			Element[EID]->TextPositionY = ScreenHeight - OffsetY - Height + TextHeight;
+		}
+		else if(Element[EID]->Anchor == MIDDLE_LEFT)
+		{
+			real32 TextHeight = Element[EID]->Text[0]->TextMeasurementHeight;
+
+			Element[EID]->TextPositionX = OffsetX;
+			Element[EID]->TextPositionY = (ScreenHeight / 2.0f) - (Height / 2.0f) - OffsetX + TextHeight;
+		}
+		else if(Element[EID]->Anchor == MIDDLE_MIDDLE)
+		{
+			Element[EID]->TextPositionX = (ScreenWidth / 2.0f) - (Width / 2.0f) + OffsetX;
+			Element[EID]->TextPositionY = (ScreenHeight / 2.0f) - (Height / 2.0f) + OffsetX;
+		}
+		else if(Element[EID]->Anchor == MIDDLE_RIGHT)
+		{
+			real32 TextHeight = Element[EID]->Text[0]->TextMeasurementHeight;
+
+			Element[EID]->TextPositionX = ScreenWidth - Width;
+			Element[EID]->TextPositionY = (ScreenHeight / 2.0f) - (Height / 2.0f) - OffsetX + TextHeight;
+		}
+		else
+		{
+			Element[EID]->TextPositionX = OffsetX;
+			Element[EID]->TextPositionY = OffsetY;
+		}
+	}
 }
 
-void user_interface::BuildElements()
+void user_interface::CalculateVertices()
 {
-	CalculateTextPositions();
-
-	// NOTE(Cristoffer): Run this every frame after to update the UI to the 
-	// graphics buffer after updating the UI data stuff.
-
 	uint32 QuadCount = 0;
 
 	for(uint32 ID = 0; ID < ElementCount; ID++)
@@ -442,7 +462,7 @@ void user_interface::BuildElements()
 
 		real32 Width = Element[ID]->Width;
 		real32 Height = Element[ID]->Height;
-		
+
 		if(Element[ID]->IsHighlighted)
 		{
 			Vertex[0].IsHighlighted = 1.0f;
@@ -584,12 +604,35 @@ void user_interface::BuildElements()
 
 		QuadCount++;
 	}
+}
 
-	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(ui_vertex), Vertices.size());
+void user_interface::BuildElements()
+{
+	if(USE_MULTI_THREADING)
+	{
+		if(threading::GetInstance().WorkDone(ThreadWorkID))
+		{
+			threading::GetInstance().AddBackgroundWork(ThreadWorkID, [&]
+			{
+				// NOTE(Cristoffer): Updates all the interface elements.
+				// Calculates new vertex positions based on text, since the text
+				// may stretch out elements etc.
+				CalculateTextPositions();
+				CalculateVertices();
+			});
+		}
+	}
+	else
+	{
+		CalculateTextPositions();
+		CalculateVertices();
+	}
 }
 
 void user_interface::Draw(camera &Camera)
 {
+	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(ui_vertex), Vertices.size());
+
 	VertexBuffer->Bind();
 	Shader->Bind();
 

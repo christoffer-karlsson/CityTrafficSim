@@ -9,6 +9,15 @@ application::application() :
 {
 }
 
+
+void BadFunc()
+{
+	while(true)
+	{
+		int A = 5 + 3;
+	}
+}
+
 void application::Run()
 {
 	Window.ShowMouseCursor(0);
@@ -21,19 +30,15 @@ void application::Run()
 	int32 X = 0;
 	int32 Y = 0;
 
-	uint32 SystemInfoElement = Graphics.GetUI()->CreateElement(TOP_LEFT, 350.0f, 10.0f);
-
-	uint32 T1 = Graphics.GetUI()->AddNewText(SystemInfoElement, "SYSTEM INFO");
-	uint32 T2 = Graphics.GetUI()->AddNewText(SystemInfoElement, "FPS");
-	uint32 T3 = Graphics.GetUI()->AddNewText(SystemInfoElement, "Frame Time");
-	uint32 T4 = Graphics.GetUI()->AddNewText(SystemInfoElement, "Camera Position");
-	uint32 T5 = Graphics.GetUI()->AddNewText(SystemInfoElement, "Mouse Picker");
-	uint32 T6 = Graphics.GetUI()->AddNewText(SystemInfoElement, "Yas");
-
+	uint32 SystemInfoElement = Graphics.GetUI()->CreateElement(TOP_LEFT, 390.0f, 10.0f);
+	uint32 T1 = Graphics.GetUI()->AddNewText(SystemInfoElement, "FPS");
+	uint32 T2 = Graphics.GetUI()->AddNewText(SystemInfoElement, "Frame Time");
+	uint32 T3 = Graphics.GetUI()->AddNewText(SystemInfoElement, "Camera Position");
+	uint32 T4 = Graphics.GetUI()->AddNewText(SystemInfoElement, "Mouse World Position");
 	Graphics.GetUI()->SetBackgroundColor(SystemInfoElement, { 0.25f, 0.25f, 0.25f, 0.75f });
 	Graphics.GetUI()->SetOffset(SystemInfoElement, 10.0f, 10.0f);
 	Graphics.GetUI()->SetMargin(SystemInfoElement, 10.0f);
-	Graphics.GetUI()->SetAdjustWidthToText(SystemInfoElement, true);
+	//Graphics.GetUI()->SetAdjustWidthToText(SystemInfoElement, true);
 
 	uint32 EditModeElement = Graphics.GetUI()->CreateElement(TOP_MIDDLE, 10.0f, 10.0f);
 	Graphics.GetUI()->AddNewText(EditModeElement, "EDIT MODE ENABLED");
@@ -44,27 +49,40 @@ void application::Run()
 	Graphics.GetUI()->SetAdjustHeightToText(EditModeElement, true);
 	Graphics.GetUI()->SetAdjustWidthToText(EditModeElement, true);
 
-	uint32 TopMiddle = Graphics.GetUI()->CreateElement(TOP_MIDDLE, 100.0f, 100.0f);
-	Graphics.GetUI()->SetBackgroundColor(TopMiddle, { 0.25f, 0.25f, 0.25f, 0.75f });
-	Graphics.GetUI()->AddNewText(TopMiddle, "TopMiddle");
-	Graphics.GetUI()->SetOffset(TopMiddle, 10.0f, 10.0f);
-	Graphics.GetUI()->SetMargin(TopMiddle, 10.0f);
-
-	uint32 TopRight = Graphics.GetUI()->CreateElement(TOP_RIGHT, 100.0f, 100.0f);
-	Graphics.GetUI()->SetBackgroundColor(TopRight, { 0.25f, 0.25f, 0.25f, 0.75f });
-	Graphics.GetUI()->AddNewText(TopRight, "TopRight");
-	Graphics.GetUI()->AddNewText(TopRight, "More test text for this box.");
-	Graphics.GetUI()->SetOffset(TopRight, 10.0f, 10.0f);
-	Graphics.GetUI()->SetMargin(TopRight, 10.0f);
-
-	uint32 BottomLeft = Graphics.GetUI()->CreateElement(BOTTOM_LEFT, 100.0f, 100.0f);
+	uint32 BottomLeft = Graphics.GetUI()->CreateElement(BOTTOM_LEFT, 10.0f, 10.0f);
 	Graphics.GetUI()->SetBackgroundColor(BottomLeft, { 0.25f, 0.25f, 0.25f, 0.75f });
-	Graphics.GetUI()->AddNewText(BottomLeft, "BottomLeft");
-	Graphics.GetUI()->AddNewText(BottomLeft, "A second row of text.");
+	Graphics.GetUI()->AddNewText(BottomLeft, "CONTROLS");
+	Graphics.GetUI()->AddNewText(BottomLeft, "\n");
+	Graphics.GetUI()->AddNewText(BottomLeft, "W, A, S, D");
+	Graphics.GetUI()->AddNewText(BottomLeft, "Camera movement.");
+	Graphics.GetUI()->AddNewText(BottomLeft, "\n");
+	Graphics.GetUI()->AddNewText(BottomLeft, "Mouse X,Y Axis");
+	Graphics.GetUI()->AddNewText(BottomLeft, "Camera look direction.");
+	Graphics.GetUI()->AddNewText(BottomLeft, "\n");
+	Graphics.GetUI()->AddNewText(BottomLeft, "CTRL, SPACE");
+	Graphics.GetUI()->AddNewText(BottomLeft, "Move camera up and down.");
+	Graphics.GetUI()->AddNewText(BottomLeft, "\n");
+	Graphics.GetUI()->AddNewText(BottomLeft, "TAB");
+	Graphics.GetUI()->AddNewText(BottomLeft, "Enable edit mode.");
+	Graphics.GetUI()->AddNewText(BottomLeft, "\n");
+	Graphics.GetUI()->AddNewText(BottomLeft, "LMB, MMB, RMB");
+	Graphics.GetUI()->AddNewText(BottomLeft, "Add tile to the world map.");
 	Graphics.GetUI()->SetOffset(BottomLeft, 10.0f, 10.0f);
 	Graphics.GetUI()->SetMargin(BottomLeft, 10.0f);
+	Graphics.GetUI()->SetAdjustHeightToText(BottomLeft, true);
+	Graphics.GetUI()->SetAdjustWidthToText(BottomLeft, true);
 
-	uint32 BottomMiddle = Graphics.GetUI()->CreateElement(BOTTOM_MIDDLE, 100.0f, 100.0f);
+	if(USE_MULTI_THREADING)
+	{
+		uint32 TopRight = Graphics.GetUI()->CreateElement(TOP_RIGHT, 10.0f, 10.0f);
+		Graphics.GetUI()->SetBackgroundColor(TopRight, { 0.25f, 0.25f, 0.25f, 0.75f });
+		Graphics.GetUI()->AddNewText(TopRight, "MULTI-THREADING ENABLED");
+		Graphics.GetUI()->SetOffset(TopRight, 10.0f, 10.0f);
+		Graphics.GetUI()->SetMargin(TopRight, 10.0f);
+		Graphics.GetUI()->SetAdjustWidthToText(TopRight, true);
+	}
+
+	/*uint32 BottomMiddle = Graphics.GetUI()->CreateElement(BOTTOM_MIDDLE, 100.0f, 100.0f);
 	Graphics.GetUI()->SetBackgroundColor(BottomMiddle, { 0.25f, 0.25f, 0.25f, 0.75f });
 	Graphics.GetUI()->AddNewText(BottomMiddle, "BottomMiddle");
 	Graphics.GetUI()->SetOffset(BottomMiddle, 10.0f, 10.0f);
@@ -94,13 +112,21 @@ void application::Run()
 	Graphics.GetUI()->SetBackgroundColor(MiddleRight, { 0.25f, 0.25f, 0.25f, 0.75f });
 	Graphics.GetUI()->AddNewText(MiddleRight, "MiddleRight");
 	Graphics.GetUI()->SetMargin(MiddleRight, 10.0f);
-	Graphics.GetUI()->SetOffset(MiddleRight, 10.0f, 10.0f);
+	Graphics.GetUI()->SetOffset(MiddleRight, 10.0f, 10.0f);*/
 
-	Graphics.GetUI()->BuildElements();
-
-	while(Running)
+	while(true)
 	{
 		Timing.StartFrameTimer();
+
+		// NOTE(Cristoffer): Safely shut down all working threads before destroying
+		// all the instances and shutting down.
+		if(!Running)
+		{
+			threading::GetInstance().WaitAllThreads();
+			threading::GetInstance().TerminateAllThreads();
+
+			break;
+		}
 
 		MSG Message;
 
@@ -127,42 +153,17 @@ void application::Run()
 			if(!EditMode) Window.ShowMouseCursor(0);
 		}
 
+		real32 CameraMovementSpeed = (real32)Timing.GetFrameTimeDeltaMilliseconds() * (8.0f / 1000.0f);
+
+		if(KeyPressed(KEY_SHIFT))
+		{
+			CameraMovementSpeed *= 6.0f;
+		}
+
 		if(!EditMode)
 		{
-			real32 CameraMovementSpeed = (real32)Timing.GetFrameTimeDeltaMilliseconds() * (8.0f / 1000.0f);
-
-			if(KeyPressed(KEY_W))
-			{
-				Graphics.GetCamera().MoveForward(CameraMovementSpeed);
-			}
-
-			if(KeyPressed(KEY_S))
-			{
-				Graphics.GetCamera().MoveBackward(CameraMovementSpeed);
-			}
-
-			if(KeyPressed(KEY_A))
-			{
-				Graphics.GetCamera().StrafeLeft(CameraMovementSpeed);
-			}
-
-			if(KeyPressed(KEY_D))
-			{
-				Graphics.GetCamera().StrafeRight(CameraMovementSpeed);
-			}
-
-			if(KeyPressed(KEY_SPACE))
-			{
-				Graphics.GetCamera().MoveUp(CameraMovementSpeed);
-			}
-
-			if(KeyPressed(KEY_CONTROL))
-			{
-				Graphics.GetCamera().MoveDown(CameraMovementSpeed);
-			}
-
-			Graphics.GetCamera().LookX(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawX() * 8.0f / 1000.0f));
-			Graphics.GetCamera().LookY(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawY() * 8.0f / 1000.0f));
+			Graphics.GetCamera().LookX(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawX() * 30.0f / 1000.0f));
+			Graphics.GetCamera().LookY(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawY() * 30.0f / 1000.0f));
 		}
 		
 		if(EditMode)
@@ -185,15 +186,53 @@ void application::Run()
 			}
 		}
 
-		Graphics.GetUI()->UpdateText(SystemInfoElement, T1, ("FPS: " + 
+		if(KeyPressed(KEY_W))
+		{
+			Graphics.GetCamera().MoveForward(CameraMovementSpeed);
+		}
+
+		if(KeyPressed(KEY_S))
+		{
+			Graphics.GetCamera().MoveBackward(CameraMovementSpeed);
+		}
+
+		if(KeyPressed(KEY_A))
+		{
+			Graphics.GetCamera().StrafeLeft(CameraMovementSpeed);
+		}
+
+		if(KeyPressed(KEY_D))
+		{
+			Graphics.GetCamera().StrafeRight(CameraMovementSpeed);
+		}
+
+		if(KeyPressed(KEY_SPACE))
+		{
+			Graphics.GetCamera().MoveUp(CameraMovementSpeed);
+		}
+
+		if(KeyPressed(KEY_CONTROL))
+		{
+			Graphics.GetCamera().MoveDown(CameraMovementSpeed);
+		}
+
+		//uint32 T1 = Graphics.GetUI()->AddNewText(SystemInfoElement, "FPS");
+		//uint32 T2 = Graphics.GetUI()->AddNewText(SystemInfoElement, "Frame Time");
+		//uint32 T3 = Graphics.GetUI()->AddNewText(SystemInfoElement, "Camera Position");
+		//uint32 T4 = Graphics.GetUI()->AddNewText(SystemInfoElement, "Mouse World Position");
+		
+		Graphics.GetUI()->UpdateText(SystemInfoElement, T1, ("Frame Per Second: " + 
 															 std::to_string(Timing.GetFramesPerSecond())));
 
-		Graphics.GetUI()->UpdateText(SystemInfoElement, T2, ("Camera Position: " + 
+		Graphics.GetUI()->UpdateText(SystemInfoElement, T2, ("Frame Time Delta: " +
+															  std::to_string(Timing.GetFrameTimeDeltaMilliseconds())));
+
+		Graphics.GetUI()->UpdateText(SystemInfoElement, T3, ("Camera Position: " + 
 															 std::to_string(Graphics.GetCamera().GetPositionX()) + ", " + 
 															 std::to_string(Graphics.GetCamera().GetPositionY()) + ", " + 
 															 std::to_string(Graphics.GetCamera().GetPositionZ())));
 		
-		Graphics.GetUI()->UpdateText(SystemInfoElement, T3, ("Mouse Picker: " +
+		Graphics.GetUI()->UpdateText(SystemInfoElement, T4, ("Mouse World Position: " +
 															 std::to_string(global_data_collector::CurrentlyPickedTileX) + ", " +
 															 std::to_string(global_data_collector::CurrentlyPickedTileY)));
 

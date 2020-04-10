@@ -8,6 +8,7 @@
 #include "global_device_info.h"
 #include "global_data_collector.h"
 #include "direct3d.h"
+#include "threading.h"
 
 #include <windows.h>
 #include <string>
@@ -19,9 +20,6 @@ class application
 	window		Window;
 	timing		Timing;
 	direct3d	Graphics;
-
-	// TODO(Cristoffer): Implement next..
-	//Thread		Thread;
 
 	// TODO(Cristoffer): Temp! Remove this later.
 	real64 TimeCheck;

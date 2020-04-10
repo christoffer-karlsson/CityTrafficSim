@@ -1,3 +1,7 @@
+// mouse_picker.h:
+// Transform mouse pointer X,Y screen coordinates to world coordinates and
+// checks for intersects with triangles.
+
 #pragma once
 
 #include "common.h"
@@ -6,10 +10,7 @@
 #include "terrain.h"
 #include "global_device_info.h"
 #include "global_data_collector.h"
-
-#include <future>
-#include <thread>
-#include <atomic>
+#include "threading.h"
 
 #include "external/SimpleMath.h"
 #include <DirectXMath.h>
@@ -21,13 +22,11 @@ class mouse_picker
 	terrain	*Terrain;
 	camera	*Camera;
 
-	std::mutex			Mutex;
-	std::future<bool>	Job;
-	std::atomic<bool>	ThreadBusy;
+	uint32 ThreadWorkID;
 
 	position MousePositionInWorld;
 
-	static void RayTriangleIntersectWork(mouse_picker *Instance);
+	void RayTriangleIntersectWork();
 
 	public:
 

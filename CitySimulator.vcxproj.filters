@@ -108,6 +108,9 @@
     <ClCompile Include="user_interface.cpp">
       <Filter>Source Files\graphics\drawables</Filter>
     </ClCompile>
+    <ClCompile Include="threading.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -190,6 +193,9 @@
     </ClInclude>
     <ClInclude Include="user_interface.h">
       <Filter>Header Files\graphics\drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="threading.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

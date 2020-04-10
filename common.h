@@ -1,15 +1,23 @@
-// common.h: Miscellaneous typedefs, macros, etc that is used all over the place.
+// common.h: Miscellaneous typedefs, macros, settings, etc that is used all over the place.
 
 #pragma once
 
 #include <stdint.h>
 #include <cassert>
 
-#define BUILD_NUMBER 14
+#define BUILD_NUMBER 16
 #define SHOW_BUILD_NUMBER 1
 
+// NOTE(Cristoffer): Enable debug stuff, such as assertions. Turn off
+// when building release.
 #define DEBUG_MODE 1
 
+// NOTE(Cristoffer): Define if multi-threading should be used.
+// Supports change at run time, so maybe make a changeable variable of
+// this to experiment?
+#define USE_MULTI_THREADING 1
+
+// NOTE(Cristoffer): For pristine looking code.
 typedef int8_t  int8;
 typedef int16_t int16;
 typedef int32_t int32;
@@ -33,4 +41,5 @@ typedef double real64;
 
 #endif
 
+// NOTE(Cristoffer): Predefined messages. Might be useless to do this.
 #define ERROR_MESSAGE_0000 "Could not create a handle to window."

@@ -262,6 +262,13 @@ void direct3d::TestDrawTerrain()
 
 void direct3d::TestDrawUI()
 {
+	// TODO(Crtistoffer): URGENT FIX THIS!
+	while(true)
+	{
+		if(threading::GetInstance().WorkDone(998))
+			break;
+	}
+
 	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	UI->Draw(Camera);
 	UI->DrawStrings();
