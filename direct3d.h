@@ -48,13 +48,8 @@ class direct3d
 	std::unique_ptr<drawable> TestEntity;
 
 	camera Camera;
-	terrain *Terrain;
-	user_interface *UI;
-	mouse_picker TerrainPicker;
 
 	public:
-
-	world	*World;
 
 	// TODO(Cristoffer): Temporary data here ////////////////
 
@@ -79,14 +74,9 @@ class direct3d
 
 	// TODO(Cristoffer): Perhaps camera shouldn't be accessable from here..
 	camera &GetCamera();
-	user_interface *GetUI() const;
-
-	void TestDoWorkStuff();
-	void TestDoEditorWorkStuff();
 
 	void TestDraw();
 	void TestDrawEntity(real32 X, real32 Y, real32 Z);
-	void TestDrawTerrain();
-	void TestDrawUI();
-	void TestSetTile(real32 PositionX, real32 PositionY, TILE_TYPE Type);
+	void TestDrawTerrain(terrain *Terrain);
+	void TestDrawUI(user_interface *UI);
 };

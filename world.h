@@ -40,6 +40,7 @@ class world
 	~world();
 
 	void SetTile(int32 PositionX, int32 PositionY, TILE_TYPE Type);
+	//void SetTileHighlighted(int32 PositionX, int32 PositionY, bool SetHighlighted);
 
 	int32 GetWidth() const;
 	int32 GetHeight() const;

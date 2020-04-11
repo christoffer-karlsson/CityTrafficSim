@@ -1,9 +1,7 @@
 #include "direct3d.h"
 
 direct3d::direct3d(HWND WindowHandle) :
-	Camera(),
-	World(new world(100, 100)),
-	TerrainPicker()
+	Camera()
 {
 	// TODO(Cristoffer): Implement some way to reinitialize this, for example
 	// if frame buffer size is changed mid run time?
@@ -22,34 +20,6 @@ direct3d::direct3d(HWND WindowHandle) :
 	global_device_info::Target = Target;
 	global_device_info::Swap = Swap;
 
-	real32 Spacing = 1.0f;
-
-	World->SetTile(5, 10, ROAD_Z);
-	World->SetTile(5, 11, ROAD_Z);
-	World->SetTile(5, 12, ROAD_Z);
-	World->SetTile(5, 13, ROAD_Z);
-	World->SetTile(5, 14, CROSSROAD);
-	World->SetTile(5, 15, ROAD_Z);
-	World->SetTile(5, 16, ROAD_Z);
-	World->SetTile(5, 17, ROAD_Z);
-	World->SetTile(5, 18, ROAD_Z);
-	World->SetTile(5, 19, ROAD_Z);
-	World->SetTile(5, 20, ROAD_Z);
-	World->SetTile(5, 21, ROAD_Z);
-	World->SetTile(6, 14, ROAD_X);
-	World->SetTile(7, 14, ROAD_X);
-	World->SetTile(8, 14, ROAD_X);
-	World->SetTile(9, 14, ROAD_X);
-	World->SetTile(10, 14, ROAD_X);
-	World->SetTile(11, 14, ROAD_X);
-	World->SetTile(12, 14, ROAD_X);
-	World->SetTile(13, 14, ROAD_X);
-
-	Terrain = new terrain(World);
-	TerrainPicker.Init(Terrain, &Camera);
-
-	UI = new user_interface();
-
 	//Graph.push_back(std::make_unique<line>(10.0f, 5.0f, 10.0f, 10.0f, 0.0f, 10.0f));
 
 	//TestEntity = std::make_unique<building>(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
@@ -58,11 +28,6 @@ direct3d::direct3d(HWND WindowHandle) :
 camera &direct3d::GetCamera()
 {
 	return Camera;
-}
-
-user_interface *direct3d::GetUI() const
-{
-	return UI;
 }
 
 void direct3d::SetDevice()
@@ -225,16 +190,6 @@ void direct3d::EndFrame() const
 	Swap->Present(0, 0);
 }
 
-void direct3d::TestDoWorkStuff()
-{
-	
-}
-
-void direct3d::TestDoEditorWorkStuff()
-{
-	TerrainPicker.TestMouseCollision();
-}
-
 void direct3d::TestDraw()
 {
 	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
@@ -254,30 +209,20 @@ void direct3d::TestDrawEntity(real32 X, real32 Y, real32 Z)
 	TestEntity.get()->Draw(Camera);
 }
 
-void direct3d::TestDrawTerrain()
+void direct3d::TestDrawTerrain(terrain *Terrain)
 {
 	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	Terrain->Draw(Camera);
 }
 
-void direct3d::TestDrawUI()
+void direct3d::TestDrawUI(user_interface *UI)
 {
-	// TODO(Crtistoffer): URGENT FIX THIS!
-	while(true)
-	{
-		if(threading::GetInstance().WorkDone(998))
-			break;
-	}
+	// NOTE(Cristoffer): Wait for thread before rendering UI.
+	thread_pool.WaitThread(UI->ThreadWorkID);
 
 	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	UI->Draw(Camera);
 	UI->DrawStrings();
-}
-
-void direct3d::TestSetTile(real32 PositionX, real32 PositionY, TILE_TYPE Type)
-{
-	World->SetTile((int32)PositionX, (int32)PositionY, Type);
-	Terrain->SetTileType((int32)PositionX, (int32)PositionY, Type);
 }
 
 direct3d::~direct3d()

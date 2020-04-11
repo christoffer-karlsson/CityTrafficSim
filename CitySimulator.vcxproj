@@ -157,6 +157,7 @@
     <ClCompile Include="drawable.cpp" />
     <ClCompile Include="global_data_collector.cpp" />
     <ClCompile Include="global_device_info.cpp" />
+    <ClCompile Include="persistence.cpp" />
     <ClCompile Include="terrain.cpp" />
     <ClCompile Include="line.cpp" />
     <ClCompile Include="mouse_picker.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="external\SimpleMath.h" />
     <ClInclude Include="global_data_collector.h" />
     <ClInclude Include="global_device_info.h" />
+    <ClInclude Include="persistence.h" />
     <ClInclude Include="terrain.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="mouse_picker.h" />
@@ -283,7 +285,10 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="testmap.citysim" />
+    <Text Include="todo.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\saved_map.citysim" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

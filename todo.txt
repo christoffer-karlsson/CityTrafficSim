@@ -1,0 +1,10 @@
+
+- save states, persistant memory for saving map etc
+- more ui elements (button, textbox, selecting)
+- ui picking 
+- bug: camera pitch max down
+- render region
+
+- thread class
+- world over 100x100
+- mouse picking

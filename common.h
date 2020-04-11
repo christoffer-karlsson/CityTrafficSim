@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <cassert>
 
-#define BUILD_NUMBER 17
+#define BUILD_NUMBER 18
 #define SHOW_BUILD_NUMBER 1
 
 // NOTE(Cristoffer): Enable debug stuff, such as assertions. Turn off
@@ -40,6 +40,8 @@ typedef double real64;
 #define ASSERT(Expression) Expression
 
 #endif
+
+#define singleton public
 
 // NOTE(Cristoffer): Predefined messages. Might be useless to do this.
 #define ERROR_MESSAGE_0000 "Could not create a handle to window."

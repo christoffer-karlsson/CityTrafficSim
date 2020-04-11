@@ -22,13 +22,13 @@ class mouse_picker
 	terrain	*Terrain;
 	camera	*Camera;
 
-	uint32 ThreadWorkID;
-
 	position MousePositionInWorld;
 
 	void RayTriangleIntersectWork();
 
 	public:
+
+	work_id ThreadWorkID;
 
 	mouse_picker();
 	mouse_picker(terrain *Terrain, camera *Camera);

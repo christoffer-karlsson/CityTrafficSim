@@ -78,15 +78,14 @@ class user_interface : public drawable
 {
 	private:
 
-	bool UpdateDraw = false;
+	std::unique_ptr<SpriteBatch> DXTKSpriteBatch;
+	std::unique_ptr<SpriteFont> DXTKSpriteFont;
 
 	std::vector<ui_vertex> Vertices;
-	std::vector<uint16> Indices;
+	std::vector<uint32> Indices;
 
 	element *Element[MAX_UI_ELEMENTS];
 	uint32 ElementCount;
-
-	uint32 ThreadWorkID;
 
 	bool CheckValidID(uint32 ElementID);
 	bool CheckValidStringID(uint32 ElementID, uint32 StringID);
@@ -95,8 +94,7 @@ class user_interface : public drawable
 
 	public:
 
-	std::unique_ptr<SpriteBatch> DXTKSpriteBatch;
-	std::unique_ptr<SpriteFont> DXTKSpriteFont;
+	work_id ThreadWorkID;
 
 	user_interface();
 	~user_interface();

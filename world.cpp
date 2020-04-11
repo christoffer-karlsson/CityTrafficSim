@@ -34,6 +34,11 @@ void world::SetTile(int32 X, int32 Y, TILE_TYPE Type)
 	Tiles[Pitch + X].Type = Type;
 }
 
+/*void world::SetTileHighlighted(int32 X, int32 Y, bool SetHighlighted)
+{
+	// TODO
+}*/
+
 int32 world::GetWidth() const
 {
 	return Width;

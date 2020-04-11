@@ -111,6 +111,9 @@
     <ClCompile Include="threading.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="persistence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -197,6 +200,9 @@
     <ClInclude Include="threading.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="persistence.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="cube_vs.hlsl">
@@ -225,7 +231,12 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="testmap.citysim">
+    <Text Include="todo.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\saved_map.citysim">
       <Filter>Source Files\data</Filter>
     </None>
   </ItemGroup>

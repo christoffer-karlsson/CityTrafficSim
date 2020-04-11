@@ -65,7 +65,7 @@ void vertex_buffer::Bind()
 
 	if(IndexBufferSize > 0)
 	{
-		global_device_info::Context->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+		global_device_info::Context->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	}
 }
 

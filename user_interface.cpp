@@ -39,8 +39,6 @@ bool user_interface::CheckValidStringID(uint32 ElementID, uint32 TextID)
 user_interface::user_interface() :
 	ElementCount(0)
 {
-	ThreadWorkID = threading::GetInstance().GenerateUniqueWorkID();
-
 	// NOTE(Cristoffer): Pre-allocate everything with reasonable default values,
 	// so that everything looks decent even if nothing is changed.
 
@@ -114,7 +112,7 @@ user_interface::user_interface() :
 	Shader->CommitInputElements();
 
 	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(ui_vertex), (uint32)Vertices.size(), DYNAMIC);
-	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint16), (uint32)Indices.size());
+	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint32), (uint32)Indices.size());
 
 	ConstantBuffer = nullptr;
 	Texture = nullptr;
@@ -628,19 +626,14 @@ void user_interface::BuildElements()
 {
 	if(USE_MULTI_THREADING)
 	{
-		if(threading::GetInstance().WorkDone(ThreadWorkID))
+		thread_pool.AddBackgroundWork(ThreadWorkID, [&]
 		{
-			threading::GetInstance().AddBackgroundWork(ThreadWorkID, [&]
-			{
-				// NOTE(Cristoffer): Updates all the interface elements.
-				// Calculates new vertex positions based on text, since the text
-				// may stretch out elements etc.
-				CalculateTextPositions();
-				CalculateVertices();
-
-				UpdateDraw = true;
-			});
-		}
+			// NOTE(Cristoffer): Updates all the interface elements.
+			// Calculates new vertex positions based on text, since the text
+			// may stretch out elements etc.
+			CalculateTextPositions();
+			CalculateVertices();
+		});
 	}
 	else
 	{
@@ -651,12 +644,7 @@ void user_interface::BuildElements()
 
 void user_interface::Draw(camera &Camera)
 {
-	if(UpdateDraw)
-	{
-		VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(ui_vertex), (uint32)Vertices.size());
-		UpdateDraw = false;
-	}
-	
+	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(ui_vertex), (uint32)Vertices.size());
 
 	VertexBuffer->Bind();
 	Shader->Bind();

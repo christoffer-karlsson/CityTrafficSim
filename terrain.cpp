@@ -46,15 +46,15 @@ terrain::terrain(world *World) :
 
 	tile CurrentTile;
 
-	for(int32 X = 0; X < World->GetWidth(); X++)
+	for(uint32 X = 0; X < World->GetWidth(); X++)
 	{
-		for(int32 Y = 0; Y < World->GetHeight(); Y++)
+		for(uint32 Y = 0; Y < World->GetHeight(); Y++)
 		{
 			CurrentTile = World->GetTile(X, Y);
 
 			Atlas = GetTextureCoordinateFromTileType(CurrentTile.Type);
 
-			vertex Vertex[4];
+			terrain_vertex Vertex[4];
 
 			Vertex[0].Position.X = (real32)X - 0.5f;
 			Vertex[0].Position.Y = 0.0f;
@@ -98,14 +98,14 @@ terrain::terrain(world *World) :
 		}
 	}
 
-	for(int32 Quad = 0; Quad < QuadCount; Quad++)
+	for(uint32 Index = 0; Index < QuadCount; Index++)
 	{
-		Indices.push_back(0 + (Quad * 4));
-		Indices.push_back(1 + (Quad * 4));
-		Indices.push_back(2 + (Quad * 4));
-		Indices.push_back(1 + (Quad * 4));
-		Indices.push_back(3 + (Quad * 4));
-		Indices.push_back(2 + (Quad * 4));
+		Indices.push_back(0 + (Index * 4));
+		Indices.push_back(1 + (Index * 4));
+		Indices.push_back(2 + (Index * 4));
+		Indices.push_back(1 + (Index * 4));
+		Indices.push_back(3 + (Index * 4));
+		Indices.push_back(2 + (Index * 4));
 	}
 
 	Shader = new shader(L"ground_vs.cso", L"ground_ps.cso");
@@ -114,8 +114,8 @@ terrain::terrain(world *World) :
 	Shader->AddInputElement("ISPICKED", DXGI_FORMAT_R32_FLOAT);
 	Shader->CommitInputElements();
 
-	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), (uint32)Vertices.size(), DYNAMIC);
-	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint16), (uint32)Indices.size());
+	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(terrain_vertex), (uint32)Vertices.size(), DYNAMIC);
+	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint32), (uint32)Indices.size());
 
 	ConstantBuffer = new constant_buffer(&VS_Input, sizeof(VS_Input));
 }
@@ -132,7 +132,7 @@ void terrain::Draw(camera &Camera)
 
 	// TODO(Cristoffer): Is it bad to update the dynamic buffer before drawing?
 	// Should it be done earlier?
-	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(vertex), (uint32)Vertices.size());
+	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(terrain_vertex), (uint32)Vertices.size());
 
 	Texture->Bind();
 	VertexBuffer->Bind();
@@ -143,7 +143,7 @@ void terrain::Draw(camera &Camera)
 	global_device_info::Context->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
 }
 
-void terrain::SetTilePicked(int32 X, int32 Y, real32 IsPicked)
+void terrain::UpdateTileHighlighResource(int32 X, int32 Y, real32 IsPicked)
 {
 	int32 Pitch = World->GetWidth() * 4 * X;
 
@@ -160,7 +160,7 @@ void terrain::SetTilePicked(int32 X, int32 Y, real32 IsPicked)
 	Vertices.at(Index + 3).IsPicked = IsPicked;
 }
 
-void terrain::SetTileType(int32 X, int32 Y, TILE_TYPE Type)
+void terrain::UpdateTileTypeResource(int32 X, int32 Y, TILE_TYPE Type)
 {
 	uv_quad Atlas = GetTextureCoordinateFromTileType(Type);
 
@@ -183,7 +183,7 @@ void terrain::SetTileType(int32 X, int32 Y, TILE_TYPE Type)
 	Vertices.at(Index + 3).TextureCoordinate.V = Atlas.TextureCoordinate[3].V;
 }
 
-std::vector<vertex> &terrain::GetVertexData()
+std::vector<terrain_vertex> &terrain::GetVertexData()
 {
 	return Vertices;
 }

@@ -30,8 +30,8 @@ void mouse_picker::RayTriangleIntersectWork()
 	RayOriginScreen = XMVectorSet(GetMouseX(), GetMouseY(), 0.0f, 1.0f);
 	RayDirectionScreen = XMVectorSet(GetMouseX(), GetMouseY(), 1.0f, 1.0f);
 
-	RayOrigin = XMVector3Unproject(RayOriginScreen, 0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 1.0f, Projection, View, World);
-	RayDirection = XMVector3Unproject(RayDirectionScreen, 0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 1.0f, Projection, View, World);
+	RayOrigin = XMVector3Unproject(RayOriginScreen, 0.0f, 0.0f, 1920.0f, 1080.0f, 0.0f, 1.0f, Projection, View, World);
+	RayDirection = XMVector3Unproject(RayDirectionScreen, 0.0f, 0.0f, 1920.0f, 1080.0f, 0.0f, 1.0f, Projection, View, World);
 
 	RayDirection = XMVector3Normalize(RayDirection - RayOrigin);
 
@@ -74,8 +74,8 @@ void mouse_picker::RayTriangleIntersectWork()
 	{
 		// NOTE(Cristoffer): Since mouse have moved to new world coordinate, remove the
 		// old tile highlight effect, and highlight the new tile.
-		Terrain->SetTilePicked((int32)MousePositionInWorld.X, (int32)MousePositionInWorld.Y, 0.0f);
-		Terrain->SetTilePicked((int32)NewMousePositionInWorld.X, (int32)NewMousePositionInWorld.Y, 1.0f);
+		Terrain->UpdateTileHighlighResource((int32)MousePositionInWorld.X, (int32)MousePositionInWorld.Y, 0.0f);
+		Terrain->UpdateTileHighlighResource((int32)NewMousePositionInWorld.X, (int32)NewMousePositionInWorld.Y, 1.0f);
 
 		MousePositionInWorld.X = NewMousePositionInWorld.X;
 		MousePositionInWorld.Y = NewMousePositionInWorld.Y;
@@ -86,8 +86,6 @@ void mouse_picker::Init(terrain *Terrain, camera *Camera)
 {
 	this->Terrain = Terrain;
 	this->Camera = Camera;
-
-	this->ThreadWorkID = threading::GetInstance().GenerateUniqueWorkID();
 }
 
 void mouse_picker::TestMouseCollision()
@@ -97,9 +95,9 @@ void mouse_picker::TestMouseCollision()
 
 	if(USE_MULTI_THREADING)
 	{
-		if(threading::GetInstance().WorkDone(ThreadWorkID))
+		if(thread_pool.WorkDone(ThreadWorkID))
 		{
-			threading::GetInstance().AddBackgroundWork(ThreadWorkID, [&]
+			thread_pool.AddBackgroundWork(ThreadWorkID, [&]
 			{
 				RayTriangleIntersectWork();
 			});

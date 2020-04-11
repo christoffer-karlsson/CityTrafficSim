@@ -5,6 +5,7 @@
 #include "common.h"
 #include "window.h"
 #include "timing.h"
+#include "persistence.h"
 #include "global_device_info.h"
 #include "global_data_collector.h"
 #include "direct3d.h"
@@ -20,10 +21,9 @@ class application
 	window		Window;
 	timing		Timing;
 	direct3d	Graphics;
+	persistence Persistence;
 
 	bool Running;
-
-	void UserInterface();
 
 	public:
 

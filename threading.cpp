@@ -57,7 +57,6 @@ threading::threading() :
 		ThreadIsWorking[Index] = false;
 	}
 
-	// TODO(Cristoffer): Decide how many threads to use, all that are given?
 	for(uint32 Index = 0; Index < ThreadCount; Index++)
 	{
 		Threads.emplace_back(std::thread(Thread, Index));
@@ -100,30 +99,14 @@ void threading::AddWork(std::function<void()> Function)
 	ThreadBlocker.notify_one();
 }
 
-void threading::AddJoinedWork(uint32 ID, std::function<void()> Function)
+void threading::AddBackgroundWork(work_id &ID, std::function<void()> Function)
 {
 	task Task;
 
 	{
 		std::unique_lock<std::mutex> Lock{ Mutex };
 
-		Task.ID = ID;
-		Task.Function = Function;
-
-		Jobs.emplace(Task);
-	}
-
-	ThreadBlocker.notify_one();
-}
-
-void threading::AddBackgroundWork(uint32 ID, std::function<void()> Function)
-{
-	task Task;
-
-	{
-		std::unique_lock<std::mutex> Lock{ Mutex };
-
-		Task.ID = ID;
+		Task.ID = ID.GetID();
 		Task.Function = Function;
 
 		Jobs.emplace(Task);
@@ -146,9 +129,9 @@ uint32 threading::GenerateUniqueWorkID()
 	return ID;
 }
 
-bool threading::WorkDone(uint32 WorkID)
+bool threading::WorkDone(work_id &ID)
 {
-	return WorkIsDone[WorkID];
+	return WorkIsDone[ID.GetID()];
 }
 
 void threading::WaitAllThreads()
@@ -168,6 +151,17 @@ void threading::WaitAllThreads()
 				ThreadsWorking = false;
 				break;
 			}
+		}
+	}
+}
+
+void threading::WaitThread(work_id &ID)
+{
+	while(true)
+	{
+		if(WorkDone(ID))
+		{
+			break;
 		}
 	}
 }
