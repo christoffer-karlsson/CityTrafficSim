@@ -75,8 +75,7 @@ class direct3d
 	// TODO(Cristoffer): Perhaps camera shouldn't be accessable from here..
 	camera &GetCamera();
 
-	void TestDraw();
-	void TestDrawEntity(real32 X, real32 Y, real32 Z);
+	void TestDrawLines();
 	void TestDrawTerrain(terrain *Terrain);
 	void TestDrawUI(user_interface *UI);
 };

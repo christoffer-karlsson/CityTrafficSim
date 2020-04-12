@@ -3,6 +3,7 @@
 drawable::drawable()
 {
 	Model = XMMatrixIdentity();
+	InitialModel = XMMatrixIdentity();
 	Texture = nullptr;
 	Shader = nullptr;
 	VertexBuffer = nullptr;
@@ -17,19 +18,51 @@ drawable::~drawable()
 	delete ConstantBuffer;
 }
 
-void drawable::SetModelPosition(real32 X, real32 Y, real32 Z)
+void drawable::SetInitialModel(vec3 Position, vec3 Scale, vec3 Rotation)
 {
-	Model = XMMatrixTranslation(X, Y, Z);
+	SetPosition(Position);
+	SetRotation(Rotation);
+	SetScale(Scale);
+
+	UpdateModel();
+
+	// NOTE(Cristoffer): Store copy of the "initial" model.
+	//InitialModel = Model;
 }
 
-void drawable::SetModelScale(real32 X, real32 Y, real32 Z)
+void drawable::SetPosition(vec3 Position)
 {
-	Model = Model * XMMatrixScaling(X, Y, Z);
+	this->Position = Position;
 }
 
-void drawable::MoveModelPosition(real32 X, real32 Y, real32 Z)
+void drawable::SetRotation(vec3 Rotation)
 {
-	Model = Model * XMMatrixTranslation(X, Y, Z);
+	this->Rotation = Rotation;
+}
+
+void drawable::SetScale(vec3 Scale)
+{
+	this->Scale = Scale;
+}
+
+void drawable::UpdateModel()
+{
+	Model = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+
+	XMMATRIX ScaleMatrix = XMMatrixScaling(Scale.x, Scale.y, Scale.z);
+	XMMATRIX TranslationMatrix = XMMatrixTranslation(Position.x, Position.y, Position.z);
+
+	XMVECTOR RotationAxisX = XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f);
+	XMVECTOR RotationAxisY = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
+	XMVECTOR RotationAxisZ = XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f);
+
+	XMMATRIX RotationInX = XMMatrixRotationAxis(RotationAxisX, DegreeToRadian(Rotation.x));
+	XMMATRIX RotationInY = XMMatrixRotationAxis(RotationAxisY, DegreeToRadian(Rotation.y));
+	XMMATRIX RotationInZ = XMMatrixRotationAxis(RotationAxisZ, DegreeToRadian(Rotation.z));
+
+	XMMATRIX RotationMatrix = RotationInX * RotationInY * RotationInZ;
+
+	Model = Model * RotationMatrix * TranslationMatrix * ScaleMatrix;
 }
 
 XMMATRIX &drawable::GetModel()

@@ -2,7 +2,8 @@
 
 #pragma once
 
-#include <stdint.h>
+#include "types.h"
+
 #include <cassert>
 
 #define BUILD_NUMBER 18
@@ -16,20 +17,6 @@
 // Supports change at run time, so maybe make a changeable variable of
 // this to experiment?
 #define USE_MULTI_THREADING 1
-
-// NOTE(Cristoffer): For pristine looking code.
-typedef int8_t  int8;
-typedef int16_t int16;
-typedef int32_t int32;
-typedef int64_t int64;
-
-typedef uint8_t  uint8;
-typedef uint16_t uint16;
-typedef uint32_t uint32;
-typedef uint64_t uint64;
-
-typedef float  real32;
-typedef double real64;
 
 #if DEBUG_MODE
 

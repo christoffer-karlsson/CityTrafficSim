@@ -2,7 +2,7 @@
 
 building::building(real32 PosX, real32 PosY, real32 PosZ, real32 SizeX, real32 SizeY, real32 SizeZ)
 {
-	SetModelPosition(PosX, PosY, PosZ);
+	//SetModelPosition(PosX, PosY, PosZ);
 
 	struct cb
 	{

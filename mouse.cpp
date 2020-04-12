@@ -40,6 +40,23 @@ void UpdateMouse(LPARAM LParam, WPARAM WParam)
 	}
 }
 
+void UpdateMouseScroll(LPARAM LParam, WPARAM WParam)
+{
+	// NOTE(Cristoffer): Delta goes from 120 to -120.
+	int32 Delta = GET_WHEEL_DELTA_WPARAM(WParam);
+
+	global_data_collector::MouseScrollDelta = Delta;
+
+	if(Delta > 0)
+	{
+		Mouse.ScrollUp = 1;
+	}
+	else if(Delta < 0)
+	{
+		Mouse.ScrollDown = 1;
+	}
+}
+
 void UpdateRawMouse(real32 X, real32 Y)
 {
 	Mouse.RawX = X;
@@ -79,7 +96,25 @@ real32 GetMouseRawY()
 	return Result;
 }
 
-bool MousePressed(int32 ButtonCode)
+bool32 GetMouseScrollUp()
+{
+	bool32 Result = Mouse.ScrollUp;
+
+	Mouse.ScrollUp = 0;
+
+	return Result;
+}
+
+bool32 GetMouseScrollDown()
+{
+	bool32 Result = Mouse.ScrollDown;
+
+	Mouse.ScrollDown = 0;
+
+	return Result;
+}
+
+bool32 MousePressed(int32 ButtonCode)
 {
 	return Mouse.Button[ButtonCode];
 }

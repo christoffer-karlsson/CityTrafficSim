@@ -14,32 +14,43 @@ void application::Run()
 
 	user_interface *UI = new user_interface();
 
-	terrain *Terrain = new terrain(World);
+	entity_manager *EntityManager = new entity_manager();
 
-	mouse_picker TerrainPicker;
-	TerrainPicker.Init(Terrain, &Graphics.GetCamera());
+	/*entity_id Entity = EntityManager->Create(entity_type::CAR);
+
+	Entity.Get()->Update();*/
+
+	object Object;
+
+	mouse_picker TerrainPicker(World, World->Terrain, &Graphics.GetCamera());
 
 	Window.ShowMouseCursor(0);
 	Window.ClipMouseCursor(1);
 
-	bool EditMode = false;
+	bool32 EditMode = false;
+
 	real32 MoveX = 0.0f;
 	real32 MoveY = 0.0f;
 	real32 MoveZ = 0.0f;
-	int32 X = 0;
-	int32 Y = 0;
 
-	uint32 SystemInfoElement = UI->CreateElement(TOP_LEFT, 10.0f, 10.0f);
+	real32 PosX = 0.0f;
+	real32 PosY = 0.0f;
+	real32 PosZ = 0.0f;
+	real32 Angle = 0.0f;
+	real32 Scale = 0.0f;
+
+	uint32 SystemInfoElement = UI->CreateElement(screen_anchor::TOP_LEFT, 10.0f, 10.0f);
 	uint32 T1 = UI->AddNewText(SystemInfoElement, "FPS");
 	uint32 T2 = UI->AddNewText(SystemInfoElement, "Frame Time");
 	uint32 T3 = UI->AddNewText(SystemInfoElement, "Camera Position");
 	uint32 T4 = UI->AddNewText(SystemInfoElement, "Mouse World Position");
+	uint32 T5 = UI->AddNewText(SystemInfoElement, "Test");
 	UI->SetBackgroundColor(SystemInfoElement, { 0.25f, 0.25f, 0.25f, 0.75f });
 	UI->SetOffset(SystemInfoElement, 10.0f, 10.0f);
 	UI->SetMargin(SystemInfoElement, 10.0f);
 	UI->SetAdjustWidthToText(SystemInfoElement, true);
 
-	uint32 EditModeElement = UI->CreateElement(TOP_MIDDLE, 10.0f, 10.0f);
+	uint32 EditModeElement = UI->CreateElement(screen_anchor::TOP_MIDDLE, 10.0f, 10.0f);
 	UI->AddNewText(EditModeElement, "EDIT MODE ENABLED");
 	UI->SetBackgroundColor(EditModeElement, { 0.25f, 0.25f, 0.25f, 0.75f });
 	UI->SetOffset(EditModeElement, 0.0f, 10.0f);
@@ -48,24 +59,27 @@ void application::Run()
 	UI->SetAdjustHeightToText(EditModeElement, true);
 	UI->SetAdjustWidthToText(EditModeElement, true);
 
-	uint32 BottomLeft = UI->CreateElement(BOTTOM_LEFT, 10.0f, 10.0f);
+	uint32 BottomLeft = UI->CreateElement(screen_anchor::BOTTOM_LEFT, 10.0f, 10.0f);
 	UI->SetBackgroundColor(BottomLeft, { 0.25f, 0.25f, 0.25f, 0.75f });
 	UI->AddNewText(BottomLeft, "CONTROLS");
 	UI->AddNewText(BottomLeft, "\n");
-	UI->AddNewText(BottomLeft, "W, A, S, D");
+	UI->AddNewText(BottomLeft, "W/A/S/D");
 	UI->AddNewText(BottomLeft, "Camera movement.");
 	UI->AddNewText(BottomLeft, "\n");
-	UI->AddNewText(BottomLeft, "Mouse X,Y Axis");
+	UI->AddNewText(BottomLeft, "Mouse");
 	UI->AddNewText(BottomLeft, "Camera look direction.");
 	UI->AddNewText(BottomLeft, "\n");
-	UI->AddNewText(BottomLeft, "CTRL, SPACE");
+	UI->AddNewText(BottomLeft, "CTRL/SPACE");
 	UI->AddNewText(BottomLeft, "Move camera up and down.");
 	UI->AddNewText(BottomLeft, "\n");
 	UI->AddNewText(BottomLeft, "TAB");
 	UI->AddNewText(BottomLeft, "Enable edit mode.");
 	UI->AddNewText(BottomLeft, "\n");
-	UI->AddNewText(BottomLeft, "LMB, MMB, RMB");
+	UI->AddNewText(BottomLeft, "LMB/MMB/RMB");
 	UI->AddNewText(BottomLeft, "Add tile to the world map.");
+	UI->AddNewText(BottomLeft, "\n");
+	UI->AddNewText(BottomLeft, "F5/F9");
+	UI->AddNewText(BottomLeft, "Save/Load tile map.");
 	UI->SetOffset(BottomLeft, 10.0f, 10.0f);
 	UI->SetMargin(BottomLeft, 10.0f);
 	UI->SetAdjustHeightToText(BottomLeft, true);
@@ -73,7 +87,7 @@ void application::Run()
 
 	if(USE_MULTI_THREADING)
 	{
-		uint32 TopRight = UI->CreateElement(TOP_RIGHT, 10.0f, 10.0f);
+		uint32 TopRight = UI->CreateElement(screen_anchor::TOP_RIGHT, 10.0f, 10.0f);
 		UI->SetBackgroundColor(TopRight, { 0.25f, 0.25f, 0.25f, 0.75f });
 		UI->AddNewText(TopRight, "MULTI-THREADING ENABLED");
 		UI->SetOffset(TopRight, 10.0f, 10.0f);
@@ -81,7 +95,7 @@ void application::Run()
 		UI->SetAdjustWidthToText(TopRight, true);
 	}
 
-	uint32 MouseTip = UI->CreateElement(MOUSE, 70.0f, 10.0f);
+	uint32 MouseTip = UI->CreateElement(screen_anchor::MOUSE, 70.0f, 10.0f);
 	UI->SetBackgroundColor(MouseTip, { 0.25f, 0.25f, 0.25f, 0.75f });
 	UI->SetOffset(MouseTip, 10.0f, 10.0f);
 	UI->SetMargin(MouseTip, 10.0f);
@@ -110,6 +124,7 @@ void application::Run()
 			TranslateMessage(&Message);
 			DispatchMessage(&Message);
 		}
+
 
 		if(KeyReleased(KEY_ESCAPE))
 		{
@@ -145,20 +160,17 @@ void application::Run()
 
 			if(MousePressed(MOUSE_BUTTON_LEFT))
 			{
-				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, ROAD_Z);
-				Terrain->UpdateTileTypeResource(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, ROAD_Z);
+				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, tile_type::ROAD_Z);
 			}
 
 			if(MousePressed(MOUSE_BUTTON_RIGHT))
 			{
-				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, ROAD_X);
-				Terrain->UpdateTileTypeResource(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, ROAD_X);
+				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, tile_type::ROAD_X);
 			}
 
 			if(MousePressed(MOUSE_BUTTON_MIDDLE))
 			{
-				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, CROSSROAD);
-				Terrain->UpdateTileTypeResource(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, CROSSROAD);
+				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, tile_type::CROSSROAD);
 			}
 		}
 
@@ -199,8 +211,50 @@ void application::Run()
 
 		if(KeyReleased(KEY_F9))
 		{
-			Persistence.LoadSavedWorldMap(World, Terrain);
+			Persistence.LoadSavedWorldMap(World);
 		}
+
+		if(KeyReleased(KEY_ARROWRIGHT))
+		{
+			PosX += 1.0f;
+
+			Object.SetPosition({ PosX, PosY, PosZ });
+		}
+		if(KeyReleased(KEY_ARROWLEFT))
+		{
+			PosX -= 1.0f;
+			Object.SetPosition({ PosX, PosY, PosZ });
+		}
+		if(KeyReleased(KEY_ARROWDOWN))
+		{
+			PosZ -= 1.0f;
+			Object.SetPosition({ PosX, PosY, PosZ });
+		}
+		if(KeyReleased(KEY_ARROWUP))
+		{
+			PosZ += 1.0f;
+			Object.SetPosition({ PosX, PosY, PosZ });
+		}
+		if(GetMouseScrollUp())
+		{
+			Angle += 10.0f;
+			Object.SetRotation({ 0.0f, Angle, 0.0f });
+		}
+		if(GetMouseScrollDown())
+		{
+			Angle -= 10.0f;
+			Object.SetRotation({ 0.0f, Angle, 0.0f });
+		}
+		if(KeyReleased(KEY_1))
+		{
+			Object.SetScale({ 0.1f , 0.1f, 0.1f });
+		}
+		if(KeyReleased(KEY_2))
+		{
+			Object.SetScale({ -0.1f, -0.1f, -0.1f });
+		}
+
+		Object.UpdateModel();
 
 		UI->UpdateText(SystemInfoElement, T1, ("Frame Per Second: " + 
 												std::to_string(Timing.GetFramesPerSecond())));
@@ -216,6 +270,9 @@ void application::Run()
 		UI->UpdateText(SystemInfoElement, T4, ("Mouse World Position: " +
 												std::to_string(global_data_collector::CurrentlyPickedTileX) + ", " +
 												std::to_string(global_data_collector::CurrentlyPickedTileY)));
+
+		UI->UpdateText(SystemInfoElement, T5, ("Mouse Scroll: " +
+			std::to_string(global_data_collector::MouseScrollDelta)));
 
 		if(EditMode)
 		{
@@ -237,8 +294,11 @@ void application::Run()
 		// NOTE(Cristoffer): Temporary render test.
 		Graphics.BeginFrame();
 
-		Graphics.TestDrawTerrain(Terrain);
-		Graphics.TestDraw();
+		global_device_info::Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		Object.Draw(Graphics.GetCamera());
+		
+		Graphics.TestDrawTerrain(World->Terrain);
+		Graphics.TestDrawLines();
 		Graphics.TestDrawUI(UI);
 
 		Graphics.EndFrame();

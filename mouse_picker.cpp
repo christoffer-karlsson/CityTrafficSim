@@ -1,14 +1,8 @@
 #include "mouse_picker.h"
 
-mouse_picker::mouse_picker() :
-	MousePositionInWorld({ 0, 0 }),
-	Terrain(nullptr),
-	Camera(nullptr)
-{
-}
-
-mouse_picker::mouse_picker(terrain *Terrain, camera *Camera) :
-	MousePositionInWorld({ 0, 0 }),
+mouse_picker::mouse_picker(world *World, terrain *Terrain, camera *Camera) :
+	World(World),
+	CurrentMousePositionInWorld(vec2(0.0f, 0.0f)),
 	Terrain(Terrain),
 	Camera(Camera)
 {
@@ -16,11 +10,11 @@ mouse_picker::mouse_picker(terrain *Terrain, camera *Camera) :
 
 void mouse_picker::RayTriangleIntersectWork()
 {
-	position NewMousePositionInWorld = { 0, 0 };
+	vec2 NewMousePositionInWorld(0.0f, 0.0f);
 
-	XMMATRIX World, View, Projection;
+	XMMATRIX WorldModel, View, Projection;
 
-	World = Terrain->GetModel();
+	WorldModel = Terrain->GetModel();
 	View = Camera->GetViewMatrix();
 	Projection = Camera->GetProjectionMatrix();
 
@@ -30,68 +24,81 @@ void mouse_picker::RayTriangleIntersectWork()
 	RayOriginScreen = XMVectorSet(GetMouseX(), GetMouseY(), 0.0f, 1.0f);
 	RayDirectionScreen = XMVectorSet(GetMouseX(), GetMouseY(), 1.0f, 1.0f);
 
-	RayOrigin = XMVector3Unproject(RayOriginScreen, 0.0f, 0.0f, 1920.0f, 1080.0f, 0.0f, 1.0f, Projection, View, World);
-	RayDirection = XMVector3Unproject(RayDirectionScreen, 0.0f, 0.0f, 1920.0f, 1080.0f, 0.0f, 1.0f, Projection, View, World);
+	// TODO(Cristoffer): Get proper screen size.
+	RayOrigin = XMVector3Unproject(RayOriginScreen, 0.0f, 0.0f, 1920.0f, 1080.0f, 0.0f, 1.0f, Projection, View, WorldModel);
+	RayDirection = XMVector3Unproject(RayDirectionScreen, 0.0f, 0.0f, 1920.0f, 1080.0f, 0.0f, 1.0f, Projection, View, WorldModel);
 
 	RayDirection = XMVector3Normalize(RayDirection - RayOrigin);
 
+	// NOTE(Cristoffer): DX SimpleMath library for calculating the ray 
+	//intersection with triangle geometry.
 	SimpleMath::Ray Ray(RayOrigin, RayDirection);
 
-	for(uint32 Index = 0; Index < Terrain->GetVertexData().size(); Index += 4)
+	bool32 CollisionFound = false;
+
+	// NOTE(Cristoffer): Index in the vertex buffer where the intersection is found.
+	uint32 PlaneCollisionIndex = 0;
+
+	// NOTE(Cristoffer): Distance to the intersection (from origin).
+	real32 Distance;
+
+	for(uint64 Index = 0; Index < Terrain->GetVertexData().size(); Index += 4)
 	{
 		XMFLOAT3 V0, V1, V2, V3;
-		V0.x = Terrain->GetVertexData().at(Index + 0).Position.X;
-		V0.y = Terrain->GetVertexData().at(Index + 0).Position.Y;
-		V0.z = Terrain->GetVertexData().at(Index + 0).Position.Z;
-		V1.x = Terrain->GetVertexData().at(Index + 1).Position.X;
-		V1.y = Terrain->GetVertexData().at(Index + 1).Position.Y;
-		V1.z = Terrain->GetVertexData().at(Index + 1).Position.Z;
-		V2.x = Terrain->GetVertexData().at(Index + 2).Position.X;
-		V2.y = Terrain->GetVertexData().at(Index + 2).Position.Y;
-		V2.z = Terrain->GetVertexData().at(Index + 2).Position.Z;
-		V3.x = Terrain->GetVertexData().at(Index + 3).Position.X;
-		V3.y = Terrain->GetVertexData().at(Index + 3).Position.Y;
-		V3.z = Terrain->GetVertexData().at(Index + 3).Position.Z;
-
-		real32 Distance;
+		V0.x = Terrain->GetVertexData().at(Index + 0).Position.x;
+		V0.y = Terrain->GetVertexData().at(Index + 0).Position.y;
+		V0.z = Terrain->GetVertexData().at(Index + 0).Position.z;
+		V1.x = Terrain->GetVertexData().at(Index + 1).Position.x;
+		V1.y = Terrain->GetVertexData().at(Index + 1).Position.y;
+		V1.z = Terrain->GetVertexData().at(Index + 1).Position.z;
+		V2.x = Terrain->GetVertexData().at(Index + 2).Position.x;
+		V2.y = Terrain->GetVertexData().at(Index + 2).Position.y;
+		V2.z = Terrain->GetVertexData().at(Index + 2).Position.z;
+		V3.x = Terrain->GetVertexData().at(Index + 3).Position.x;
+		V3.y = Terrain->GetVertexData().at(Index + 3).Position.y;
+		V3.z = Terrain->GetVertexData().at(Index + 3).Position.z;
 
 		// NOTE(Cristoffer): Do the intersection test with triangle coordinates.
 		if(Ray.Intersects(V0, V1, V2, Distance) ||
 		   Ray.Intersects(V1, V3, V2, Distance))
 		{
-			NewMousePositionInWorld = Terrain->GetWorldCoordinate(Index);
-
+			CollisionFound = true;
+			PlaneCollisionIndex = Index;
 			break;
 		}
 	}
+
+	// NOTE(Cristoffer): Since we got no collision, remove highlight from the current position.
+	if(!CollisionFound)
+	{
+		Terrain->UpdateTileHighlighResource(World->GetWidth(), (int32)CurrentMousePositionInWorld.x, (int32)CurrentMousePositionInWorld.y, 0.0f);
+
+		return;
+	}
+
+	NewMousePositionInWorld = Terrain->GetWorldCoordinate(PlaneCollisionIndex);
 	
 	// NOTE(Cristoffer): Check if the mouse is on same coordinate as before, or at same.
 	// Update as needed.
-	bool IsOldLocation = (NewMousePositionInWorld.X == MousePositionInWorld.X && 
-						  NewMousePositionInWorld.Y == MousePositionInWorld.Y);
+	bool IsOldLocation = (NewMousePositionInWorld.x == CurrentMousePositionInWorld.x && 
+						  NewMousePositionInWorld.y == CurrentMousePositionInWorld.y);
 
 	if(!IsOldLocation)
 	{
 		// NOTE(Cristoffer): Since mouse have moved to new world coordinate, remove the
 		// old tile highlight effect, and highlight the new tile.
-		Terrain->UpdateTileHighlighResource((int32)MousePositionInWorld.X, (int32)MousePositionInWorld.Y, 0.0f);
-		Terrain->UpdateTileHighlighResource((int32)NewMousePositionInWorld.X, (int32)NewMousePositionInWorld.Y, 1.0f);
+		Terrain->UpdateTileHighlighResource(World->GetWidth(), (int32)CurrentMousePositionInWorld.x, (int32)CurrentMousePositionInWorld.y, 0.0f);
+		Terrain->UpdateTileHighlighResource(World->GetWidth(), (int32)NewMousePositionInWorld.x, (int32)NewMousePositionInWorld.y, 1.0f);
 
-		MousePositionInWorld.X = NewMousePositionInWorld.X;
-		MousePositionInWorld.Y = NewMousePositionInWorld.Y;
+		CurrentMousePositionInWorld.x = NewMousePositionInWorld.x;
+		CurrentMousePositionInWorld.y = NewMousePositionInWorld.y;
 	}
-}
-
-void mouse_picker::Init(terrain *Terrain, camera *Camera)
-{
-	this->Terrain = Terrain;
-	this->Camera = Camera;
 }
 
 void mouse_picker::TestMouseCollision()
 {
-	global_data_collector::CurrentlyPickedTileX = MousePositionInWorld.X;
-	global_data_collector::CurrentlyPickedTileY = MousePositionInWorld.Y;
+	global_data_collector::CurrentlyPickedTileX = CurrentMousePositionInWorld.x;
+	global_data_collector::CurrentlyPickedTileY = CurrentMousePositionInWorld.y;
 
 	if(USE_MULTI_THREADING)
 	{
@@ -109,7 +116,7 @@ void mouse_picker::TestMouseCollision()
 	}
 }
 
-position &mouse_picker::GetMousePositionInWorld()
+vec2 &mouse_picker::GetMousePositionInWorld()
 {
-	return MousePositionInWorld;
+	return CurrentMousePositionInWorld;
 }

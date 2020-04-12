@@ -4,6 +4,7 @@
 #include "diagnostics.h"
 #include "global_device_info.h"
 #include "camera.h"
+#include "math.h"
 #include "texture.h"
 #include "vertex_buffer.h"
 #include "shader.h"
@@ -17,26 +18,23 @@
 
 using namespace DirectX;
 
-struct position
-{
-	real32 X, Y, Z;
-};
-
-struct color
-{
-	real32 R, G, B, A;
-};
-
 class drawable
 {
+	private:
+
+	XMMATRIX InitialModel;
+
 	protected:
+	XMMATRIX Model;
 
 	texture			*Texture;
 	shader			*Shader;
 	vertex_buffer	*VertexBuffer;
 	constant_buffer *ConstantBuffer;
 
-	XMMATRIX Model;
+	vec3 Position;
+	vec3 Rotation;
+	vec3 Scale;
 
 	public:
 
@@ -45,11 +43,15 @@ class drawable
 
 	virtual void Draw(camera &Camera) = 0;
 
-	virtual void TestMouseIntersect(camera &Camera){};
+	// NOTE(Cristoffer): Set up initial model properly for each drawable when created.
+	// This will be used as reference to be able to reset rotations etc.
+	void SetInitialModel(vec3 Position, vec3 Scale, vec3 Rotation);
 
-	void SetModelPosition(real32 X, real32 Y, real32 Z);
-	void SetModelScale(real32 X, real32 Y, real32 Z);
-	void MoveModelPosition(real32 X, real32 Y, real32 Z);
+	void SetPosition(vec3 Position);
+	void SetRotation(vec3 Rotation);
+	void SetScale(vec3 Scale);
+
+	void UpdateModel();
 
 	XMMATRIX &GetModel();
 

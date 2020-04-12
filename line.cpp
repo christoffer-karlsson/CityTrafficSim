@@ -2,7 +2,7 @@
 
 line::line(real32 PositionX1, real32 PositionY1, real32 PositionZ1, real32 PositionX2, real32 PositionY2, real32 PositionZ2)
 {
-	SetModelPosition(0.0f, 0.0f, 0.0f);
+	//SetModelPosition(0.0f, 0.0f, 0.0f);
 
 	struct
 	{

@@ -50,7 +50,10 @@ window::window(std::string Title, int32 Width, int32 Height)
 
 	InitRawInputDevice();
 
-	ShowWindow(WindowHandle, SW_SHOW);
+	uint32 TopLeftX = 0;
+	uint32 TopLeftY = 0;
+
+	SetWindowPos(WindowHandle, NULL, TopLeftX, TopLeftY, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW);
 }
 
 void window::InitRawInputDevice()

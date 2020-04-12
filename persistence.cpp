@@ -24,7 +24,7 @@ void persistence::SaveWorldMap(world *World)
 	File.close();
 }
 
-void persistence::LoadSavedWorldMap(world *World, terrain *Terrain)
+void persistence::LoadSavedWorldMap(world *World)
 {
 	std::string Word;
 
@@ -46,8 +46,7 @@ void persistence::LoadSavedWorldMap(world *World, terrain *Terrain)
 			std::getline(File, Y, SPACE);
 			std::getline(File, TileType, NEWLINE);
 			
-			World->SetTile(std::stoi(X), std::stoi(Y), (TILE_TYPE)std::stoi(TileType));
-			Terrain->UpdateTileTypeResource(std::stoi(X), std::stoi(Y), (TILE_TYPE)std::stoi(TileType));
+			World->SetTile(std::stoi(X), std::stoi(Y), (tile_type)std::stoi(TileType));
 		}
 		else
 		{
@@ -58,4 +57,123 @@ void persistence::LoadSavedWorldMap(world *World, terrain *Terrain)
 	}
 
 	File.close();
+}
+
+obj_file persistence::LoadObjectFile(std::string Filename)
+{
+	std::string Word;
+
+	obj_file Destination;
+
+	std::ifstream File(OBJECT_FILES_DEFAULT_PATH + Filename);
+
+	if(!File.is_open())
+	{
+		// TODO(Cristoffer): Handle file read error.
+		return Destination;
+	}
+
+	while(std::getline(File, Word, SPACE))
+	{
+		// NOTE(Cristoffer): Vertex position.
+		if(Word == "v")
+		{
+			std::string X, Y, Z;
+
+			std::getline(File, X, SPACE);
+			std::getline(File, Y, SPACE);
+			std::getline(File, Z, NEWLINE);
+
+			Destination.Vertices.push_back(vec3(std::stof(X), std::stof(Y), std::stof(Z)));
+		}
+		// NOTE(Cristoffer): Faces or indicies.
+		// Ex: f 1/1/1 2/2/1 3/3/1
+		// Means: Position / Texture coordinate / Normal
+		else if(Word == "f")
+		{
+			std::string Line;
+
+			std::string Position;
+			std::string TextureCoordinate;
+			std::string Normal;
+
+			char CurrentChar = 0;
+
+			std::getline(File, Line, NEWLINE);
+
+			Line += NEWLINE;
+
+			for(uint64 Index = 0;
+				Index < Line.size();
+				Index++)
+			{
+				while(!Line.empty())
+				{
+					CurrentChar = Line.at(Index);
+
+					if(CurrentChar == '/')
+					{
+						Index++;
+						break;
+					}
+					
+					Index++;
+					Position += CurrentChar;
+				}
+
+				while(!Line.empty())
+				{
+					CurrentChar = Line.at(Index);
+
+					if(CurrentChar == '/')
+					{
+						Index++;
+						break;
+					}
+
+					Index++;
+					TextureCoordinate += CurrentChar;
+				}
+
+				while(!Line.empty())
+				{
+					CurrentChar = Line.at(Index);
+
+					if(CurrentChar == SPACE || CurrentChar == NEWLINE)
+					{
+						break;
+					}
+
+					Index++;
+					Normal += CurrentChar;
+				}
+
+				// NOTE(Cristoffer): -1 because .obj index start at 1, and c++ starts at 0.
+				Destination.Indices.push_back(std::stoi(Position) - 1);
+				//Destination.TextureCoordinate.push_back(std::stoi(TextureCoordinate) - 1);
+				//Destination.Normal.push_back(std::stoi(Normal) - 1);
+
+				Position.clear();
+				TextureCoordinate.clear();
+				Normal.clear();
+
+				if(CurrentChar == NEWLINE)
+				{
+					break;
+				}
+			}
+		}
+		else
+		{
+			// NOTE(Cristoffer): If we don't recognize the line or don't use it.
+
+			std::string Trash;
+
+			std::getline(File, Trash, NEWLINE);
+		}
+	}
+
+	File.close();
+
+	return Destination;
 }

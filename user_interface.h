@@ -5,6 +5,7 @@
 #include "threading.h"
 #include "mouse.h"
 #include "global_device_info.h"
+#include "math.h"
 
 #include "external/SimpleMath.h"
 #include "external/SpriteBatch.h"
@@ -16,7 +17,7 @@
 #define MAX_UI_ELEMENTS 50
 #define MAX_TEXT_ELEMENTS 25
 
-enum SCREEN_ANCHOR
+enum class screen_anchor
 {
 	TOP_LEFT, TOP_MIDDLE, TOP_RIGHT,
 	MIDDLE_LEFT, MIDDLE_MIDDLE, MIDDLE_RIGHT,
@@ -27,7 +28,7 @@ enum SCREEN_ANCHOR
 struct text
 {
 	std::string String;
-	color		Color;
+	vec4		Color;
 	uint16		Size;
 	real32		TextMeasurementWidth;
 	real32		TextMeasurementHeight;
@@ -35,7 +36,7 @@ struct text
 
 struct element
 {
-	SCREEN_ANCHOR Anchor;
+	screen_anchor Anchor;
 
 	real32 Width;
 	real32 Height;
@@ -44,7 +45,7 @@ struct element
 	real32 Margin;
 	real32 TextPositionX;
 	real32 TextPositionY;
-	color  BackgroundColor;
+	vec4   BackgroundColor;
 	
 	bool AdjustWidthToText;
 	bool AdjustHeightToText;
@@ -69,9 +70,9 @@ struct element
 
 struct ui_vertex
 {
-	position Position = { 0.0f, 0.0f, 0.0f };
-	color	 Color = { 0.0f, 0.0f, 0.0f, 1.0f };
-	real32	 IsHighlighted = 0.0f;
+	vec3	Position;
+	vec4	Color;
+	real32	IsHighlighted = 0.0f;
 };
 
 class user_interface : public drawable
@@ -99,10 +100,10 @@ class user_interface : public drawable
 	user_interface();
 	~user_interface();
 
-	uint32 CreateElement(SCREEN_ANCHOR Anchor, real32 Width, real32 Height);
+	uint32 CreateElement(screen_anchor Anchor, real32 Width, real32 Height);
 	void SetMargin(uint32 ElementID, real32 Margin);
 	void SetOffset(uint32 ElementID, real32 OffsetX, real32 OffsetY);
-	void SetBackgroundColor(uint32 ElementID, color Color);
+	void SetBackgroundColor(uint32 ElementID, vec4 Color);
 	void SetAdjustWidthToText(uint32 ElementID, bool Adjust);
 	void SetAdjustHeightToText(uint32 ElementID, bool Adjust);
 	void SetHighlight(uint32 ElementID, bool Set);
@@ -111,7 +112,7 @@ class user_interface : public drawable
 	uint32 AddNewText(uint32 ElementID, std::string Text);
 	void UpdateText(uint32 ElementID, uint32 TextID, std::string Text);
 	void SetTextSize(uint32 ElementID, uint32 TextID, uint16 Size);
-	void SetTextColor(uint32 ElementID, uint32 TextID, color Color);
+	void SetTextColor(uint32 ElementID, uint32 TextID, vec4 Color);
 
 	uint32 GetElementCount();
 

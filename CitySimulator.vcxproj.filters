@@ -34,6 +34,15 @@
     <Filter Include="Source Files\data">
       <UniqueIdentifier>{b5681021-cc48-4575-a7c6-99d2a90ca3b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\header-only">
+      <UniqueIdentifier>{25f384b2-d21f-4e6b-92fc-4eef8c3e44a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\entities">
+      <UniqueIdentifier>{b283f871-e0b4-42bf-a756-c7abfc916cc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\entities">
+      <UniqueIdentifier>{0551fedc-2107-489d-92a8-96329963b288}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="winmain.cpp">
@@ -59,9 +68,6 @@
     </ClCompile>
     <ClCompile Include="external\WICTextureLoader.cpp">
       <Filter>External Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="drawable.cpp">
-      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="diagnostics.cpp">
       <Filter>Source Files\graphics</Filter>
@@ -114,12 +120,24 @@
     <ClCompile Include="persistence.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="entity_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vehicle.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>Source Files\graphics\drawables</Filter>
+    </ClCompile>
+    <ClCompile Include="drawable.cpp">
+      <Filter>Source Files\graphics\drawables</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="window.h">
@@ -145,9 +163,6 @@
     </ClInclude>
     <ClInclude Include="external\WICTextureLoader.h">
       <Filter>External Libraries</Filter>
-    </ClInclude>
-    <ClInclude Include="drawable.h">
-      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="diagnostics.h">
       <Filter>Header Files\graphics</Filter>
@@ -202,6 +217,30 @@
     </ClInclude>
     <ClInclude Include="persistence.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>Header Files\header-only</Filter>
+    </ClInclude>
+    <ClInclude Include="types.h">
+      <Filter>Header Files\header-only</Filter>
+    </ClInclude>
+    <ClInclude Include="entity_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vehicle.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>Header Files\graphics\drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="drawable.h">
+      <Filter>Header Files\graphics\drawables</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

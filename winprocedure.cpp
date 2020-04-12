@@ -50,6 +50,10 @@ LRESULT CALLBACK WindowProcedure(HWND WindowHandle, UINT MessageId, WPARAM WPara
 	{
 		UpdateMouse(LParam, WParam);
 	}
+	else if(MessageId == WM_MOUSEWHEEL)
+	{
+		UpdateMouseScroll(LParam, WParam);
+	}
 	else if(MessageId == WM_INPUT)
 	{
 		// NOTE(Cristoffer): For 32-bit

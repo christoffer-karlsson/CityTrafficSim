@@ -1,6 +1,7 @@
 #include "world.h"
 
-world::world(int32 Width, int32 Height)
+world::world(int32 Width, int32 Height) :
+	Terrain(new terrain(Width, Height))
 {
 	this->Width = Width;
 	this->Height = Height;
@@ -14,12 +15,12 @@ world::world(int32 Width, int32 Height)
 		TileName[Index];
 	}
 
-	TileName[GRASS] = "Grass";
-	TileName[ROAD_Z] = "Road in Z direction";
-	TileName[ROAD_X] = "Road in X direction";
-	TileName[CROSSROAD] = "Crossroad";
-	TileName[SIDEWALK] = "Sidewalk";
-	TileName[WATER] = "Water";
+	TileName[tile_type::GRASS] = "Grass";
+	TileName[tile_type::ROAD_Z] = "Road in Z direction";
+	TileName[tile_type::ROAD_X] = "Road in X direction";
+	TileName[tile_type::CROSSROAD] = "Crossroad";
+	TileName[tile_type::SIDEWALK] = "Sidewalk";
+	TileName[tile_type::WATER] = "Water";
 }
 
 world::~world()
@@ -27,17 +28,19 @@ world::~world()
 	delete[] Tiles;
 }
 
-void world::SetTile(int32 X, int32 Y, TILE_TYPE Type)
+void world::SetTile(int32 X, int32 Y, tile_type Type)
 {
 	int32 Pitch = Width * Y;
 
 	Tiles[Pitch + X].Type = Type;
+
+	Terrain->UpdateTileTypeResource(Width, X, Y, Type);
 }
 
-/*void world::SetTileHighlighted(int32 X, int32 Y, bool SetHighlighted)
+void world::SetTileHighlighted(int32 X, int32 Y, bool SetHighlighted)
 {
-	// TODO
-}*/
+	Terrain->UpdateTileHighlighResource(Width, X, Y, SetHighlighted);
+}
 
 int32 world::GetWidth() const
 {

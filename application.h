@@ -10,6 +10,10 @@
 #include "global_data_collector.h"
 #include "direct3d.h"
 #include "threading.h"
+#include "math.h"
+#include "entity_manager.h"
+
+#include "object.h"
 
 #include <windows.h>
 #include <string>

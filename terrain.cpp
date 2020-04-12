@@ -1,36 +1,38 @@
 #include "terrain.h"
 
-uv_quad terrain::GetTextureCoordinateFromTileType(TILE_TYPE Type)
+uv_quad terrain::GetTextureCoordinateFromTileType(tile_type Type)
 {
 	uv_quad Result;
 
-	if(Type == GRASS)
+	if(Type == tile_type::GRASS)
 	{
 		Result = Texture->GetUVFromSliceCoordinates(0, 0);
 	}
-	else if(Type == ROAD_Z)
+	else if(Type == tile_type::ROAD_Z)
 	{
 		Result = Texture->GetUVFromSliceCoordinates(2, 0);
 	}
-	else if(Type == ROAD_X)
+	else if(Type == tile_type::ROAD_X)
 	{
 		Result = Texture->GetUVFromSliceCoordinates(1, 0);
 	}
-	else if(Type == CROSSROAD)
+	else if(Type == tile_type::CROSSROAD)
 	{
 		Result = Texture->GetUVFromSliceCoordinates(3, 0);
+	}
+	else
+	{
+		Result = Texture->GetUVFromSliceCoordinates(0, 0);
 	}
 
 	return Result;
 }
 
-terrain::terrain(world *World) :
-	World(World)
+terrain::terrain(int64 Width, int64 Height)
 {
 	// NOTE(Cristoffer): Since it is easier to think about ground in X,Y space,
 	// it just takes those two dimensions. But Y is getting mapped to Z in data,
 	// since Y is height in 3d coordinate space.
-	//SetModelPosition(PosX, 0.0f, PosY);
 
 	Texture = new texture(L"data/tile-atlas-256x256x10x10.png", 2560, 2560, 10, 10);
 
@@ -40,59 +42,40 @@ terrain::terrain(world *World) :
 
 	} VS_Input;
 
-	int32 QuadCount = 0;
+	int64 QuadCount = 0;
 
-	uv_quad Atlas;
-
-	tile CurrentTile;
-
-	for(uint32 X = 0; X < World->GetWidth(); X++)
+	for(uint64 X = 0; X < Width; X++)
 	{
-		for(uint32 Y = 0; Y < World->GetHeight(); Y++)
+		for(uint64 Y = 0; Y < Height; Y++)
 		{
-			CurrentTile = World->GetTile(X, Y);
-
-			Atlas = GetTextureCoordinateFromTileType(CurrentTile.Type);
-
 			terrain_vertex Vertex[4];
 
-			Vertex[0].Position.X = (real32)X - 0.5f;
-			Vertex[0].Position.Y = 0.0f;
-			Vertex[0].Position.Z = (real32)Y - 0.5f;
-			Vertex[0].TextureCoordinate.U = Atlas.TextureCoordinate[0].U;
-			Vertex[0].TextureCoordinate.V = Atlas.TextureCoordinate[0].V;
-			Vertex[0].IsPicked = 0.0f;
+			Vertex[0].Position.x = (real32)X - 0.5f;
+			Vertex[0].Position.y = 0.0f;
+			Vertex[0].Position.z = (real32)Y - 0.5f;
+			
+			Vertex[1].Position.x = (real32)X - 0.5f;
+			Vertex[1].Position.y = 0.0f;
+			Vertex[1].Position.z = (real32)Y + 0.5f;
+			
+			Vertex[2].Position.x = (real32)X + 0.5f;
+			Vertex[2].Position.y = 0.0f;
+			Vertex[2].Position.z = (real32)Y - 0.5f;
 
-			Vertex[1].Position.X = (real32)X - 0.5f;
-			Vertex[1].Position.Y = 0.0f;
-			Vertex[1].Position.Z = (real32)Y + 0.5f;
-			Vertex[1].TextureCoordinate.U = Atlas.TextureCoordinate[1].U;
-			Vertex[1].TextureCoordinate.V = Atlas.TextureCoordinate[1].V;
-			Vertex[1].IsPicked = 0.0f;
-
-			Vertex[2].Position.X = (real32)X + 0.5f;
-			Vertex[2].Position.Y = 0.0f;
-			Vertex[2].Position.Z = (real32)Y - 0.5f;
-			Vertex[2].TextureCoordinate.U = Atlas.TextureCoordinate[2].U;
-			Vertex[2].TextureCoordinate.V = Atlas.TextureCoordinate[2].V;
-			Vertex[2].IsPicked = 0.0f;
-
-			Vertex[3].Position.X = (real32)X + 0.5f;
-			Vertex[3].Position.Y = 0.0f;
-			Vertex[3].Position.Z = (real32)Y + 0.5f;
-			Vertex[3].TextureCoordinate.U = Atlas.TextureCoordinate[3].U;
-			Vertex[3].TextureCoordinate.V = Atlas.TextureCoordinate[3].V;
-			Vertex[3].IsPicked = 0.0f;
+			Vertex[3].Position.x = (real32)X + 0.5f;
+			Vertex[3].Position.y = 0.0f;
+			Vertex[3].Position.z = (real32)Y + 0.5f;
 
 			Vertices.push_back(Vertex[0]);
 			Vertices.push_back(Vertex[1]);
 			Vertices.push_back(Vertex[2]);
 			Vertices.push_back(Vertex[3]);
 
-			WorldCoordinate.push_back({ (real32)X, (real32)Y });
-			WorldCoordinate.push_back({ (real32)X, (real32)Y });
-			WorldCoordinate.push_back({ (real32)X, (real32)Y });
-			WorldCoordinate.push_back({ (real32)X, (real32)Y });
+			// TODO(Cristoffer): NEEDED??
+			WorldCoordinate.push_back({ vec2(X, Y) });
+			WorldCoordinate.push_back({ vec2(X, Y) });
+			WorldCoordinate.push_back({ vec2(X, Y) });
+			WorldCoordinate.push_back({ vec2(X, Y) });
 
 			QuadCount++;
 		}
@@ -143,44 +126,40 @@ void terrain::Draw(camera &Camera)
 	global_device_info::Context->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
 }
 
-void terrain::UpdateTileHighlighResource(int32 X, int32 Y, real32 IsPicked)
+void terrain::UpdateTileHighlighResource(uint64 Width, int64 X, int64 Y, real32 IsHighlighted)
 {
-	int32 Pitch = World->GetWidth() * 4 * X;
+	uint64 Index = WorldCoordinateToIndex(Width, 4, X, Y);
 
-	int32 Index = Pitch + (Y * 4);
-
-	if(Index + 4 > Vertices.size() || Index < 0)
+	if((Index + 4) > Vertices.size() || Index < 0)
 	{
 		return;
 	}
 
-	Vertices.at(Index + 0).IsPicked = IsPicked;
-	Vertices.at(Index + 1).IsPicked = IsPicked;
-	Vertices.at(Index + 2).IsPicked = IsPicked;
-	Vertices.at(Index + 3).IsPicked = IsPicked;
+	Vertices.at(Index + 0).IsHighlighted = IsHighlighted;
+	Vertices.at(Index + 1).IsHighlighted = IsHighlighted;
+	Vertices.at(Index + 2).IsHighlighted = IsHighlighted;
+	Vertices.at(Index + 3).IsHighlighted = IsHighlighted;
 }
 
-void terrain::UpdateTileTypeResource(int32 X, int32 Y, TILE_TYPE Type)
+void terrain::UpdateTileTypeResource(uint64 Width, int64 X, int64 Y, tile_type Type)
 {
 	uv_quad Atlas = GetTextureCoordinateFromTileType(Type);
 
-	int32 Pitch = World->GetWidth() * 4 * X;
+	uint64 Index = WorldCoordinateToIndex(Width, 4, X, Y);
 
-	int32 Index = Pitch + (Y * 4);
-
-	if(Index + 4 > Vertices.size() || Index < 0)
+	if((Index + 4) > Vertices.size() || Index < 0)
 	{
 		return;
 	}
 
-	Vertices.at(Index + 0).TextureCoordinate.U = Atlas.TextureCoordinate[0].U;
-	Vertices.at(Index + 0).TextureCoordinate.V = Atlas.TextureCoordinate[0].V;
-	Vertices.at(Index + 1).TextureCoordinate.U = Atlas.TextureCoordinate[1].U;
-	Vertices.at(Index + 1).TextureCoordinate.V = Atlas.TextureCoordinate[1].V;
-	Vertices.at(Index + 2).TextureCoordinate.U = Atlas.TextureCoordinate[2].U;
-	Vertices.at(Index + 2).TextureCoordinate.V = Atlas.TextureCoordinate[2].V;
-	Vertices.at(Index + 3).TextureCoordinate.U = Atlas.TextureCoordinate[3].U;
-	Vertices.at(Index + 3).TextureCoordinate.V = Atlas.TextureCoordinate[3].V;
+	Vertices.at(Index + 0).TextureUVCoordinate.x = Atlas.TextureCoordinate[0].U;
+	Vertices.at(Index + 0).TextureUVCoordinate.y = Atlas.TextureCoordinate[0].V;
+	Vertices.at(Index + 1).TextureUVCoordinate.x = Atlas.TextureCoordinate[1].U;
+	Vertices.at(Index + 1).TextureUVCoordinate.y = Atlas.TextureCoordinate[1].V;
+	Vertices.at(Index + 2).TextureUVCoordinate.x = Atlas.TextureCoordinate[2].U;
+	Vertices.at(Index + 2).TextureUVCoordinate.y = Atlas.TextureCoordinate[2].V;
+	Vertices.at(Index + 3).TextureUVCoordinate.x = Atlas.TextureCoordinate[3].U;
+	Vertices.at(Index + 3).TextureUVCoordinate.y = Atlas.TextureCoordinate[3].V;
 }
 
 std::vector<terrain_vertex> &terrain::GetVertexData()
@@ -188,7 +167,7 @@ std::vector<terrain_vertex> &terrain::GetVertexData()
 	return Vertices;
 }
 
-position terrain::GetWorldCoordinate(uint32 Index)
+vec2 terrain::GetWorldCoordinate(uint64 Index)
 {
 	return WorldCoordinate.at(Index);
 }

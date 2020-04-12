@@ -4,6 +4,7 @@
 
 #include "common.h"
 #include "global_device_info.h"
+#include "global_data_collector.h"
 
 #include "windowsx.h"
 
@@ -17,15 +18,23 @@ struct mouse_state
 	real32 Y = 0;
 	real32 RawX = 0;
 	real32 RawY = 0;
-	bool Button[255];
+
+	int32 ScrollDelta = 0;
+	bool32 ScrollUp = 0;
+	bool32 ScrollDown = 0;
+
+	bool32 Button[255];
 };
 
 void UpdateMouse(LPARAM LParam, WPARAM WParam);
 void UpdateRawMouse(real32 X, real32 Y);
+void UpdateMouseScroll(LPARAM LParam, WPARAM WParam);
 
 real32 GetMouseX();
 real32 GetMouseY();
 real32 GetMouseRawX();
 real32 GetMouseRawY();
+bool32 GetMouseScrollUp();
+bool32 GetMouseScrollDown();
 
-bool MousePressed(int32 ButtonCode);
+bool32 MousePressed(int32 ButtonCode);

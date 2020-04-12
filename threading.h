@@ -7,9 +7,9 @@
 
 		1.	work_id ThreadWorkID;
 
-		2.	if(threading::GetInstance().WorkDone(ThreadWorkID))
+		2.	if(thread_pool.WorkDone(ThreadWorkID))
 			{
-				threading::GetInstance().AddBackgroundWork(ThreadWorkID, [&]
+				thread_pool.AddBackgroundWork(ThreadWorkID, [&]
 				{
 					FunctionToRunThreaded();
 				});
@@ -23,18 +23,18 @@
 
 		2.	Start the work:
 
-				threading::GetInstance().AddBackgroundWork(ThreadWorkID, [&]
+				thread_pool.AddBackgroundWork(ThreadWorkID, [&]
 				{
 					FunctionToRunThreaded();
 				});
 
 		3.	Wait for work to be done:
 
-				threading::GetInstance().WaitThread();
+				thread_pool.WaitThread();
 
 	$ [GENERIC WORK] "Fire and forget".
 
-		1.	threading::GetInstance().AddWork(ThreadWorkID, [&]
+		1.	thread_pool.AddWork(ThreadWorkID, [&]
 			{
 				FunctionToRunThreaded();
 			});

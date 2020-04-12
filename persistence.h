@@ -2,10 +2,18 @@
 
 #include "common.h"
 #include "world.h"
-#include "terrain.h"
 
 #include <fstream>
 #include <string>
+#include <vector>
+
+#define OBJECT_FILES_DEFAULT_PATH "data\\objects\\"
+
+struct obj_file
+{
+	std::vector<vec3> Vertices;
+	std::vector<uint32> Indices;
+};
 
 class persistence
 {
@@ -15,6 +23,7 @@ class persistence
 
 	const char NEWLINE = 10;
 	const char SPACE = 32;
+	const char TAB = 9;
 
 	public:
 
@@ -22,5 +31,6 @@ class persistence
 	~persistence() = default;
 
 	void SaveWorldMap(world *World);
-	void LoadSavedWorldMap(world *World, terrain *Terrain);
+	void LoadSavedWorldMap(world *World);
+	obj_file LoadObjectFile(std::string Filename);
 };

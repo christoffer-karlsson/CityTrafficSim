@@ -21,8 +21,6 @@ direct3d::direct3d(HWND WindowHandle) :
 	global_device_info::Swap = Swap;
 
 	//Graph.push_back(std::make_unique<line>(10.0f, 5.0f, 10.0f, 10.0f, 0.0f, 10.0f));
-
-	//TestEntity = std::make_unique<building>(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 }
 
 camera &direct3d::GetCamera()
@@ -190,7 +188,7 @@ void direct3d::EndFrame() const
 	Swap->Present(0, 0);
 }
 
-void direct3d::TestDraw()
+void direct3d::TestDrawLines()
 {
 	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
@@ -200,13 +198,6 @@ void direct3d::TestDraw()
 	{
 		(*Iterator)->Draw(Camera);
 	}
-}
-
-void direct3d::TestDrawEntity(real32 X, real32 Y, real32 Z)
-{
-	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	TestEntity.get()->SetModelPosition(X, Y, Z);
-	TestEntity.get()->Draw(Camera);
 }
 
 void direct3d::TestDrawTerrain(terrain *Terrain)
