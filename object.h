@@ -21,7 +21,7 @@ class object : public drawable
 	std::vector<vertex> Vertices;
 	std::vector<uint32> Indices;
 
-	object();
+	object(obj_file &File, vec3 Position, vec3 Scale, vec3 Rotation);
 
 	void Draw(camera &Camera);
 };

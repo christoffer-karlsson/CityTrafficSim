@@ -4,6 +4,10 @@ static mouse_state Mouse = {};
 
 void UpdateMouse(LPARAM LParam, WPARAM WParam)
 {
+	bool32 OldMouseLeftButton = Mouse.Button[MOUSE_BUTTON_LEFT];
+	bool32 OldMouseRightButton = Mouse.Button[MOUSE_BUTTON_RIGHT];
+	bool32 OldMouseMiddleButton = Mouse.Button[MOUSE_BUTTON_MIDDLE];
+
 	Mouse.X = (real32)GET_X_LPARAM(LParam);
 	Mouse.Y = (real32)GET_Y_LPARAM(LParam);
 
@@ -37,6 +41,22 @@ void UpdateMouse(LPARAM LParam, WPARAM WParam)
 	else
 	{
 		Mouse.Button[MOUSE_BUTTON_MIDDLE] = 0;
+	}
+
+	// NOTE(Cristoffer): Check clicks.
+	if(OldMouseLeftButton == 1 && Mouse.Button[MOUSE_BUTTON_LEFT] == 0)
+	{
+		Mouse.ButtonClick[MOUSE_BUTTON_LEFT] = 1;
+	}
+
+	if(OldMouseRightButton == 1 && Mouse.Button[MOUSE_BUTTON_RIGHT] == 0)
+	{
+		Mouse.ButtonClick[MOUSE_BUTTON_RIGHT] = 1;
+	}
+
+	if(OldMouseMiddleButton == 1 && Mouse.Button[MOUSE_BUTTON_MIDDLE] == 0)
+	{
+		Mouse.ButtonClick[MOUSE_BUTTON_MIDDLE] = 1;
 	}
 }
 
@@ -117,4 +137,13 @@ bool32 GetMouseScrollDown()
 bool32 MousePressed(int32 ButtonCode)
 {
 	return Mouse.Button[ButtonCode];
+}
+
+bool32 MouseClicked(int32 ButtonCode)
+{
+	bool32 Result = Mouse.ButtonClick[ButtonCode];
+
+	Mouse.ButtonClick[ButtonCode] = 0;
+
+	return Result;
 }

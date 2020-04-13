@@ -90,10 +90,10 @@ class user_interface : public drawable
 
 	bool CheckValidID(uint32 ElementID);
 	bool CheckValidStringID(uint32 ElementID, uint32 StringID);
-	void CalculateTextPositions();
-	void CalculateVertices();
 
 	public:
+	void CalculateTextPositions();
+	void CalculateVertices();
 
 	work_id ThreadWorkID;
 
@@ -104,6 +104,7 @@ class user_interface : public drawable
 	void SetMargin(uint32 ElementID, real32 Margin);
 	void SetOffset(uint32 ElementID, real32 OffsetX, real32 OffsetY);
 	void SetBackgroundColor(uint32 ElementID, vec4 Color);
+	void SetBackgroundAlpha(uint32 ElementID, real32 Alpha);
 	void SetAdjustWidthToText(uint32 ElementID, bool Adjust);
 	void SetAdjustHeightToText(uint32 ElementID, bool Adjust);
 	void SetHighlight(uint32 ElementID, bool Set);

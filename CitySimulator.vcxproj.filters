@@ -135,6 +135,9 @@
     <ClCompile Include="drawable.cpp">
       <Filter>Source Files\graphics\drawables</Filter>
     </ClCompile>
+    <ClCompile Include="system_message.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -241,6 +244,9 @@
     </ClInclude>
     <ClInclude Include="drawable.h">
       <Filter>Header Files\graphics\drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="system_message.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

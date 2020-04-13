@@ -188,6 +188,80 @@ void direct3d::EndFrame() const
 	Swap->Present(0, 0);
 }
 
+void direct3d::TestInit()
+{
+	persistence Persistence;
+	obj_file File = Persistence.LoadObjectFile("taxi.obj");
+
+	thread_pool.AddBackgroundWork(ThreadWorkID1, [&]
+	{
+		for(int x = 0; x < 25; x++)
+		{
+			for(int y = 0; y < 25; y++)
+			{
+				vec3 Position((real32)x + (2.0f * (real32)x), 0.0f, (real32)y + (2.0f * (real32)y));
+				vec3 Scale(0.5f, 0.5f, 0.5f);
+				vec3 Rotation(0.0f, 0.0f, 0.0f);
+
+				std::unique_lock<std::mutex> Lock{ Mutex };
+
+				Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation));
+			}
+		}
+	});
+
+	thread_pool.AddBackgroundWork(ThreadWorkID2, [&]
+	{
+		for(int x = 25; x < 50; x++)
+		{
+			for(int y = 25; y < 50; y++)
+			{
+				vec3 Position((real32)x + (2.0f * (real32)x), 0.0f, (real32)y + (2.0f * (real32)y));
+				vec3 Scale(0.5f, 0.5f, 0.5f);
+				vec3 Rotation(0.0f, 0.0f, 0.0f);
+
+				std::unique_lock<std::mutex> Lock{ Mutex };
+
+				Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation));
+			}
+		}
+	});
+
+	thread_pool.AddBackgroundWork(ThreadWorkID3, [&]
+	{
+		for(int x = 50; x < 75; x++)
+		{
+			for(int y = 50; y < 75; y++)
+			{
+				vec3 Position((real32)x + (2.0f * (real32)x), 0.0f, (real32)y + (2.0f * (real32)y));
+				vec3 Scale(0.5f, 0.5f, 0.5f);
+				vec3 Rotation(0.0f, 0.0f, 0.0f);
+
+				std::unique_lock<std::mutex> Lock{ Mutex };
+
+				Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation));
+			}
+		}
+	});
+
+	thread_pool.AddBackgroundWork(ThreadWorkID4, [&]
+	{
+		for(int x = 75; x < 100; x++)
+		{
+			for(int y = 75; y < 100; y++)
+			{
+				vec3 Position((real32)x + (2.0f * (real32)x), 0.0f, (real32)y + (2.0f * (real32)y));
+				vec3 Scale(0.5f, 0.5f, 0.5f);
+				vec3 Rotation(0.0f, 0.0f, 0.0f);
+
+				std::unique_lock<std::mutex> Lock{ Mutex };
+
+				Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation));
+			}
+		}
+	});
+}
+
 void direct3d::TestDrawLines()
 {
 	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
@@ -197,6 +271,19 @@ void direct3d::TestDrawLines()
 		Iterator++)
 	{
 		(*Iterator)->Draw(Camera);
+	}
+
+	if(	thread_pool.WorkDone(ThreadWorkID1) &&
+		thread_pool.WorkDone(ThreadWorkID2) &&
+		thread_pool.WorkDone(ThreadWorkID3) &&
+		thread_pool.WorkDone(ThreadWorkID4))
+	{
+		for(auto Iterator = Vehicles.begin();
+			Iterator != Vehicles.end();
+			Iterator++)
+		{
+			(*Iterator)->Draw(Camera);
+		}
 	}
 }
 

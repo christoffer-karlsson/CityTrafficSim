@@ -1,13 +1,11 @@
 #include "object.h"
 
-object::object()
+object::object(obj_file &File, vec3 Position, vec3 Scale, vec3 Rotation)
 {
-	persistence Persistence;
-	obj_file File = Persistence.LoadObjectFile("taxi.obj");
 
-	vec3 Position(0.0f, 0.0f, 0.0f);
-	vec3 Scale(1.0f, 1.0f, 1.0f);
-	vec3 Rotation(0.0f, 180.0f, 0.0f);
+	//vec3 Position(0.0f, 0.0f, 0.0f);
+	//vec3 Scale(1.0f, 1.0f, 1.0f);
+	//vec3 Rotation(0.0f, 180.0f, 0.0f);
 
 	SetInitialModel(Position, Scale, Rotation);
 

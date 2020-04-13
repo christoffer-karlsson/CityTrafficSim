@@ -24,6 +24,7 @@ struct mouse_state
 	bool32 ScrollDown = 0;
 
 	bool32 Button[255];
+	bool32 ButtonClick[255];
 };
 
 void UpdateMouse(LPARAM LParam, WPARAM WParam);
@@ -38,3 +39,4 @@ bool32 GetMouseScrollUp();
 bool32 GetMouseScrollDown();
 
 bool32 MousePressed(int32 ButtonCode);
+bool32 MouseClicked(int32 ButtonCode);

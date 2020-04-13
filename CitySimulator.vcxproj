@@ -161,6 +161,7 @@
     <ClCompile Include="global_device_info.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="persistence.cpp" />
+    <ClCompile Include="system_message.cpp" />
     <ClCompile Include="terrain.cpp" />
     <ClCompile Include="line.cpp" />
     <ClCompile Include="mouse_picker.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="math.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="persistence.h" />
+    <ClInclude Include="system_message.h" />
     <ClInclude Include="terrain.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="mouse_picker.h" />

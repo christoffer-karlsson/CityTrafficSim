@@ -216,6 +216,13 @@ void user_interface::SetBackgroundColor(uint32 ElementID, vec4 Color)
 	Element[ElementID]->BackgroundColor = Color;
 }
 
+void user_interface::SetBackgroundAlpha(uint32 ElementID, real32 Alpha)
+{
+	if(!CheckValidID(ElementID)) return;
+
+	Element[ElementID]->BackgroundColor.w = Alpha;
+}
+
 void user_interface::SetAdjustWidthToText(uint32 ElementID, bool Adjust)
 {
 	if(!CheckValidID(ElementID)) return;
@@ -418,19 +425,19 @@ void user_interface::CalculateTextPositions()
 			real32 TextHeight = Element[EID]->Text[0]->TextMeasurementHeight;
 
 			Element[EID]->TextPositionX = OffsetX;
-			Element[EID]->TextPositionY = (ScreenHeight / 2.0f) - (Height / 2.0f) - OffsetX + TextHeight;
+			Element[EID]->TextPositionY = (ScreenHeight / 2.0f) - (Height / 2.0f) - OffsetY + TextHeight;
 		}
 		else if(Element[EID]->Anchor == screen_anchor::MIDDLE_MIDDLE)
 		{
 			Element[EID]->TextPositionX = (ScreenWidth / 2.0f) - (Width / 2.0f) + OffsetX;
-			Element[EID]->TextPositionY = (ScreenHeight / 2.0f) - (Height / 2.0f) + OffsetX;
+			Element[EID]->TextPositionY = (ScreenHeight / 2.0f) - (Height / 2.0f) + OffsetY;
 		}
 		else if(Element[EID]->Anchor == screen_anchor::MIDDLE_RIGHT)
 		{
 			real32 TextHeight = Element[EID]->Text[0]->TextMeasurementHeight;
 
 			Element[EID]->TextPositionX = ScreenWidth - Width;
-			Element[EID]->TextPositionY = (ScreenHeight / 2.0f) - (Height / 2.0f) - OffsetX + TextHeight;
+			Element[EID]->TextPositionY = (ScreenHeight / 2.0f) - (Height / 2.0f) - OffsetY + TextHeight;
 		}
 		else if(Element[EID]->Anchor == screen_anchor::MOUSE)
 		{
@@ -654,9 +661,6 @@ void user_interface::Draw(camera &Camera)
 
 void user_interface::DrawStrings()
 {
-	// NOTE(Cristoffer): Since all calculations are already done, this should be really
-	// fast now, iterate through the data.
-
 	DXTKSpriteBatch->Begin();
 
 	for(uint32 ID = 0; ID < ElementCount; ID++)

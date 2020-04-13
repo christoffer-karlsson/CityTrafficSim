@@ -12,6 +12,8 @@
 #include "world.h"
 #include "mouse_picker.h"
 #include "user_interface.h"
+#include "object.h"
+#include "threading.h"
 
 #include "external/SpriteFont.h"
 
@@ -47,9 +49,18 @@ class direct3d
 
 	std::unique_ptr<drawable> TestEntity;
 
+	std::vector<std::unique_ptr<object>> Vehicles;
+
 	camera Camera;
 
 	public:
+
+	work_id ThreadWorkID1;
+	work_id ThreadWorkID2;
+	work_id ThreadWorkID3;
+	work_id ThreadWorkID4;
+
+	std::mutex Mutex;
 
 	// TODO(Cristoffer): Temporary data here ////////////////
 
@@ -75,6 +86,7 @@ class direct3d
 	// TODO(Cristoffer): Perhaps camera shouldn't be accessable from here..
 	camera &GetCamera();
 
+	void TestInit();
 	void TestDrawLines();
 	void TestDrawTerrain(terrain *Terrain);
 	void TestDrawUI(user_interface *UI);

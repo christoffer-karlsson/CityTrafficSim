@@ -12,6 +12,7 @@
 #include "threading.h"
 #include "math.h"
 #include "entity_manager.h"
+#include "system_message.h"
 
 #include "object.h"
 
@@ -25,7 +26,7 @@ class application
 	window		Window;
 	timing		Timing;
 	direct3d	Graphics;
-	persistence Persistence;
+	persistence	Persistence;
 
 	bool Running;
 

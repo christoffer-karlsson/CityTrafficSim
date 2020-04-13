@@ -10,19 +10,15 @@ application::application() :
 
 void application::Run()
 {
-	world *World = new world(100, 100);
-
+	// TODO(Cristoffer): Temporary until permanent interface classes exists. /////////
+	world *World = new world(200, 200);
 	user_interface *UI = new user_interface();
-
 	entity_manager *EntityManager = new entity_manager();
-
-	/*entity_id Entity = EntityManager->Create(entity_type::CAR);
-
-	Entity.Get()->Update();*/
-
-	object Object;
-
+	//object Object;
 	mouse_picker TerrainPicker(World, World->Terrain, &Graphics.GetCamera());
+	///////////////////////////////////////////////////////////////////////////////////
+
+	//Graphics.TestInit();
 
 	Window.ShowMouseCursor(0);
 	Window.ClipMouseCursor(1);
@@ -45,14 +41,14 @@ void application::Run()
 	uint32 T3 = UI->AddNewText(SystemInfoElement, "Camera Position");
 	uint32 T4 = UI->AddNewText(SystemInfoElement, "Mouse World Position");
 	uint32 T5 = UI->AddNewText(SystemInfoElement, "Test");
-	UI->SetBackgroundColor(SystemInfoElement, { 0.25f, 0.25f, 0.25f, 0.75f });
+	UI->SetBackgroundColor(SystemInfoElement, { 0.25f, 0.25f, 0.25f, 0.5f });
 	UI->SetOffset(SystemInfoElement, 10.0f, 10.0f);
 	UI->SetMargin(SystemInfoElement, 10.0f);
 	UI->SetAdjustWidthToText(SystemInfoElement, true);
 
 	uint32 EditModeElement = UI->CreateElement(screen_anchor::TOP_MIDDLE, 10.0f, 10.0f);
 	UI->AddNewText(EditModeElement, "EDIT MODE ENABLED");
-	UI->SetBackgroundColor(EditModeElement, { 0.25f, 0.25f, 0.25f, 0.75f });
+	UI->SetBackgroundColor(EditModeElement, { 0.25f, 0.25f, 0.25f, 0.5f });
 	UI->SetOffset(EditModeElement, 0.0f, 10.0f);
 	UI->SetMargin(EditModeElement, 20.0f);
 	UI->SetHidden(EditModeElement, true);
@@ -60,7 +56,7 @@ void application::Run()
 	UI->SetAdjustWidthToText(EditModeElement, true);
 
 	uint32 BottomLeft = UI->CreateElement(screen_anchor::BOTTOM_LEFT, 10.0f, 10.0f);
-	UI->SetBackgroundColor(BottomLeft, { 0.25f, 0.25f, 0.25f, 0.75f });
+	UI->SetBackgroundColor(BottomLeft, { 0.25f, 0.25f, 0.25f, 0.5f });
 	UI->AddNewText(BottomLeft, "CONTROLS");
 	UI->AddNewText(BottomLeft, "\n");
 	UI->AddNewText(BottomLeft, "W/A/S/D");
@@ -88,7 +84,7 @@ void application::Run()
 	if(USE_MULTI_THREADING)
 	{
 		uint32 TopRight = UI->CreateElement(screen_anchor::TOP_RIGHT, 10.0f, 10.0f);
-		UI->SetBackgroundColor(TopRight, { 0.25f, 0.25f, 0.25f, 0.75f });
+		UI->SetBackgroundColor(TopRight, { 0.25f, 0.25f, 0.25f, 0.5f });
 		UI->AddNewText(TopRight, "MULTI-THREADING ENABLED");
 		UI->SetOffset(TopRight, 10.0f, 10.0f);
 		UI->SetMargin(TopRight, 10.0f);
@@ -96,7 +92,7 @@ void application::Run()
 	}
 
 	uint32 MouseTip = UI->CreateElement(screen_anchor::MOUSE, 70.0f, 10.0f);
-	UI->SetBackgroundColor(MouseTip, { 0.25f, 0.25f, 0.25f, 0.75f });
+	UI->SetBackgroundColor(MouseTip, { 0.25f, 0.25f, 0.25f, 0.5f });
 	UI->SetOffset(MouseTip, 10.0f, 10.0f);
 	UI->SetMargin(MouseTip, 10.0f);
 	UI->SetAdjustWidthToText(MouseTip, true);
@@ -161,18 +157,37 @@ void application::Run()
 			if(MousePressed(MOUSE_BUTTON_LEFT))
 			{
 				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, tile_type::ROAD_Z);
+				//sys_message.Push("Placed Z road tile at: " + std::to_string(global_data_collector::CurrentlyPickedTileX) + ", " + std::to_string(global_data_collector::CurrentlyPickedTileY) + ".");
 			}
 
 			if(MousePressed(MOUSE_BUTTON_RIGHT))
 			{
 				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, tile_type::ROAD_X);
+				//sys_message.Push("Placed X road tile at: " + std::to_string(global_data_collector::CurrentlyPickedTileX) + ", " + std::to_string(global_data_collector::CurrentlyPickedTileY) + ".");
 			}
 
 			if(MousePressed(MOUSE_BUTTON_MIDDLE))
 			{
 				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, tile_type::CROSSROAD);
+				//sys_message.Push("Placed crossroad tile at: " + std::to_string(global_data_collector::CurrentlyPickedTileX) + ", " + std::to_string(global_data_collector::CurrentlyPickedTileY) + ".");
 			}
 		}
+
+		if(MouseClicked(MOUSE_BUTTON_LEFT))
+		{
+			sys_message.Push("Left mouse button clicked.");
+		}
+
+		if(MouseClicked(MOUSE_BUTTON_MIDDLE))
+		{
+			sys_message.Push("Middle mouse button clicked.");
+		}
+
+		if(MouseClicked(MOUSE_BUTTON_RIGHT))
+		{
+			sys_message.Push("Right mouse button clicked.");
+		}
+
 
 		if(KeyPressed(KEY_W))
 		{
@@ -214,7 +229,7 @@ void application::Run()
 			Persistence.LoadSavedWorldMap(World);
 		}
 
-		if(KeyReleased(KEY_ARROWRIGHT))
+		/*if(KeyReleased(KEY_ARROWRIGHT))
 		{
 			PosX += 1.0f;
 
@@ -247,14 +262,14 @@ void application::Run()
 		}
 		if(KeyReleased(KEY_1))
 		{
-			Object.SetScale({ 0.1f , 0.1f, 0.1f });
+			sys_message.Push("Added new message.");
 		}
 		if(KeyReleased(KEY_2))
 		{
-			Object.SetScale({ -0.1f, -0.1f, -0.1f });
-		}
+			sys_message.Push("Added new message.");
+		}*/
 
-		Object.UpdateModel();
+		//Object.UpdateModel();
 
 		UI->UpdateText(SystemInfoElement, T1, ("Frame Per Second: " + 
 												std::to_string(Timing.GetFramesPerSecond())));
@@ -271,8 +286,8 @@ void application::Run()
 												std::to_string(global_data_collector::CurrentlyPickedTileX) + ", " +
 												std::to_string(global_data_collector::CurrentlyPickedTileY)));
 
-		UI->UpdateText(SystemInfoElement, T5, ("Mouse Scroll: " +
-			std::to_string(global_data_collector::MouseScrollDelta)));
+		UI->UpdateText(SystemInfoElement, T5, ("Time Elapsed: " +
+			std::to_string(timing::GetWallclockSeconds())));
 
 		if(EditMode)
 		{
@@ -294,12 +309,15 @@ void application::Run()
 		// NOTE(Cristoffer): Temporary render test.
 		Graphics.BeginFrame();
 
-		global_device_info::Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		Object.Draw(Graphics.GetCamera());
+		//global_device_info::Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		//Object.Draw(Graphics.GetCamera());
 		
 		Graphics.TestDrawTerrain(World->Terrain);
-		Graphics.TestDrawLines();
+		//Graphics.TestDrawLines();
 		Graphics.TestDrawUI(UI);
+
+		global_device_info::Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		sys_message.Display(Graphics.GetCamera());
 
 		Graphics.EndFrame();
 
