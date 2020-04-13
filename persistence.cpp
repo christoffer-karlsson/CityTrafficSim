@@ -7,6 +7,7 @@ void persistence::SaveWorldMap(world *World)
 
 	if(!File.is_open())
 	{
+		SystemMessage("Error! Could not open file.");
 		// TODO(Cristoffer): Handle file read error.
 		return;
 	}
@@ -22,6 +23,8 @@ void persistence::SaveWorldMap(world *World)
 	}
 
 	File.close();
+
+	SystemMessage("World map saved.");
 }
 
 void persistence::LoadSavedWorldMap(world *World)
@@ -32,6 +35,7 @@ void persistence::LoadSavedWorldMap(world *World)
 
 	if(!File.is_open())
 	{
+		SystemMessage("Error! Could not open file.");
 		// TODO(Cristoffer): Handle file read error.
 		return;
 	}
@@ -57,6 +61,8 @@ void persistence::LoadSavedWorldMap(world *World)
 	}
 
 	File.close();
+
+	SystemMessage("World map loaded.");
 }
 
 obj_file persistence::LoadObjectFile(std::string Filename)
@@ -69,6 +75,7 @@ obj_file persistence::LoadObjectFile(std::string Filename)
 
 	if(!File.is_open())
 	{
+		SystemMessage("Error! Could not open file.");
 		// TODO(Cristoffer): Handle file read error.
 		return Destination;
 	}
@@ -85,6 +92,16 @@ obj_file persistence::LoadObjectFile(std::string Filename)
 			std::getline(File, Z, NEWLINE);
 
 			Destination.Vertices.push_back(vec3(std::stof(X), std::stof(Y), std::stof(Z)));
+		}
+		else if(Word == "vn")
+		{
+			std::string X, Y, Z;
+
+			std::getline(File, X, SPACE);
+			std::getline(File, Y, SPACE);
+			std::getline(File, Z, NEWLINE);
+
+			Destination.Normals.push_back(vec3(std::stof(X), std::stof(Y), std::stof(Z)));
 		}
 		// NOTE(Cristoffer): Faces or indicies.
 		// Ex: f 1/1/1 2/2/1 3/3/1
@@ -149,9 +166,24 @@ obj_file persistence::LoadObjectFile(std::string Filename)
 				}
 
 				// NOTE(Cristoffer): -1 because .obj index start at 1, and c++ starts at 0.
-				Destination.Indices.push_back(std::stoi(Position) - 1);
-				//Destination.TextureCoordinate.push_back(std::stoi(TextureCoordinate) - 1);
-				//Destination.Normal.push_back(std::stoi(Normal) - 1);
+				face Face;
+				
+				if(!Position.empty())
+				{
+					Face.Position = std::stoi(Position) - 1;
+				}
+
+				if(!TextureCoordinate.empty())
+				{
+					Face.TextureCoordinate = std::stoi(TextureCoordinate) - 1;
+				}
+
+				if(!Normal.empty())
+				{
+					Face.Normal = std::stoi(Normal) - 1;
+				}
+				
+				Destination.FaceIndices.push_back(Face);
 
 				Position.clear();
 				TextureCoordinate.clear();

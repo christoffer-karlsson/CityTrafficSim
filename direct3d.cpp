@@ -20,6 +20,20 @@ direct3d::direct3d(HWND WindowHandle) :
 	global_device_info::Target = Target;
 	global_device_info::Swap = Swap;
 
+	persistence Persistence;
+	obj_file File = Persistence.LoadObjectFile("car.obj");
+
+	vec3 Position(25.0f, 0.0f, 25.0f);
+	vec3 Scale(0.25f, 0.25f, 0.25f);
+	vec3 Rotation(0.0f, 0.0f, 0.0f);
+
+	Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation));
+
+	File = Persistence.LoadObjectFile("building.obj");
+
+	vec3 Position2(30.0f, 0.0f, 25.0f);
+	Vehicles.push_back(std::make_unique<object>(File, Position2, Scale, Rotation));
+
 	//Graph.push_back(std::make_unique<line>(10.0f, 5.0f, 10.0f, 10.0f, 0.0f, 10.0f));
 }
 
@@ -273,10 +287,9 @@ void direct3d::TestDrawLines()
 		(*Iterator)->Draw(Camera);
 	}
 
-	if(	thread_pool.WorkDone(ThreadWorkID1) &&
-		thread_pool.WorkDone(ThreadWorkID2) &&
-		thread_pool.WorkDone(ThreadWorkID3) &&
-		thread_pool.WorkDone(ThreadWorkID4))
+	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	if(	thread_pool.WorkDone(ThreadWorkID1))
 	{
 		for(auto Iterator = Vehicles.begin();
 			Iterator != Vehicles.end();

@@ -154,40 +154,36 @@ void application::Run()
 		{
 			TerrainPicker.TestMouseCollision();
 
-			if(MousePressed(MOUSE_BUTTON_LEFT))
+			if(MouseClicked(MOUSE_BUTTON_LEFT))
 			{
 				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, tile_type::ROAD_Z);
-				//sys_message.Push("Placed Z road tile at: " + std::to_string(global_data_collector::CurrentlyPickedTileX) + ", " + std::to_string(global_data_collector::CurrentlyPickedTileY) + ".");
+				SystemMessage("Placed Z road tile at: " + std::to_string((int32)global_data_collector::CurrentlyPickedTileX) + ", " + std::to_string((int32)global_data_collector::CurrentlyPickedTileY) + ".");
 			}
 
-			if(MousePressed(MOUSE_BUTTON_RIGHT))
+			if(MouseClicked(MOUSE_BUTTON_RIGHT))
 			{
 				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, tile_type::ROAD_X);
-				//sys_message.Push("Placed X road tile at: " + std::to_string(global_data_collector::CurrentlyPickedTileX) + ", " + std::to_string(global_data_collector::CurrentlyPickedTileY) + ".");
+				SystemMessage("Placed X road tile at: " + std::to_string((int32)global_data_collector::CurrentlyPickedTileX) + ", " + std::to_string((int32)global_data_collector::CurrentlyPickedTileY) + ".");
 			}
 
-			if(MousePressed(MOUSE_BUTTON_MIDDLE))
+			if(MouseClicked(MOUSE_BUTTON_MIDDLE))
 			{
 				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, tile_type::CROSSROAD);
-				//sys_message.Push("Placed crossroad tile at: " + std::to_string(global_data_collector::CurrentlyPickedTileX) + ", " + std::to_string(global_data_collector::CurrentlyPickedTileY) + ".");
+				SystemMessage("Placed crossroad tile at: " + std::to_string((int32)global_data_collector::CurrentlyPickedTileX) + ", " + std::to_string((int32)global_data_collector::CurrentlyPickedTileY) + ".");
+			}
+
+			if(MouseClicked(MOUSE_BUTTON_MIDDLE))
+			{
+				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, tile_type::CROSSROAD);
+				SystemMessage("Placed crossroad tile at: " + std::to_string((int32)global_data_collector::CurrentlyPickedTileX) + ", " + std::to_string((int32)global_data_collector::CurrentlyPickedTileY) + ".");
+			}
+
+			if(KeyReleased(KEY_DELETE))
+			{
+				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, tile_type::GRASS);
+				SystemMessage("Tile deleted at: " + std::to_string((int32)global_data_collector::CurrentlyPickedTileX) + ", " + std::to_string((int32)global_data_collector::CurrentlyPickedTileY) + ".");
 			}
 		}
-
-		if(MouseClicked(MOUSE_BUTTON_LEFT))
-		{
-			sys_message.Push("Left mouse button clicked.");
-		}
-
-		if(MouseClicked(MOUSE_BUTTON_MIDDLE))
-		{
-			sys_message.Push("Middle mouse button clicked.");
-		}
-
-		if(MouseClicked(MOUSE_BUTTON_RIGHT))
-		{
-			sys_message.Push("Right mouse button clicked.");
-		}
-
 
 		if(KeyPressed(KEY_W))
 		{
@@ -229,37 +225,43 @@ void application::Run()
 			Persistence.LoadSavedWorldMap(World);
 		}
 
-		/*if(KeyReleased(KEY_ARROWRIGHT))
+		if(KeyReleased(KEY_ARROWRIGHT))
 		{
 			PosX += 1.0f;
-
-			Object.SetPosition({ PosX, PosY, PosZ });
+			light_source::Position.x = PosX;
+			//Object.SetPosition({ PosX, PosY, PosZ });
 		}
 		if(KeyReleased(KEY_ARROWLEFT))
 		{
 			PosX -= 1.0f;
-			Object.SetPosition({ PosX, PosY, PosZ });
+			light_source::Position.x = PosX;
+			//Object.SetPosition({ PosX, PosY, PosZ });
 		}
 		if(KeyReleased(KEY_ARROWDOWN))
 		{
 			PosZ -= 1.0f;
-			Object.SetPosition({ PosX, PosY, PosZ });
+			light_source::Position.z = PosZ;
+			//Object.SetPosition({ PosX, PosY, PosZ });
 		}
 		if(KeyReleased(KEY_ARROWUP))
 		{
 			PosZ += 1.0f;
-			Object.SetPosition({ PosX, PosY, PosZ });
+			light_source::Position.z = PosZ;
+			//Object.SetPosition({ PosX, PosY, PosZ });
 		}
 		if(GetMouseScrollUp())
 		{
-			Angle += 10.0f;
-			Object.SetRotation({ 0.0f, Angle, 0.0f });
+			Angle += 1.0f;
+			light_source::Position.y = Angle;
+			//Object.SetRotation({ 0.0f, Angle, 0.0f });
 		}
 		if(GetMouseScrollDown())
 		{
-			Angle -= 10.0f;
-			Object.SetRotation({ 0.0f, Angle, 0.0f });
+			Angle -= 1.0f;
+			light_source::Position.y = Angle;
+			//Object.SetRotation({ 0.0f, Angle, 0.0f });
 		}
+
 		if(KeyReleased(KEY_1))
 		{
 			sys_message.Push("Added new message.");
@@ -267,7 +269,7 @@ void application::Run()
 		if(KeyReleased(KEY_2))
 		{
 			sys_message.Push("Added new message.");
-		}*/
+		}
 
 		//Object.UpdateModel();
 
@@ -286,8 +288,10 @@ void application::Run()
 												std::to_string(global_data_collector::CurrentlyPickedTileX) + ", " +
 												std::to_string(global_data_collector::CurrentlyPickedTileY)));
 
-		UI->UpdateText(SystemInfoElement, T5, ("Time Elapsed: " +
-			std::to_string(timing::GetWallclockSeconds())));
+		UI->UpdateText(SystemInfoElement, T5, ("Light Source Position: " +
+			std::to_string(light_source::Position.x) + ", " +
+			std::to_string(light_source::Position.y) + ", " +
+			std::to_string(light_source::Position.z)));
 
 		if(EditMode)
 		{
@@ -313,11 +317,11 @@ void application::Run()
 		//Object.Draw(Graphics.GetCamera());
 		
 		Graphics.TestDrawTerrain(World->Terrain);
-		//Graphics.TestDrawLines();
+		Graphics.TestDrawLines();
 		Graphics.TestDrawUI(UI);
 
 		global_device_info::Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		sys_message.Display(Graphics.GetCamera());
+		system_message::GetInstance().Display(Graphics.GetCamera());
 
 		Graphics.EndFrame();
 

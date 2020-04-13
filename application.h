@@ -13,6 +13,7 @@
 #include "math.h"
 #include "entity_manager.h"
 #include "system_message.h"
+#include "light_source.h"
 
 #include "object.h"
 

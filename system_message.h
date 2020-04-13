@@ -14,6 +14,7 @@
 #define OVERFLOW_THRESHOLD 50
 
 #define sys_message system_message::GetInstance()
+#define SystemMessage(x) system_message::GetInstance().Push(x)
 
 class system_message
 {

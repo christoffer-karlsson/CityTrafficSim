@@ -12,31 +12,52 @@ object::object(obj_file &File, vec3 Position, vec3 Scale, vec3 Rotation)
 	struct cb
 	{
 		XMMATRIX MVP;
+		XMMATRIX Model;
 		XMFLOAT4 AmbientLight;
+		XMFLOAT3 LightPosition;
 
 	} VS_Input;
 
-	for(auto const Element : File.Vertices)
+	// NOTE(Cristoffer): Store vertex data.
+	for(auto const &Vert : File.Vertices)
 	{
 		vertex Vertex;
 
-		Vertex = { Element.x, Element.y, Element.z, 0.0f, 0.0f, 0.2f, 0.2f, 0.2f, 1.0f };
+		Vertex.Position = vec3(Vert.x, Vert.y, Vert.z);
+		Vertex.Color = vec4(0.7, 0.53, 0.5, 1.0f);
+		Vertex.Normal = vec3(0.5f, 0.5f, 0.5f);
 
 		Vertices.push_back(Vertex);
 	}
 
-	for(auto const Element : File.Indices)
+	// NOTE(Cristoffer): Store the normals.
+	for(auto const &Vertex : File.Normals)
 	{
-		Indices.push_back(Element);
+		Normals.push_back(Vertex);
+	}
+	
+	// NOTE(Cristoffer): Fill the normal vertices based on mapped index.
+	for(auto const Element : File.FaceIndices)
+	{
+		uint32 VertexIndex = Element.Position;
+		uint32 NormalIndex = Element.Normal;
+
+		Vertices.at(VertexIndex).Normal = Normals.at(NormalIndex);
 	}
 
-	Shader = new shader(L"cube_vs.cso", L"cube_ps.cso");
+	// NOTE(Cristoffer): Vertex indicies for index buffer.
+	for(auto const &Indicies : File.FaceIndices)
+	{
+		Indices.push_back(Indicies.Position);
+	}
+
+	Shader = new shader(L"vehicle_vs.cso", L"vehicle_ps.cso");
 	Shader->AddInputElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
-	Shader->AddInputElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
-	Shader->AddInputElement("AMBLIGHT", DXGI_FORMAT_R32G32B32A32_FLOAT);
+	Shader->AddInputElement("COLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
+	Shader->AddInputElement("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
 	Shader->CommitInputElements();
 
-	Texture = new texture(L"data/2x3_texture-2.png", 256, 256, 1, 1);
+	Texture = nullptr;
 
 	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), (uint32)Vertices.size(), DYNAMIC);
 	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint32), (uint32)Indices.size());
@@ -49,14 +70,18 @@ void object::Draw(camera &Camera)
 	struct cb
 	{
 		XMMATRIX MVP;
+		XMMATRIX Model;
 		XMFLOAT4 AmbientLight;
+		XMFLOAT3 LightPosition;
 
 	} VS_Input;
 
 	VS_Input.MVP = XMMatrixTranspose(Model * XMMATRIX(Camera.GetViewMatrix()) * XMMATRIX(Camera.GetProjectionMatrix()));
+	VS_Input.Model = Model;
 	VS_Input.AmbientLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	VS_Input.LightPosition = XMFLOAT3(light_source::Position.x, light_source::Position.y, light_source::Position.z);
 
-	Texture->Bind();
+	//Texture->Bind();
 	VertexBuffer->Bind();
 	Shader->Bind();
 	ConstantBuffer->Bind();

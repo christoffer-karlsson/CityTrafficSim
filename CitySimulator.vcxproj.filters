@@ -138,6 +138,9 @@
     <ClCompile Include="system_message.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="light_source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -248,6 +251,9 @@
     <ClInclude Include="system_message.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="light_source.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="cube_vs.hlsl">
@@ -272,6 +278,12 @@
       <Filter>Source Files\graphics\shaders</Filter>
     </FxCompile>
     <FxCompile Include="user_interface_vs.hlsl">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="vehicle_vs.hlsl">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="vehicle_ps.hlsl">
       <Filter>Source Files\graphics\shaders</Filter>
     </FxCompile>
   </ItemGroup>

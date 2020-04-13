@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common.h"
+#include "system_message.h"
 #include "world.h"
 
 #include <fstream>
@@ -9,10 +10,18 @@
 
 #define OBJECT_FILES_DEFAULT_PATH "data\\objects\\"
 
+struct face
+{
+	real32 Position;
+	real32 TextureCoordinate;
+	real32 Normal;
+};
+
 struct obj_file
 {
 	std::vector<vec3> Vertices;
-	std::vector<uint32> Indices;
+	std::vector<vec3> Normals;
+	std::vector<face> FaceIndices;
 };
 
 class persistence
