@@ -36,35 +36,30 @@ terrain::terrain(int64 Width, int64 Height)
 
 	Texture = new texture(L"data/tile-atlas-256x256x10x10.png", 2560, 2560, 10, 10);
 
-	struct
-	{
-		XMMATRIX MVP;
-
-	} VS_Input;
-
 	int64 QuadCount = 0;
 
 	for(uint64 X = 0; X < Width; X++)
 	{
 		for(uint64 Y = 0; Y < Height; Y++)
 		{
+			uv_quad UV = Texture->GetUVFromSliceCoordinates(0, 0);
+
 			terrain_vertex Vertex[4];
 
-			Vertex[0].Position.x = (real32)X - 0.5f;
-			Vertex[0].Position.y = 0.0f;
-			Vertex[0].Position.z = (real32)Y - 0.5f;
+			Vertex[0].Position = vec3((real32)X - 0.5f, 0.0f, (real32)Y - 0.5f);
+			Vertex[1].Position = vec3((real32)X - 0.5f, 0.0f, (real32)Y + 0.5f);
+			Vertex[2].Position = vec3((real32)X + 0.5f, 0.0f, (real32)Y - 0.5f);
+			Vertex[3].Position = vec3((real32)X + 0.5f, 0.0f, (real32)Y + 0.5f);
 			
-			Vertex[1].Position.x = (real32)X - 0.5f;
-			Vertex[1].Position.y = 0.0f;
-			Vertex[1].Position.z = (real32)Y + 0.5f;
-			
-			Vertex[2].Position.x = (real32)X + 0.5f;
-			Vertex[2].Position.y = 0.0f;
-			Vertex[2].Position.z = (real32)Y - 0.5f;
+			Vertex[0].Normal = vec3(0.0f, 1.0f, 0.0f);
+			Vertex[1].Normal = vec3(0.0f, 1.0f, 0.0f);
+			Vertex[2].Normal = vec3(0.0f, 1.0f, 0.0f);
+			Vertex[3].Normal = vec3(0.0f, 1.0f, 0.0f);
 
-			Vertex[3].Position.x = (real32)X + 0.5f;
-			Vertex[3].Position.y = 0.0f;
-			Vertex[3].Position.z = (real32)Y + 0.5f;
+			Vertex[0].TextureUVCoordinate = vec2(UV.TextureCoordinate[0].U, UV.TextureCoordinate[0].V);
+			Vertex[1].TextureUVCoordinate = vec2(UV.TextureCoordinate[1].U, UV.TextureCoordinate[1].V);
+			Vertex[2].TextureUVCoordinate = vec2(UV.TextureCoordinate[2].U, UV.TextureCoordinate[2].V);
+			Vertex[3].TextureUVCoordinate = vec2(UV.TextureCoordinate[3].U, UV.TextureCoordinate[3].V);
 
 			Vertices.push_back(Vertex[0]);
 			Vertices.push_back(Vertex[1]);
@@ -93,6 +88,7 @@ terrain::terrain(int64 Width, int64 Height)
 
 	Shader = new shader(L"ground_vs.cso", L"ground_ps.cso");
 	Shader->AddInputElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
+	Shader->AddInputElement("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
 	Shader->AddInputElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
 	Shader->AddInputElement("ISPICKED", DXGI_FORMAT_R32_FLOAT);
 	Shader->CommitInputElements();
@@ -100,18 +96,22 @@ terrain::terrain(int64 Width, int64 Height)
 	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(terrain_vertex), (uint32)Vertices.size(), DYNAMIC);
 	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint32), (uint32)Indices.size());
 
-	ConstantBuffer = new constant_buffer(&VS_Input, sizeof(VS_Input));
+	cbuffer_input VertexShaderInput;
+	ConstantBuffer = new constant_buffer(&VertexShaderInput, sizeof(VertexShaderInput));
 }
 
 void terrain::Draw(camera &Camera)
 {
-	struct cb
-	{
-		XMMATRIX MVP;
+	cbuffer_input VertexShaderInput;
+	VertexShaderInput.Model = XMMatrixTranspose(Model);
+	VertexShaderInput.MVP = XMMatrixTranspose(Model * 
+											  XMMATRIX(Camera.GetViewMatrix()) * 
+											  XMMATRIX(Camera.GetProjectionMatrix()));
+	VertexShaderInput.AmbientLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	VertexShaderInput.LightPosition = XMFLOAT3(light_source::Position.x, 
+											   light_source::Position.y, 
+											   light_source::Position.z);
 
-	} VS_Input;
-
-	VS_Input.MVP = XMMatrixTranspose(Model * XMMATRIX(Camera.GetViewMatrix()) * XMMATRIX(Camera.GetProjectionMatrix()));
 
 	// TODO(Cristoffer): Is it bad to update the dynamic buffer before drawing?
 	// Should it be done earlier?
@@ -121,7 +121,7 @@ void terrain::Draw(camera &Camera)
 	VertexBuffer->Bind();
 	Shader->Bind();
 	ConstantBuffer->Bind();
-	ConstantBuffer->Update(&VS_Input);
+	ConstantBuffer->Update(&VertexShaderInput);
 
 	global_device_info::Context->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
 }

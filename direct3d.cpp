@@ -20,19 +20,66 @@ direct3d::direct3d(HWND WindowHandle) :
 	global_device_info::Target = Target;
 	global_device_info::Swap = Swap;
 
-	persistence Persistence;
-	obj_file File = Persistence.LoadObjectFile("car.obj");
+	{
+		persistence Persistence;
+		obj_file File = Persistence.LoadObjectFile("car.obj");
 
-	vec3 Position(25.0f, 0.0f, 25.0f);
-	vec3 Scale(0.25f, 0.25f, 0.25f);
-	vec3 Rotation(0.0f, 0.0f, 0.0f);
+		vec3 Position(4.0f * 25.0f, 0.0f, 4.0f * 25.0f);
+		vec3 Scale(0.25f, 0.25f, 0.25f);
+		vec3 Rotation(0.0f, 0.0f, 0.0f);
+		vec4 Color(0.75f, 0.2f, 0.35f, 1.0f);
 
-	Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation));
+		Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
+	}
 
-	File = Persistence.LoadObjectFile("building.obj");
+	{
+		persistence Persistence;
+		obj_file File = Persistence.LoadObjectFile("car.obj");
 
-	vec3 Position2(30.0f, 0.0f, 25.0f);
-	Vehicles.push_back(std::make_unique<object>(File, Position2, Scale, Rotation));
+		vec3 Position(4.0f * 50.0f, 0.0f, 4.0f * 50.0f);
+		vec3 Scale(0.25f, 0.25f, 0.25f);
+		vec3 Rotation(0.0f, -45.0f, 0.0f);
+		vec4 Color(0.55f, 0.4f, 0.65f, 1.0f);
+
+		Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
+	}
+
+	{
+		persistence Persistence;
+		obj_file File = Persistence.LoadObjectFile("car.obj");
+
+		vec3 Position(4.0f * 100.0f, 0.0f, 4.0f * 100.0f);
+		vec3 Scale(0.25f, 0.25f, 0.25f);
+		vec3 Rotation(0.0f, 45.0f, 0.0f);
+		vec4 Color(0.34f, 0.45f, 0.78f, 1.0f);
+
+		Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
+	}
+
+	{
+		persistence Persistence;
+		obj_file File = Persistence.LoadObjectFile("car.obj");
+
+		vec3 Position(4.0f * 150.0f, 0.0f, 4.0f * 150.0f);
+		vec3 Scale(0.25f, 0.25f, 0.25f);
+		vec3 Rotation(0.0f, 90.0f, 0.0f);
+		vec4 Color(0.54f, 0.85f, 0.43f, 1.0f);
+
+		Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
+	}
+
+	{
+		persistence Persistence;
+		obj_file File = Persistence.LoadObjectFile("building.obj");
+
+		vec3 Position(60.0f, 0.0f, 60.0f);
+		vec3 Scale(1.0f, 1.0f, 1.0f);
+		vec3 Rotation(0.0f, 0.0f, 0.0f);
+		vec4 Color(0.85f, 0.85f, 0.9f, 1.0f);
+
+		Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
+	}
+
 
 	//Graph.push_back(std::make_unique<line>(10.0f, 5.0f, 10.0f, 10.0f, 0.0f, 10.0f));
 }
@@ -205,7 +252,7 @@ void direct3d::EndFrame() const
 void direct3d::TestInit()
 {
 	persistence Persistence;
-	obj_file File = Persistence.LoadObjectFile("taxi.obj");
+	obj_file File = Persistence.LoadObjectFile("car.obj");
 
 	thread_pool.AddBackgroundWork(ThreadWorkID1, [&]
 	{
@@ -216,10 +263,13 @@ void direct3d::TestInit()
 				vec3 Position((real32)x + (2.0f * (real32)x), 0.0f, (real32)y + (2.0f * (real32)y));
 				vec3 Scale(0.5f, 0.5f, 0.5f);
 				vec3 Rotation(0.0f, 0.0f, 0.0f);
+				vec4 Color(0.8f, 0.8f, 0.8f, 1.0f);
 
-				std::unique_lock<std::mutex> Lock{ Mutex };
+				{
+					std::unique_lock<std::mutex> Lock{ Mutex };
+				}
 
-				Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation));
+				Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
 			}
 		}
 	});
@@ -233,10 +283,13 @@ void direct3d::TestInit()
 				vec3 Position((real32)x + (2.0f * (real32)x), 0.0f, (real32)y + (2.0f * (real32)y));
 				vec3 Scale(0.5f, 0.5f, 0.5f);
 				vec3 Rotation(0.0f, 0.0f, 0.0f);
+				vec4 Color(0.8f, 0.8f, 0.8f, 1.0f);
 
-				std::unique_lock<std::mutex> Lock{ Mutex };
+				{
+					std::unique_lock<std::mutex> Lock{ Mutex };
+				}
 
-				Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation));
+				Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
 			}
 		}
 	});
@@ -250,10 +303,13 @@ void direct3d::TestInit()
 				vec3 Position((real32)x + (2.0f * (real32)x), 0.0f, (real32)y + (2.0f * (real32)y));
 				vec3 Scale(0.5f, 0.5f, 0.5f);
 				vec3 Rotation(0.0f, 0.0f, 0.0f);
+				vec4 Color(0.8f, 0.8f, 0.8f, 1.0f);
 
-				std::unique_lock<std::mutex> Lock{ Mutex };
+				{
+					std::unique_lock<std::mutex> Lock{ Mutex };
+				}
 
-				Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation));
+				Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
 			}
 		}
 	});
@@ -267,10 +323,13 @@ void direct3d::TestInit()
 				vec3 Position((real32)x + (2.0f * (real32)x), 0.0f, (real32)y + (2.0f * (real32)y));
 				vec3 Scale(0.5f, 0.5f, 0.5f);
 				vec3 Rotation(0.0f, 0.0f, 0.0f);
+				vec4 Color(0.8f, 0.8f, 0.8f, 1.0f);
 
-				std::unique_lock<std::mutex> Lock{ Mutex };
+				{
+					std::unique_lock<std::mutex> Lock{ Mutex };
+				}
 
-				Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation));
+				Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
 			}
 		}
 	});
@@ -289,7 +348,10 @@ void direct3d::TestDrawLines()
 
 	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	if(	thread_pool.WorkDone(ThreadWorkID1))
+	if(	thread_pool.WorkDone(ThreadWorkID1)&&
+		thread_pool.WorkDone(ThreadWorkID2)&&
+		thread_pool.WorkDone(ThreadWorkID3)&&
+		thread_pool.WorkDone(ThreadWorkID4))
 	{
 		for(auto Iterator = Vehicles.begin();
 			Iterator != Vehicles.end();

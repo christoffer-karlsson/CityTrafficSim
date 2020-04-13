@@ -1,6 +1,6 @@
 #include "object.h"
 
-object::object(obj_file &File, vec3 Position, vec3 Scale, vec3 Rotation)
+object::object(obj_file &File, vec3 Position, vec3 Scale, vec3 Rotation, vec4 Color)
 {
 
 	//vec3 Position(0.0f, 0.0f, 0.0f);
@@ -24,7 +24,7 @@ object::object(obj_file &File, vec3 Position, vec3 Scale, vec3 Rotation)
 		vertex Vertex;
 
 		Vertex.Position = vec3(Vert.x, Vert.y, Vert.z);
-		Vertex.Color = vec4(0.7, 0.53, 0.5, 1.0f);
+		Vertex.Color = Color;
 		Vertex.Normal = vec3(0.5f, 0.5f, 0.5f);
 
 		Vertices.push_back(Vertex);
@@ -77,9 +77,12 @@ void object::Draw(camera &Camera)
 	} VS_Input;
 
 	VS_Input.MVP = XMMatrixTranspose(Model * XMMATRIX(Camera.GetViewMatrix()) * XMMATRIX(Camera.GetProjectionMatrix()));
-	VS_Input.Model = Model;
+	VS_Input.Model = XMMatrixTranspose(Model);
 	VS_Input.AmbientLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	VS_Input.LightPosition = XMFLOAT3(light_source::Position.x, light_source::Position.y, light_source::Position.z);
+	//VS_Input.LightPosition = XMFLOAT3(Camera.GetPositionX(), Camera.GetPositionY(), Camera.GetPositionZ());
+	VS_Input.LightPosition = XMFLOAT3(light_source::Position.x, 
+									  light_source::Position.y, 
+									  light_source::Position.z);
 
 	//Texture->Bind();
 	VertexBuffer->Bind();

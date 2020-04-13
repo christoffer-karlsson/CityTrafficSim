@@ -16,9 +16,9 @@ void application::Run()
 	entity_manager *EntityManager = new entity_manager();
 	//object Object;
 	mouse_picker TerrainPicker(World, World->Terrain, &Graphics.GetCamera());
-	///////////////////////////////////////////////////////////////////////////////////
 
-	//Graphics.TestInit();
+	light_source::Init();
+	///////////////////////////////////////////////////////////////////////////////////
 
 	Window.ShowMouseCursor(0);
 	Window.ClipMouseCursor(1);
@@ -228,37 +228,37 @@ void application::Run()
 		if(KeyReleased(KEY_ARROWRIGHT))
 		{
 			PosX += 1.0f;
-			light_source::Position.x = PosX;
+			light_source::Position.x += +1.0f;
 			//Object.SetPosition({ PosX, PosY, PosZ });
 		}
 		if(KeyReleased(KEY_ARROWLEFT))
 		{
 			PosX -= 1.0f;
-			light_source::Position.x = PosX;
+			light_source::Position.x += -1.0f;
 			//Object.SetPosition({ PosX, PosY, PosZ });
 		}
 		if(KeyReleased(KEY_ARROWDOWN))
 		{
 			PosZ -= 1.0f;
-			light_source::Position.z = PosZ;
+			light_source::Position.z += +1.0f;
 			//Object.SetPosition({ PosX, PosY, PosZ });
 		}
 		if(KeyReleased(KEY_ARROWUP))
 		{
 			PosZ += 1.0f;
-			light_source::Position.z = PosZ;
+			light_source::Position.z += +1.0f;
 			//Object.SetPosition({ PosX, PosY, PosZ });
 		}
 		if(GetMouseScrollUp())
 		{
 			Angle += 1.0f;
-			light_source::Position.y = Angle;
+			light_source::Position.y += +1.0f;
 			//Object.SetRotation({ 0.0f, Angle, 0.0f });
 		}
 		if(GetMouseScrollDown())
 		{
 			Angle -= 1.0f;
-			light_source::Position.y = Angle;
+			light_source::Position.y += -1.0f;
 			//Object.SetRotation({ 0.0f, Angle, 0.0f });
 		}
 

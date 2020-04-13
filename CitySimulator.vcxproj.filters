@@ -252,7 +252,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="light_source.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

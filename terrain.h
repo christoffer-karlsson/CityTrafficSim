@@ -2,13 +2,23 @@
 
 #include "drawable.h"
 #include "texture.h"
+#include "light_source.h"
 
 #include "mouse.h"
 #include "external/SimpleMath.h"
 
+struct cbuffer_input
+{
+	XMMATRIX MVP;
+	XMMATRIX Model;
+	XMFLOAT4 AmbientLight;
+	XMFLOAT3 LightPosition;
+};
+
 struct terrain_vertex
 {
 	vec3	Position;
+	vec3	Normal;
 	vec2	TextureUVCoordinate;
 	real32	IsHighlighted = 0.0f;
 };

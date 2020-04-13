@@ -8,8 +8,8 @@ struct input
 struct output
 {
     float4 Position      : SV_POSITION;
-    float3 WorldPosition : WORLDPOSITION;
-    float4 Color         : COLOR;
+    float3 ModelPosition : MODELPOSITION;
+    float4 MaterialColor : COLOR;
     float3 Normal        : NORMAL;
     float4 AmbientLight  : AMBIENTLIGHT;
     float3 LightPosition : LIGHTPOSITION;
@@ -27,13 +27,13 @@ output main(input Input)
 {
     output Output;
 
-    Output.WorldPosition = (float3)mul(float4(Input.Position, 1.0f), Model);
+    Output.ModelPosition = (float3)mul(float4(Input.Position, 1.0f), Model);
     
     Output.Normal = mul(Input.Normal, (float3x3)Model);
 
     Output.Position = mul(float4(Input.Position, 1.0f), MVP);
     
-    Output.Color = Input.Color;
+    Output.MaterialColor = Input.Color;
     
     Output.LightPosition = LightPosition;
     
