@@ -29,12 +29,12 @@ line::line(real32 PositionX1, real32 PositionY1, real32 PositionZ1, real32 Posit
 
 	Texture = nullptr;
 
-	VertexBuffer = new vertex_buffer(Vertices.data(), (uint32)sizeof(vertex), (uint32)Vertices.size(), STATIC);
+	VertexBuffer = new vertex_buffer(Vertices.data(), (uint32)sizeof(vertex), (uint32)Vertices.size(), accessibility::Static);
 
 	ConstantBuffer = new constant_buffer(&VS_Input, sizeof(VS_Input));
 }
 
-void line::Draw(camera &Camera)
+void line::Draw()
 {
 	struct cb
 	{
@@ -42,12 +42,12 @@ void line::Draw(camera &Camera)
 
 	} VS_Input;
 
-	VS_Input.MVP = XMMatrixTranspose(Model * XMMATRIX(Camera.GetViewMatrix()) * XMMATRIX(Camera.GetProjectionMatrix()));
+	VS_Input.MVP = XMMatrixTranspose(Model * XMMATRIX(camera::GetViewMatrix()) * XMMATRIX(camera::GetProjectionMatrix()));
 
 	VertexBuffer->Bind();
 	Shader->Bind();
 	ConstantBuffer->Bind();
 	ConstantBuffer->Update(&VS_Input);
 
-	global_device_info::Context->Draw(VertexBuffer->GetVertexCount(), 0);
+	direct3d::GetContext()->Draw(VertexBuffer->GetVertexCount(), 0);
 }

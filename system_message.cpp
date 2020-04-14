@@ -1,6 +1,14 @@
 #include "system_message.h"
 
-system_message::system_message()
+std::queue<std::string> system_message::QueuedMessages;
+std::vector<message> system_message::ActiveMessages;
+
+user_interface *system_message::UI;
+
+uint32 system_message::UIElementID[MAX_MESSAGES_ALLOWED];
+uint32 system_message::UITextID[MAX_MESSAGES_ALLOWED];
+
+void system_message::Init()
 {
 	UI = new user_interface();
 
@@ -35,7 +43,7 @@ void system_message::Push(std::string Text)
 	QueuedMessages.push(Text);
 }
 
-void system_message::Display(camera &Camera)
+void system_message::Update()
 {
 	// NOTE(Cristoffer): Protect against overflow of message queue. If detected
 	// reset it completly so behaviour doesn't get too wierd.
@@ -62,8 +70,6 @@ void system_message::Display(camera &Camera)
 	real64 CurrentTime = timing::GetWallclockMilliseconds();
 	uint32 MaxMessages = MAX_MESSAGES_ALLOWED;
 
-	std::vector<std::vector<message>::iterator> TempIt;
-
 	// NOTE(Cristoffer): Check message time outs and delete them.
 	ActiveMessages.erase( std::remove_if(ActiveMessages.begin(), ActiveMessages.end(), [&](message const &Message)
 	{
@@ -71,15 +77,13 @@ void system_message::Display(camera &Camera)
 		return ElapsedTime >= Timeout;
 	}), ActiveMessages.end());
 
-
-
 	// NOTE(Cristoffer): Fill text empty text slots from the queue.
 	if(ActiveMessages.size() < MaxMessages)
 	{
 		// NOTE(Cristoffer): Available slots.
-		uint32 TextSlots = MaxMessages - ActiveMessages.size();
+		uint64 TextSlots = MaxMessages - ActiveMessages.size();
 
-		for(uint32 Index = 0;
+		for(uint64 Index = 0;
 			Index < TextSlots;
 			Index++)
 		{
@@ -94,7 +98,7 @@ void system_message::Display(camera &Camera)
 	}
 
 	// NOTE(Cristoffer): Active messages.
-	for(uint32 Index = 0;
+	for(uint64 Index = 0;
 		Index < ActiveMessages.size();
 		Index++)
 	{
@@ -102,30 +106,34 @@ void system_message::Display(camera &Camera)
 
 		real64 MessageTimeLeft = Timeout - (CurrentTime - Message.TimeStamp);
 
-		uint32 ElementIndex = ActiveMessages.size() - Index; // Just to inverse the order.
+		// NOTE(Cristoffer): To reverse the order of elements on screen.
+		uint32 ElementIndex = ActiveMessages.size() - (uint32)Index;
 
 		UI->UpdateText(ElementIndex, UITextID[Index], Message.Text);
 		UI->SetHidden(ElementIndex, false);
 
 		// TODO(Cristoffer): Correct values but does not work. Look at later. No fade effect for now.
-		if(MessageTimeLeft > 2000.0)
+		/*if(MessageTimeLeft > 2000.0)
 		{
+			real32 Timeout = (real32)TIME_TO_KILL_MESSAGE * 1000.0f;
+
+			Time = TIME_TO_KILL_MESSAGE 
+
 			real32 FadeValue = 1.0f - ((real32)MessageTimeLeft / 2000.0f) * 0.5f;
 
 			UI->SetBackgroundAlpha(ElementIndex, FadeValue);
-		}
+		}*/
 
-		if(MessageTimeLeft < 2000.0)
+		/*if(MessageTimeLeft < 1000.0)
 		{
-			real32 FadeValue = 0.5f * (real32)MessageTimeLeft / 2000.0f;
+			real32 FadeValue = 0.5 * (real32)MessageTimeLeft / 1000.0f;
 
 			UI->SetBackgroundAlpha(ElementIndex, FadeValue);
-		}
+			UI->SetTextAlpha(ElementIndex, FadeValue);
+		}*/
 	}
 
-	UI->CalculateTextPositions();
-	UI->CalculateVertices();
+	UI->BuildElements();
 
-	UI->Draw(Camera);
-	UI->DrawStrings();
+	render_queue::Push(UI, render_layer::UserInterface);
 }

@@ -65,8 +65,6 @@ void UpdateMouseScroll(LPARAM LParam, WPARAM WParam)
 	// NOTE(Cristoffer): Delta goes from 120 to -120.
 	int32 Delta = GET_WHEEL_DELTA_WPARAM(WParam);
 
-	global_data_collector::MouseScrollDelta = Delta;
-
 	if(Delta > 0)
 	{
 		Mouse.ScrollUp = 1;

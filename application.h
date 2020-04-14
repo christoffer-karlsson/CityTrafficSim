@@ -6,16 +6,15 @@
 #include "window.h"
 #include "timing.h"
 #include "persistence.h"
-#include "global_device_info.h"
-#include "global_data_collector.h"
 #include "direct3d.h"
 #include "threading.h"
 #include "math.h"
 #include "entity_manager.h"
-#include "system_message.h"
 #include "light_source.h"
-
-#include "object.h"
+#include "render_queue.h"
+#include "application_state.h"
+#include "logger.h"
+#include "system_message.h"
 
 #include <windows.h>
 #include <string>
@@ -26,7 +25,6 @@ class application
 
 	window		Window;
 	timing		Timing;
-	direct3d	Graphics;
 	persistence	Persistence;
 
 	bool Running;

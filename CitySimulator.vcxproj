@@ -149,6 +149,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp" />
+    <ClCompile Include="application_state.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="building.cpp" />
     <ClCompile Include="direct3d.cpp" />
@@ -157,11 +158,11 @@
     <ClCompile Include="drawable.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="entity_manager.cpp" />
-    <ClCompile Include="global_data_collector.cpp" />
-    <ClCompile Include="global_device_info.cpp" />
+    <ClCompile Include="logger.cpp" />
     <ClCompile Include="light_source.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="persistence.cpp" />
+    <ClCompile Include="render_queue.cpp" />
     <ClCompile Include="system_message.cpp" />
     <ClCompile Include="terrain.cpp" />
     <ClCompile Include="line.cpp" />
@@ -183,6 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h" />
+    <ClInclude Include="application_state.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="building.h" />
@@ -193,12 +195,12 @@
     <ClInclude Include="entity.h" />
     <ClInclude Include="entity_manager.h" />
     <ClInclude Include="external\SimpleMath.h" />
-    <ClInclude Include="global_data_collector.h" />
-    <ClInclude Include="global_device_info.h" />
+    <ClInclude Include="logger.h" />
     <ClInclude Include="light_source.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="persistence.h" />
+    <ClInclude Include="render_queue.h" />
     <ClInclude Include="system_message.h" />
     <ClInclude Include="terrain.h" />
     <ClInclude Include="line.h" />
@@ -237,7 +239,7 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="ground_ps.hlsl">
+    <FxCompile Include="terrain_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
@@ -247,7 +249,7 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="ground_vs.hlsl">
+    <FxCompile Include="terrain_vs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>

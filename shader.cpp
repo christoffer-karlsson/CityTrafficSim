@@ -12,13 +12,13 @@ shader::shader(const wchar_t *VertexShaderFile, const wchar_t *PixelShaderFile) 
 	HR = D3DReadFileToBlob(PixelShaderFile, &Blob);
 	D3D_ERROR_CHECK(HR);
 
-	HR = global_device_info::Device->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &PixelShader);
+	HR = direct3d::GetDevice()->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &PixelShader);
 	D3D_ERROR_CHECK(HR);
 
 	HR = D3DReadFileToBlob(VertexShaderFile, &Blob);
 	D3D_ERROR_CHECK(HR);
 
-	HR = global_device_info::Device->CreateVertexShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &VertexShader);
+	HR = direct3d::GetDevice()->CreateVertexShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &VertexShader);
 	D3D_ERROR_CHECK(HR);
 }
 
@@ -31,14 +31,14 @@ void shader::CommitInputElements()
 {
 	HRESULT HR = S_OK;
 
-	HR = global_device_info::Device->CreateInputLayout(Layout.data(), (uint32)Layout.size(), Blob->GetBufferPointer(), Blob->GetBufferSize(), &InputLayout);
+	HR = direct3d::GetDevice()->CreateInputLayout(Layout.data(), (uint32)Layout.size(), Blob->GetBufferPointer(), Blob->GetBufferSize(), &InputLayout);
 }
 
 void shader::Bind()
 {
-	global_device_info::Context->PSSetShader(PixelShader, nullptr, 0);
-	global_device_info::Context->VSSetShader(VertexShader, nullptr, 0);
-	global_device_info::Context->IASetInputLayout(InputLayout);
+	direct3d::GetContext()->PSSetShader(PixelShader, nullptr, 0);
+	direct3d::GetContext()->VSSetShader(VertexShader, nullptr, 0);
+	direct3d::GetContext()->IASetInputLayout(InputLayout);
 }
 
 shader::~shader()

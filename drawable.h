@@ -2,7 +2,6 @@
 
 #include "common.h"
 #include "diagnostics.h"
-#include "global_device_info.h"
 #include "camera.h"
 #include "math.h"
 #include "texture.h"
@@ -10,13 +9,8 @@
 #include "shader.h"
 #include "constant_buffer.h"
 
-#include <d3d11.h>
-#include <d3dcompiler.h>
-#include <DirectXMath.h>
 #include <memory>
 #include <vector>
-
-using namespace DirectX;
 
 class drawable
 {
@@ -25,12 +19,15 @@ class drawable
 	XMMATRIX InitialModel;
 
 	protected:
+
 	XMMATRIX Model;
 
 	texture			*Texture;
 	shader			*Shader;
 	vertex_buffer	*VertexBuffer;
 	constant_buffer *ConstantBuffer;
+
+	std::vector<vec3> VertexTriangles;
 
 	vec3 Position;
 	vec3 Rotation;
@@ -41,7 +38,7 @@ class drawable
 	drawable();
 	virtual ~drawable();
 
-	virtual void Draw(camera &Camera) = 0;
+	virtual void Draw() = 0;
 
 	// NOTE(Cristoffer): Set up initial model properly for each drawable when created.
 	// This will be used as reference to be able to reset rotations etc.
@@ -54,6 +51,8 @@ class drawable
 	void UpdateModel();
 
 	XMMATRIX &GetModel();
+
+	std::vector<vec3> &GetVertexTriangles();
 
 	// NOTE(Cristoffer): Needed for 16-byte alignments due to DirectX::XMMATRIX, when allocating to heap.
 

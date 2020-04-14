@@ -81,9 +81,6 @@
     <ClCompile Include="shader.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="global_device_info.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="constant_buffer.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
@@ -107,9 +104,6 @@
     </ClCompile>
     <ClCompile Include="terrain.cpp">
       <Filter>Source Files\graphics\drawables</Filter>
-    </ClCompile>
-    <ClCompile Include="global_data_collector.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="user_interface.cpp">
       <Filter>Source Files\graphics\drawables</Filter>
@@ -139,6 +133,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="light_source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="render_queue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="application_state.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -182,9 +185,6 @@
     <ClInclude Include="shader.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="global_device_info.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="constant_buffer.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
@@ -212,9 +212,6 @@
     <ClInclude Include="terrain.h">
       <Filter>Header Files\graphics\drawables</Filter>
     </ClInclude>
-    <ClInclude Include="global_data_collector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="user_interface.h">
       <Filter>Header Files\graphics\drawables</Filter>
     </ClInclude>
@@ -225,9 +222,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="common.h">
@@ -254,18 +248,24 @@
     <ClInclude Include="light_source.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="render_queue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="math.h">
+      <Filter>Header Files\header-only</Filter>
+    </ClInclude>
+    <ClInclude Include="application_state.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="cube_vs.hlsl">
       <Filter>Source Files\graphics\shaders</Filter>
     </FxCompile>
     <FxCompile Include="cube_ps.hlsl">
-      <Filter>Source Files\graphics\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="ground_vs.hlsl">
-      <Filter>Source Files\graphics\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="ground_ps.hlsl">
       <Filter>Source Files\graphics\shaders</Filter>
     </FxCompile>
     <FxCompile Include="line_vs.hlsl">
@@ -284,6 +284,12 @@
       <Filter>Source Files\graphics\shaders</Filter>
     </FxCompile>
     <FxCompile Include="vehicle_ps.hlsl">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="terrain_ps.hlsl">
+      <Filter>Source Files\graphics\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="terrain_vs.hlsl">
       <Filter>Source Files\graphics\shaders</Filter>
     </FxCompile>
   </ItemGroup>

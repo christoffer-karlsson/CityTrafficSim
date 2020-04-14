@@ -1,106 +1,45 @@
 #include "direct3d.h"
 
-direct3d::direct3d(HWND WindowHandle) :
-	Camera()
+HWND	direct3d::WindowHandle = nullptr;
+real32	direct3d::BufferWidth = 0.0f;
+real32	direct3d::BufferHeight = 0.0f;
+
+ID3D11Device			*direct3d::Device = nullptr;
+IDXGISwapChain			*direct3d::Swap = nullptr;
+ID3D11DeviceContext		*direct3d::Context = nullptr;
+ID3D11RenderTargetView  *direct3d::Target = nullptr;
+
+ID3D11DepthStencilState	*direct3d::DepthStencilState;
+ID3D11DepthStencilView	*direct3d::DepthStencilView;
+ID3D11BlendState		*direct3d::AlphaBlendState;
+ID3D11Texture2D			*direct3d::DepthStencilBuffer;
+D3D11_VIEWPORT			 direct3d::Viewport;
+
+void direct3d::Init(HWND WindowHandle)
 {
-	// TODO(Cristoffer): Implement some way to reinitialize this, for example
-	// if frame buffer size is changed mid run time?
-	this->WindowHandle = WindowHandle;
+	direct3d::WindowHandle = WindowHandle;
+
+	direct3d::BufferWidth = 1920.0f;
+	direct3d::BufferHeight = 1080.0f;
 
 	SetDevice();
 	SetFrameBuffer();
 	SetAlphaBlender();
 	SetDepthStencil();
 	SetViewport();
-
-	// TODO(Cristoffer): Ownership of these pointers shared temporarily.
-	// Take a look further down the line.
-	global_device_info::Device = Device;
-	global_device_info::Context = Context;
-	global_device_info::Target = Target;
-	global_device_info::Swap = Swap;
-
-	{
-		persistence Persistence;
-		obj_file File = Persistence.LoadObjectFile("car.obj");
-
-		vec3 Position(4.0f * 25.0f, 0.0f, 4.0f * 25.0f);
-		vec3 Scale(0.25f, 0.25f, 0.25f);
-		vec3 Rotation(0.0f, 0.0f, 0.0f);
-		vec4 Color(0.75f, 0.2f, 0.35f, 1.0f);
-
-		Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
-	}
-
-	{
-		persistence Persistence;
-		obj_file File = Persistence.LoadObjectFile("car.obj");
-
-		vec3 Position(4.0f * 50.0f, 0.0f, 4.0f * 50.0f);
-		vec3 Scale(0.25f, 0.25f, 0.25f);
-		vec3 Rotation(0.0f, -45.0f, 0.0f);
-		vec4 Color(0.55f, 0.4f, 0.65f, 1.0f);
-
-		Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
-	}
-
-	{
-		persistence Persistence;
-		obj_file File = Persistence.LoadObjectFile("car.obj");
-
-		vec3 Position(4.0f * 100.0f, 0.0f, 4.0f * 100.0f);
-		vec3 Scale(0.25f, 0.25f, 0.25f);
-		vec3 Rotation(0.0f, 45.0f, 0.0f);
-		vec4 Color(0.34f, 0.45f, 0.78f, 1.0f);
-
-		Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
-	}
-
-	{
-		persistence Persistence;
-		obj_file File = Persistence.LoadObjectFile("car.obj");
-
-		vec3 Position(4.0f * 150.0f, 0.0f, 4.0f * 150.0f);
-		vec3 Scale(0.25f, 0.25f, 0.25f);
-		vec3 Rotation(0.0f, 90.0f, 0.0f);
-		vec4 Color(0.54f, 0.85f, 0.43f, 1.0f);
-
-		Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
-	}
-
-	{
-		persistence Persistence;
-		obj_file File = Persistence.LoadObjectFile("building.obj");
-
-		vec3 Position(60.0f, 0.0f, 60.0f);
-		vec3 Scale(1.0f, 1.0f, 1.0f);
-		vec3 Rotation(0.0f, 0.0f, 0.0f);
-		vec4 Color(0.85f, 0.85f, 0.9f, 1.0f);
-
-		Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
-	}
-
-
-	//Graph.push_back(std::make_unique<line>(10.0f, 5.0f, 10.0f, 10.0f, 0.0f, 10.0f));
-}
-
-camera &direct3d::GetCamera()
-{
-	return Camera;
 }
 
 void direct3d::SetDevice()
 {
-	// NOTE(Cristoffer): Sets up the device parent together with swap chain
-	// buffer.
+	// NOTE(Cristoffer): Sets up the device parent together with swap chain buffer.
 
 	HRESULT HR = S_OK;
 
 	DXGI_SWAP_CHAIN_DESC DeviceDescription = {};
 
 	DeviceDescription.BufferCount = 1;
-	DeviceDescription.BufferDesc.Width = (uint32)global_device_info::FrameBufferWidth;
-	DeviceDescription.BufferDesc.Height = (uint32)global_device_info::FrameBufferHeight;
+	DeviceDescription.BufferDesc.Width = (uint32)BufferWidth;
+	DeviceDescription.BufferDesc.Height = (uint32)BufferHeight;
 	DeviceDescription.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	DeviceDescription.BufferDesc.RefreshRate.Numerator = 60;
 	DeviceDescription.BufferDesc.RefreshRate.Denominator = 1;
@@ -149,14 +88,14 @@ void direct3d::SetFrameBuffer()
 
 void direct3d::SetDepthStencil()
 {
-	// NOTE(Cristoffer): Depth stencil or "Z-buffer" for sorting objects based on depth
+	// NOTE(Cristoffer): Depth stencil or "Z-buffer" for sorting pixels based on depth
 	// instead of the order objects get drawn in.
 
 	HRESULT HR = S_OK;
 
 	D3D11_TEXTURE2D_DESC DepthStencilDesc;
-	DepthStencilDesc.Width = (uint32)global_device_info::FrameBufferWidth;
-	DepthStencilDesc.Height = (uint32)global_device_info::FrameBufferHeight;
+	DepthStencilDesc.Width = (uint32)BufferWidth;
+	DepthStencilDesc.Height = (uint32)BufferHeight;
 	DepthStencilDesc.MipLevels = 1;
 	DepthStencilDesc.ArraySize = 1;
 	DepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -212,21 +151,15 @@ void direct3d::SetAlphaBlender()
 
 void direct3d::SetViewport()
 {
-	Viewport.Width = global_device_info::FrameBufferWidth;
-	Viewport.Height = global_device_info::FrameBufferHeight;
+	Viewport.Width = BufferWidth;
+	Viewport.Height = BufferHeight;
 	Viewport.MinDepth = 0.0f;
 	Viewport.MaxDepth = 1.0f;
 	Viewport.TopLeftX = 0.0f;
 	Viewport.TopLeftY = 0.0f;
 }
 
-void direct3d::ClearFrameBuffer(real32 Red, real32 Green, real32 Blue) const
-{
-	const real32 Color[4] = { Red, Green, Blue, 1.0f };
-	Context->ClearRenderTargetView(Target, Color);
-}
-
-void direct3d::BeginFrame() const
+void direct3d::BeginFrame()
 {
 	// TODO(Cristoffer): Might need different setups and topologies depending
 	// on what is rendered in future.
@@ -244,138 +177,60 @@ void direct3d::BeginFrame() const
 	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void direct3d::EndFrame() const
+void direct3d::EndFrame()
 {
+	// NOTE(Cristoffer): Present new buffer to screen.
 	Swap->Present(0, 0);
 }
 
-void direct3d::TestInit()
+real32 direct3d::GetBufferWidth()
 {
-	persistence Persistence;
-	obj_file File = Persistence.LoadObjectFile("car.obj");
-
-	thread_pool.AddBackgroundWork(ThreadWorkID1, [&]
-	{
-		for(int x = 0; x < 25; x++)
-		{
-			for(int y = 0; y < 25; y++)
-			{
-				vec3 Position((real32)x + (2.0f * (real32)x), 0.0f, (real32)y + (2.0f * (real32)y));
-				vec3 Scale(0.5f, 0.5f, 0.5f);
-				vec3 Rotation(0.0f, 0.0f, 0.0f);
-				vec4 Color(0.8f, 0.8f, 0.8f, 1.0f);
-
-				{
-					std::unique_lock<std::mutex> Lock{ Mutex };
-				}
-
-				Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
-			}
-		}
-	});
-
-	thread_pool.AddBackgroundWork(ThreadWorkID2, [&]
-	{
-		for(int x = 25; x < 50; x++)
-		{
-			for(int y = 25; y < 50; y++)
-			{
-				vec3 Position((real32)x + (2.0f * (real32)x), 0.0f, (real32)y + (2.0f * (real32)y));
-				vec3 Scale(0.5f, 0.5f, 0.5f);
-				vec3 Rotation(0.0f, 0.0f, 0.0f);
-				vec4 Color(0.8f, 0.8f, 0.8f, 1.0f);
-
-				{
-					std::unique_lock<std::mutex> Lock{ Mutex };
-				}
-
-				Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
-			}
-		}
-	});
-
-	thread_pool.AddBackgroundWork(ThreadWorkID3, [&]
-	{
-		for(int x = 50; x < 75; x++)
-		{
-			for(int y = 50; y < 75; y++)
-			{
-				vec3 Position((real32)x + (2.0f * (real32)x), 0.0f, (real32)y + (2.0f * (real32)y));
-				vec3 Scale(0.5f, 0.5f, 0.5f);
-				vec3 Rotation(0.0f, 0.0f, 0.0f);
-				vec4 Color(0.8f, 0.8f, 0.8f, 1.0f);
-
-				{
-					std::unique_lock<std::mutex> Lock{ Mutex };
-				}
-
-				Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
-			}
-		}
-	});
-
-	thread_pool.AddBackgroundWork(ThreadWorkID4, [&]
-	{
-		for(int x = 75; x < 100; x++)
-		{
-			for(int y = 75; y < 100; y++)
-			{
-				vec3 Position((real32)x + (2.0f * (real32)x), 0.0f, (real32)y + (2.0f * (real32)y));
-				vec3 Scale(0.5f, 0.5f, 0.5f);
-				vec3 Rotation(0.0f, 0.0f, 0.0f);
-				vec4 Color(0.8f, 0.8f, 0.8f, 1.0f);
-
-				{
-					std::unique_lock<std::mutex> Lock{ Mutex };
-				}
-
-				Vehicles.push_back(std::make_unique<object>(File, Position, Scale, Rotation, Color));
-			}
-		}
-	});
+	return BufferWidth;
 }
 
-void direct3d::TestDrawLines()
+real32 direct3d::GetBufferHeight()
 {
-	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-
-	for(auto Iterator = Graph.begin();
-		Iterator != Graph.end();
-		Iterator++)
-	{
-		(*Iterator)->Draw(Camera);
-	}
-
-	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	if(	thread_pool.WorkDone(ThreadWorkID1)&&
-		thread_pool.WorkDone(ThreadWorkID2)&&
-		thread_pool.WorkDone(ThreadWorkID3)&&
-		thread_pool.WorkDone(ThreadWorkID4))
-	{
-		for(auto Iterator = Vehicles.begin();
-			Iterator != Vehicles.end();
-			Iterator++)
-		{
-			(*Iterator)->Draw(Camera);
-		}
-	}
+	return BufferHeight;
 }
 
-void direct3d::TestDrawTerrain(terrain *Terrain)
+ID3D11Device *direct3d::GetDevice()
 {
-	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	Terrain->Draw(Camera);
+	return Device;
 }
 
-void direct3d::TestDrawUI(user_interface *UI)
+ID3D11Texture2D *direct3d::GetDepthStencilBuffer()
 {
-	// NOTE(Cristoffer): Wait for thread before rendering UI.
-	thread_pool.WaitThread(UI->ThreadWorkID);
+	return DepthStencilBuffer;
+}
 
-	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	UI->Draw(Camera);
-	UI->DrawStrings();
+ID3D11DepthStencilState *direct3d::GetDepthStencilState()
+{
+	return DepthStencilState;
+}
+
+ID3D11DepthStencilView *direct3d::GetDepthStencilView()
+{
+	return DepthStencilView;
+}
+
+ID3D11BlendState *direct3d::GetAlphaBlendState()
+{
+	return AlphaBlendState;
+}
+
+IDXGISwapChain *direct3d::GetSwap()
+{
+	return Swap;
+}
+
+ID3D11DeviceContext *direct3d::GetContext()
+{
+	return Context;
+}
+
+ID3D11RenderTargetView *direct3d::GetTarget()
+{
+	return Target;
 }
 
 direct3d::~direct3d()

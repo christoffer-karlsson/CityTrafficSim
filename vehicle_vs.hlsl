@@ -1,8 +1,9 @@
 struct input
 {
-    float3 Position : POSITION;
-    float4 Color    : COLOR;
-    float3 Normal   : NORMAL;
+    float3 Position        : POSITION;
+    float4 Color           : COLOR;
+    float3 Normal          : NORMAL;
+    float4 HighlightColor  : HIGHLIGHTCOLOR;
 };
 
 struct output
@@ -13,6 +14,7 @@ struct output
     float3 Normal        : NORMAL;
     float4 AmbientLight  : AMBIENTLIGHT;
     float3 LightPosition : LIGHTPOSITION;
+    float4 HighlightColor: HIGHLIGHTCOLOR;
 };
 
 cbuffer constantbuffer
@@ -38,6 +40,8 @@ output main(input Input)
     Output.LightPosition = LightPosition;
     
     Output.AmbientLight = AmbientLight;
+    
+    Output.HighlightColor = Input.HighlightColor;
 
     return Output;
 }

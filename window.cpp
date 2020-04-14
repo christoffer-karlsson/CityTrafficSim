@@ -2,9 +2,6 @@
 
 window::window(std::string Title, int32 Width, int32 Height)
 {
-	global_device_info::WindowWidth = Width;
-	global_device_info::WindowHeight = Height;
-
 	if(SHOW_BUILD_NUMBER)
 	{
 		Title += " | Build " + std::to_string(BUILD_NUMBER);

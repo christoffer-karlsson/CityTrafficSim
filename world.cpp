@@ -6,6 +6,8 @@ world::world(int32 Width, int32 Height) :
 	this->Width = Width;
 	this->Height = Height;
 
+	render_queue::Push(Terrain, render_layer::World);
+
 	Tiles = new tile[Width * Height];
 
 	for(uint32 Index = 0;

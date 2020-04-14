@@ -9,6 +9,7 @@ struct vertex
 	vec3 Position;
 	vec4 Color;
 	vec3 Normal;
+	vec4 HighlightColor;
 };
 
 class object : public drawable
@@ -24,5 +25,5 @@ class object : public drawable
 
 	object(obj_file &File, vec3 Position, vec3 Scale, vec3 Rotation, vec4 Color);
 
-	void Draw(camera &Camera);
+	void Draw();
 };

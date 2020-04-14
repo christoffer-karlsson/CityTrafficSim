@@ -10,8 +10,6 @@ LRESULT CALLBACK WindowProcedure(HWND WindowHandle, UINT MessageId, WPARAM WPara
 	else if(MessageId == WM_SIZE)
 	{
 		// TODO(Cristoffer): Handle resizing of window.
-		global_device_info::WindowWidth = GET_X_LPARAM(LParam);
-		global_device_info::WindowHeight = GET_Y_LPARAM(LParam);
 
 	}
 	else if(MessageId == WM_KEYDOWN)

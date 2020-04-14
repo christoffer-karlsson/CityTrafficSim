@@ -82,13 +82,13 @@ building::building(real32 PosX, real32 PosY, real32 PosZ, real32 SizeX, real32 S
 
 	Texture = new texture(L"data/2x3_texture-2.png", 256, 256, 1, 1);
 
-	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), (uint32)Vertices.size(), STATIC);
+	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), (uint32)Vertices.size(), accessibility::Static);
 	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint32), (uint32)Indices.size());
 
 	ConstantBuffer = new constant_buffer(&VS_Input, sizeof(cb));
 }
 
-void building::Draw(camera &Camera)
+void building::Draw()
 {
 	struct cb
 	{
@@ -98,7 +98,7 @@ void building::Draw(camera &Camera)
 	} VS_Input;
 
 	// NOTE(Cristoffer): Matricies need to be transposed before shader can handle them.
-	VS_Input.MVP = XMMatrixTranspose(Model * XMMATRIX(Camera.GetViewMatrix()) * XMMATRIX(Camera.GetProjectionMatrix()));
+	VS_Input.MVP = XMMatrixTranspose(Model * XMMATRIX(camera::GetViewMatrix()) * XMMATRIX(camera::GetProjectionMatrix()));
 	VS_Input.AmbientLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	Texture->Bind();
@@ -107,5 +107,5 @@ void building::Draw(camera &Camera)
 	ConstantBuffer->Bind();
 	ConstantBuffer->Update(&VS_Input);
 
-	global_device_info::Context->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
+	direct3d::GetContext()->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
 }

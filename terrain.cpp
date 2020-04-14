@@ -40,17 +40,18 @@ terrain::terrain(int64 Width, int64 Height)
 
 	for(uint64 X = 0; X < Width; X++)
 	{
-		for(uint64 Y = 0; Y < Height; Y++)
+		for(uint64 Z = 0; Z < Height; Z++)
 		{
 			uv_quad UV = Texture->GetUVFromSliceCoordinates(0, 0);
 
 			terrain_vertex Vertex[4];
 
-			Vertex[0].Position = vec3((real32)X - 0.5f, 0.0f, (real32)Y - 0.5f);
-			Vertex[1].Position = vec3((real32)X - 0.5f, 0.0f, (real32)Y + 0.5f);
-			Vertex[2].Position = vec3((real32)X + 0.5f, 0.0f, (real32)Y - 0.5f);
-			Vertex[3].Position = vec3((real32)X + 0.5f, 0.0f, (real32)Y + 0.5f);
+			Vertex[0].Position = vec3((real32)X - 0.5f, 0.0f, (real32)Z - 0.5f);
+			Vertex[1].Position = vec3((real32)X - 0.5f, 0.0f, (real32)Z + 0.5f);
+			Vertex[2].Position = vec3((real32)X + 0.5f, 0.0f, (real32)Z - 0.5f);
+			Vertex[3].Position = vec3((real32)X + 0.5f, 0.0f, (real32)Z + 0.5f);
 			
+			// NOTE(Cristoffer): Normals in Y direction for now.
 			Vertex[0].Normal = vec3(0.0f, 1.0f, 0.0f);
 			Vertex[1].Normal = vec3(0.0f, 1.0f, 0.0f);
 			Vertex[2].Normal = vec3(0.0f, 1.0f, 0.0f);
@@ -66,11 +67,19 @@ terrain::terrain(int64 Width, int64 Height)
 			Vertices.push_back(Vertex[2]);
 			Vertices.push_back(Vertex[3]);
 
+			// NOTE(Cristoffer): Store triangles for intersection test.
+			VertexTriangles.push_back({ (real32)X - 0.5f, 0.0f, (real32)Z - 0.5f });
+			VertexTriangles.push_back({ (real32)X - 0.5f, 0.0f, (real32)Z + 0.5f });
+			VertexTriangles.push_back({ (real32)X + 0.5f, 0.0f, (real32)Z - 0.5f });
+			VertexTriangles.push_back({ (real32)X - 0.5f, 0.0f, (real32)Z + 0.5f });
+			VertexTriangles.push_back({ (real32)X + 0.5f, 0.0f, (real32)Z + 0.5f });
+			VertexTriangles.push_back({ (real32)X + 0.5f, 0.0f, (real32)Z - 0.5f });
+
 			// TODO(Cristoffer): NEEDED??
-			WorldCoordinate.push_back({ vec2(X, Y) });
-			WorldCoordinate.push_back({ vec2(X, Y) });
-			WorldCoordinate.push_back({ vec2(X, Y) });
-			WorldCoordinate.push_back({ vec2(X, Y) });
+			WorldCoordinate.push_back({ vec2(X, Z) });
+			WorldCoordinate.push_back({ vec2(X, Z) });
+			WorldCoordinate.push_back({ vec2(X, Z) });
+			WorldCoordinate.push_back({ vec2(X, Z) });
 
 			QuadCount++;
 		}
@@ -86,27 +95,27 @@ terrain::terrain(int64 Width, int64 Height)
 		Indices.push_back(2 + (Index * 4));
 	}
 
-	Shader = new shader(L"ground_vs.cso", L"ground_ps.cso");
+	Shader = new shader(L"terrain_vs.cso", L"terrain_ps.cso");
 	Shader->AddInputElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
 	Shader->AddInputElement("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
 	Shader->AddInputElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
 	Shader->AddInputElement("ISPICKED", DXGI_FORMAT_R32_FLOAT);
 	Shader->CommitInputElements();
 
-	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(terrain_vertex), (uint32)Vertices.size(), DYNAMIC);
+	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(terrain_vertex), (uint32)Vertices.size(), accessibility::Dynamic);
 	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint32), (uint32)Indices.size());
 
 	cbuffer_input VertexShaderInput;
 	ConstantBuffer = new constant_buffer(&VertexShaderInput, sizeof(VertexShaderInput));
 }
 
-void terrain::Draw(camera &Camera)
+void terrain::Draw()
 {
 	cbuffer_input VertexShaderInput;
 	VertexShaderInput.Model = XMMatrixTranspose(Model);
 	VertexShaderInput.MVP = XMMatrixTranspose(Model * 
-											  XMMATRIX(Camera.GetViewMatrix()) * 
-											  XMMATRIX(Camera.GetProjectionMatrix()));
+											  XMMATRIX(camera::GetViewMatrix()) * 
+											  XMMATRIX(camera::GetProjectionMatrix()));
 	VertexShaderInput.AmbientLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	VertexShaderInput.LightPosition = XMFLOAT3(light_source::Position.x, 
 											   light_source::Position.y, 
@@ -123,7 +132,7 @@ void terrain::Draw(camera &Camera)
 	ConstantBuffer->Bind();
 	ConstantBuffer->Update(&VertexShaderInput);
 
-	global_device_info::Context->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
+	direct3d::GetContext()->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
 }
 
 void terrain::UpdateTileHighlighResource(uint64 Width, int64 X, int64 Y, real32 IsHighlighted)

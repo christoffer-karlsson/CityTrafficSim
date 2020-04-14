@@ -4,7 +4,6 @@
 
 #include "common.h"
 #include "winprocedure.h"
-#include "global_device_info.h"
 
 #include <string>
 #include <windows.h>
@@ -13,7 +12,7 @@ class window
 {
 	private:
 
-	HWND			WindowHandle;
+	HWND WindowHandle;
 
 	protected:
 

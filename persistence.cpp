@@ -12,9 +12,9 @@ void persistence::SaveWorldMap(world *World)
 		return;
 	}
 
-	for(uint32 X = 0; X < World->GetWidth(); X++)
+	for(int32 X = 0; X < World->GetWidth(); X++)
 	{
-		for(uint32 Y = 0; Y < World->GetHeight(); Y++)
+		for(int32 Y = 0; Y < World->GetHeight(); Y++)
 		{
 			File << "tile" << SPACE << X << SPACE << Y << SPACE;
 			File << World->GetTile(X, Y).Type;

@@ -69,3 +69,8 @@ XMMATRIX &drawable::GetModel()
 {
 	return Model;
 }
+
+std::vector<vec3> &drawable::GetVertexTriangles()
+{
+	return VertexTriangles;
+}

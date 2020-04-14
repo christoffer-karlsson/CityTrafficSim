@@ -3,12 +3,9 @@
 #pragma once
 
 #include "common.h"
-#include "diagnostics.h"
-#include "global_device_info.h"
+#include "direct3d.h"
 #include "external\WICTextureLoader.h"
 
-#include <d3d11.h>
-#include <d3dcompiler.h>
 #include <vector>
 
 class shader

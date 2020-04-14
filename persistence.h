@@ -1,8 +1,8 @@
 #pragma once
 
 #include "common.h"
-#include "system_message.h"
 #include "world.h"
+#include "system_message.h"
 
 #include <fstream>
 #include <string>
@@ -12,9 +12,9 @@
 
 struct face
 {
-	real32 Position;
-	real32 TextureCoordinate;
-	real32 Normal;
+	uint32 Position;
+	uint32 TextureCoordinate;
+	uint32 Normal;
 };
 
 struct obj_file

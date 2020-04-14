@@ -1,11 +1,11 @@
 #pragma once
 
 #include "common.h"
+#include "mouse.h"
 #include "drawable.h"
 #include "threading.h"
-#include "mouse.h"
-#include "global_device_info.h"
 #include "math.h"
+#include "render_queue.h"
 
 #include "external/SimpleMath.h"
 #include "external/SpriteBatch.h"
@@ -28,7 +28,7 @@ enum class screen_anchor
 struct text
 {
 	std::string String;
-	vec4		Color;
+	
 	uint16		Size;
 	real32		TextMeasurementWidth;
 	real32		TextMeasurementHeight;
@@ -46,6 +46,7 @@ struct element
 	real32 TextPositionX;
 	real32 TextPositionY;
 	vec4   BackgroundColor;
+	vec4   TextColor;
 	
 	bool AdjustWidthToText;
 	bool AdjustHeightToText;
@@ -92,10 +93,12 @@ class user_interface : public drawable
 	bool CheckValidStringID(uint32 ElementID, uint32 StringID);
 
 	public:
+
 	void CalculateTextPositions();
 	void CalculateVertices();
 
 	work_id ThreadWorkID;
+	bool32 ThreadFlag = 0;
 
 	user_interface();
 	~user_interface();
@@ -113,12 +116,12 @@ class user_interface : public drawable
 	uint32 AddNewText(uint32 ElementID, std::string Text);
 	void UpdateText(uint32 ElementID, uint32 TextID, std::string Text);
 	void SetTextSize(uint32 ElementID, uint32 TextID, uint16 Size);
-	void SetTextColor(uint32 ElementID, uint32 TextID, vec4 Color);
+	void SetTextAlpha(uint32 ElementID, real32 Alpha);
+	void SetTextColor(uint32 ElementID, vec4 Color);
 
 	uint32 GetElementCount();
 
 	void BuildElements();
 
-	void Draw(camera &Camera) override;
-	void DrawStrings();
+	void Draw() override;
 };

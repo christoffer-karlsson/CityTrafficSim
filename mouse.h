@@ -3,9 +3,8 @@
 #pragma once
 
 #include "common.h"
-#include "global_device_info.h"
-#include "global_data_collector.h"
 
+#include "windows.h"
 #include "windowsx.h"
 
 #define MOUSE_BUTTON_LEFT	0x0001

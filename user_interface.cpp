@@ -49,6 +49,7 @@ user_interface::user_interface() :
 		Element[ElementID]->Width = 0.0f;
 		Element[ElementID]->Height = 0.0f;
 		Element[ElementID]->BackgroundColor = { 9.0f, 9.0f, 9.0f, 0.8f };
+		Element[ElementID]->TextColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 		Element[ElementID]->TextPositionX = Element[ElementID]->OffsetX + Element[ElementID]->Margin;
 		Element[ElementID]->TextPositionY = Element[ElementID]->OffsetY + Element[ElementID]->Margin;
 		
@@ -68,15 +69,14 @@ user_interface::user_interface() :
 			Element[ElementID]->Text[TextID] = new text;
 
 			Element[ElementID]->Text[TextID]->String = "NULL";
-			Element[ElementID]->Text[TextID]->Color = { 1.0f, 1.0f, 1.0f, 1.0f };
 			Element[ElementID]->Text[TextID]->Size = 12;
 			Element[ElementID]->Text[TextID]->TextMeasurementWidth = 0.0f;
 			Element[ElementID]->Text[TextID]->TextMeasurementHeight = 0.0f;
 		}
 	}
 
-	DXTKSpriteBatch = std::make_unique<SpriteBatch>(global_device_info::Context);
-	DXTKSpriteFont = std::make_unique<SpriteFont>(global_device_info::Device, L"data/bahnschrift_12.spritefont");
+	DXTKSpriteBatch = std::make_unique<SpriteBatch>(direct3d::GetContext());
+	DXTKSpriteFont = std::make_unique<SpriteFont>(direct3d::GetDevice(), L"data/bahnschrift_12.spritefont");
 
 	// NOTE(Cristoffer): Pre-allocate gpu memory since we have a fixed amount of UI to update
 	// every frame.
@@ -111,7 +111,7 @@ user_interface::user_interface() :
 	Shader->AddInputElement("ISHIGHLIGHTED", DXGI_FORMAT_R32_FLOAT);
 	Shader->CommitInputElements();
 
-	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(ui_vertex), (uint32)Vertices.size(), DYNAMIC);
+	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(ui_vertex), (uint32)Vertices.size(), accessibility::Dynamic);
 	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint32), (uint32)Indices.size());
 
 	ConstantBuffer = nullptr;
@@ -202,11 +202,18 @@ void user_interface::SetTextSize(uint32 ElementID, uint32 TextID, uint16 Size)
 	Element[ElementID]->Text[TextID]->Size = Size;
 }
 
-void user_interface::SetTextColor(uint32 ElementID, uint32 TextID, vec4 Color)
+void user_interface::SetTextColor(uint32 ElementID, vec4 Color)
 {
 	if(!CheckValidID(ElementID)) return;
 
-	Element[ElementID]->Text[TextID]->Color = Color;
+	Element[ElementID]->TextColor = Color;
+}
+
+void user_interface::SetTextAlpha(uint32 ElementID, real32 Alpha)
+{
+	if(!CheckValidID(ElementID)) return;
+
+	Element[ElementID]->TextColor.w = Alpha;
 }
 
 void user_interface::SetBackgroundColor(uint32 ElementID, vec4 Color)
@@ -384,8 +391,8 @@ void user_interface::CalculateTextPositions()
 	{
 		real32 OffsetX = Element[EID]->OffsetX + Element[EID]->Margin;
 		real32 OffsetY = Element[EID]->OffsetY + Element[EID]->Margin;
-		real32 ScreenWidth = global_device_info::FrameBufferWidth;
-		real32 ScreenHeight = global_device_info::FrameBufferHeight;
+		real32 ScreenWidth = direct3d::GetBufferWidth();
+		real32 ScreenHeight = direct3d::GetBufferHeight();
 		real32 Width = Element[EID]->Width;
 		real32 Height = Element[EID]->Height;
 
@@ -460,8 +467,8 @@ void user_interface::CalculateVertices()
 	{
 		ui_vertex Vertex[4];
 
-		real32 ScreenWidth = global_device_info::FrameBufferWidth;
-		real32 ScreenHeight = global_device_info::FrameBufferHeight;
+		real32 ScreenWidth = direct3d::GetBufferWidth();
+		real32 ScreenHeight = direct3d::GetBufferHeight();
 
 		real32 Width = Element[ID]->Width;
 		real32 Height = Element[ID]->Height;
@@ -649,24 +656,31 @@ void user_interface::BuildElements()
 	}
 }
 
-void user_interface::Draw(camera &Camera)
+void user_interface::Draw()
 {
+	// NOTE(Cristoffer): Wait for thread to finish before drawing.
+	thread_pool.WaitThread(ThreadWorkID);
+
 	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(ui_vertex), (uint32)Vertices.size());
 
 	VertexBuffer->Bind();
 	Shader->Bind();
 
-	global_device_info::Context->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
-}
+	direct3d::GetContext()->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
 
-void user_interface::DrawStrings()
-{
+	// TODO(Cristoffer): Does this need device context in order to do alpha?
+	//DXTKSpriteBatch->Begin(SpriteSortMode_Deferred, direct3d::GetAlphaBlendState());
+
 	DXTKSpriteBatch->Begin();
 
 	for(uint32 ID = 0; ID < ElementCount; ID++)
 	{
-		XMVECTOR Color = Colors::White;
-		
+		XMVECTOR Color = XMVectorSet(
+			Element[ID]->TextColor.x, 
+			Element[ID]->TextColor.y, 
+			Element[ID]->TextColor.z, 
+			Element[ID]->TextColor.w);
+
 		DXTKSpriteFont->DrawString(DXTKSpriteBatch.get(), Element[ID]->MegaString.c_str(), XMFLOAT2(Element[ID]->TextPositionX, Element[ID]->TextPositionY), Color);
 	}
 

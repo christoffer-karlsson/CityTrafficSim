@@ -5,17 +5,6 @@
 
 #include "common.h"
 #include "diagnostics.h"
-#include "global_device_info.h"
-#include "building.h"
-#include "terrain.h"
-#include "line.h"
-#include "world.h"
-#include "mouse_picker.h"
-#include "user_interface.h"
-#include "object.h"
-#include "threading.h"
-
-#include "external/SpriteFont.h"
 
 #include <d3d11.h>
 #include <d3dcompiler.h>
@@ -25,69 +14,54 @@
 #pragma comment(lib, "D3DCompiler.lib")
 #pragma comment(lib, "dxguid.lib")
 
+using namespace DirectX;
+
 class direct3d
 {
 	private:
 
-	HWND WindowHandle = nullptr;
+	static HWND		WindowHandle;
+	static real32	BufferWidth;
+	static real32	BufferHeight;
 
-	D3D11_VIEWPORT Viewport;
+	static ID3D11Device				*Device;
+	static IDXGISwapChain			*Swap;
+	static ID3D11DeviceContext		*Context;
+	static ID3D11RenderTargetView	*Target;
 
-	ID3D11Device *Device = nullptr;
-	IDXGISwapChain *Swap = nullptr;
-	ID3D11DeviceContext *Context = nullptr;
-	ID3D11RenderTargetView *Target = nullptr;
+	static ID3D11Texture2D			*DepthStencilBuffer;
+	static ID3D11DepthStencilState	*DepthStencilState;
+	static ID3D11DepthStencilView	*DepthStencilView;
+	static ID3D11BlendState			*AlphaBlendState;
 
-	ID3D11Texture2D *DepthStencilBuffer;
-	ID3D11DepthStencilState *DepthStencilState;
-	ID3D11DepthStencilView *DepthStencilView;
-	ID3D11BlendState *AlphaBlendState;
-
-	// TODO(Cristoffer): Temporary data here ////////////////
-
-	std::vector<std::unique_ptr<drawable>> Graph;
-
-	std::unique_ptr<drawable> TestEntity;
-
-	std::vector<std::unique_ptr<object>> Vehicles;
-
-	camera Camera;
-
-	public:
-
-	work_id ThreadWorkID1;
-	work_id ThreadWorkID2;
-	work_id ThreadWorkID3;
-	work_id ThreadWorkID4;
-
-	std::mutex Mutex;
-
-	// TODO(Cristoffer): Temporary data here ////////////////
+	static D3D11_VIEWPORT			Viewport;
 
 	protected:
 
-	void SetDevice();
-	void SetFrameBuffer();
-	void SetDepthStencil();
-	void SetAlphaBlender();
-	void SetViewport();
+	static void SetDevice();
+	static void SetFrameBuffer();
+	static void SetDepthStencil();
+	static void SetAlphaBlender();
+	static void SetViewport();
 
 	public:
 
-	direct3d(HWND WindowHandle);
 	~direct3d();
-	direct3d(direct3d const &Object) = delete;
-	void operator=(direct3d const &Object) = delete;
 
-	void ClearFrameBuffer(real32 Red, real32 Green, real32 Blue) const;
-	void BeginFrame() const;
-	void EndFrame() const;
+	static void Init(HWND WindowHandle);
+	static void BeginFrame();
+	static void EndFrame();
 
-	// TODO(Cristoffer): Perhaps camera shouldn't be accessable from here..
-	camera &GetCamera();
+	static ID3D11RenderTargetView	*GetTarget();
+	static ID3D11DeviceContext		*GetContext();
+	static IDXGISwapChain			*GetSwap();
+	static ID3D11Device				*GetDevice();
 
-	void TestInit();
-	void TestDrawLines();
-	void TestDrawTerrain(terrain *Terrain);
-	void TestDrawUI(user_interface *UI);
+	static ID3D11Texture2D			*GetDepthStencilBuffer();
+	static ID3D11DepthStencilState	*GetDepthStencilState();
+	static ID3D11DepthStencilView	*GetDepthStencilView();
+	static ID3D11BlendState			*GetAlphaBlendState();
+
+	static real32 GetBufferWidth();
+	static real32 GetBufferHeight();
 };

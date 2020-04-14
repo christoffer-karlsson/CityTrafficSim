@@ -3,7 +3,7 @@
 #include "common.h"
 #include "timing.h"
 #include "user_interface.h"
-#include "threading.h"
+#include "render_queue.h"
 
 #include <string>
 #include <queue>
@@ -13,47 +13,29 @@
 #define MAX_MESSAGES_ALLOWED 8
 #define OVERFLOW_THRESHOLD 50
 
-#define sys_message system_message::GetInstance()
-#define SystemMessage(x) system_message::GetInstance().Push(x)
+#define SystemMessage(x) system_message::Push(x)
+
+struct message
+{
+	std::string Text;
+	real64 TimeStamp;
+};
 
 class system_message
 {
-	singleton:
-
-	system_message(const system_message &Object) = delete;
-	void operator=(const system_message &Object) = delete;
-
-	static system_message &GetInstance()
-	{
-		static system_message Instance;
-		return Instance;
-	};
-
-	struct message
-	{
-		std::string Text;
-		real64 TimeStamp;
-	};
-
 	private:
 
-	static system_message Instance;
+	static std::queue<std::string> QueuedMessages;
+	static std::vector<message> ActiveMessages;
 
-	system_message();
+	static uint32 UIElementID[MAX_MESSAGES_ALLOWED];
+	static uint32 UITextID[MAX_MESSAGES_ALLOWED];
 
-	std::queue<std::string> QueuedMessages;
-	std::vector<message> ActiveMessages;
-
-	user_interface *UI;
-
-	camera Camera;
-
-	uint32 UIElementID[MAX_MESSAGES_ALLOWED];
-	uint32 UITextID[MAX_MESSAGES_ALLOWED];
+	static user_interface *UI;
 
 	public:
 
-	void Push(std::string Text);
-
-	void Display(camera &Camera);
+	static void Init();
+	static void Push(std::string Text);
+	static void Update();
 };

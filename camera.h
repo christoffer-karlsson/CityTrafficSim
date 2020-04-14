@@ -4,63 +4,51 @@
 #pragma once
 
 #include "common.h"
-#include "global_device_info.h"
-#include <DirectXMath.h>
-
-using namespace DirectX;
-
-enum CAMERA_PROJECTION_TYPE
-{
-	CAM_ORTHOGRAPHIC,
-	CAM_PERSPECTIVE
-};
+#include "direct3d.h"
 
 class camera
 {
 	private:
 
-	CAMERA_PROJECTION_TYPE CameraType;
+	static XMMATRIX View;
+	static XMMATRIX Projection;
+	static XMMATRIX Ortho;
 
-	XMMATRIX View;
-	XMMATRIX Projection;
-	XMMATRIX Ortho;
+	static XMFLOAT3 Position;
+	static XMFLOAT3 ViewDirection;
+	static XMFLOAT3 UpDirection;
+	static XMFLOAT3 SideDirection;
 
-	XMFLOAT3 Position;
-	XMFLOAT3 ViewDirection;
-	XMFLOAT3 UpDirection;
-	XMFLOAT3 SideDirection;
-
-	real32 FieldOfView;
-	real32 AspectRatio;
-	real32 NearZ;
-	real32 FarZ;
+	static real32 FieldOfView;
+	static real32 AspectRatio;
+	static real32 NearZ;
+	static real32 FarZ;
 
 	protected:
 
-	void Update();
+	static void Update();
 
 	public:
 
-	camera();
-	~camera() = default;
+	static void Init();
 
-	void SetPosition(real32 X, real32 Y, real32 Z);
+	static void SetPosition(real32 X, real32 Y, real32 Z);
 
-	void MoveForward(real32 Value);
-	void MoveBackward(real32 Value);
-	void StrafeLeft(real32 Value);
-	void StrafeRight(real32 Value);
-	void MoveUp(real32 Value);
-	void MoveDown(real32 Value);
+	static void MoveForward(real32 Value);
+	static void MoveBackward(real32 Value);
+	static void StrafeLeft(real32 Value);
+	static void StrafeRight(real32 Value);
+	static void MoveUp(real32 Value);
+	static void MoveDown(real32 Value);
 
-	void LookY(real32 Value);
-	void LookX(real32 Value);
+	static void LookY(real32 Value);
+	static void LookX(real32 Value);
 
-	real32 GetPositionX() const;
-	real32 GetPositionY() const;
-	real32 GetPositionZ() const;
+	static real32 GetPositionX();
+	static real32 GetPositionY();
+	static real32 GetPositionZ();
 
-	const XMMATRIX &GetViewMatrix();
-	const XMMATRIX &GetProjectionMatrix();
-	const XMMATRIX &GetOrthographicMatrix();
+	static const XMMATRIX &GetViewMatrix();
+	static const XMMATRIX &GetProjectionMatrix();
+	static const XMMATRIX &GetOrthographicMatrix();
 };

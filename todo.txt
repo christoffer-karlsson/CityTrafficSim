@@ -1,15 +1,18 @@
 TODO
+- more general mouse picker for different objects
 - mouse_picker proper screen size
 - mouse_picker class has to be aware of editmode, so that highlight can be turned off
 - WorldCoordinate (terrain.cpp), same data, two places?
 - global_state class
-- mouse_picker.cpp screen size
 - entities
 - more ui elements (button, textbox, selecting)
 - ui picking 
 - ui tile selecting
 - bug: camera pitch max down
-- render region
+- render region so world can be arbitrary large
+
+FUTURE (MAYBE) TODO
+- implement a way to reinitialize graphics api (for changing buffer resolution etc.)
 
 FINISHED
 - some basic shader dynamic lightning so that objects are easier to understand
@@ -17,3 +20,4 @@ FINISHED
 - multithreading class
 - world over 100x100 bug
 - mouse picking
+- global_device_info remove

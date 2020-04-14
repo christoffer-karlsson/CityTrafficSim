@@ -6,6 +6,7 @@ struct input
     float3 Normal : NORMAL;
     float4 AmbientLight : AMBIENTLIGHT;
     float3 LightPosition : LIGHTPOSITION;
+    float4 HighlightColor : HIGHLIGHTCOLOR;
 };
 
 static const float3 DiffuseColor = float3(1.0f, 1.0f, 1.0f);
@@ -35,6 +36,7 @@ float4 main(input Input) : SV_Target
     // NOTE(Cristoffer): Add alpha in the end to be able to control transparency.
     float Alpha = Input.MaterialColor.w;
     Color = Color * float4(1.0f, 1.0f, 1.0f, Alpha);
+    Color = Color * Input.HighlightColor;
     
     return Color;
 }

@@ -52,8 +52,6 @@
 #include <mutex>
 #include <stack>
 
-#include "global_data_collector.h"
-
 #define MAX_SYNCED_JOBS 1000
 #define MAX_THREADS		1000
 

@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include "terrain.h"
+#include "render_queue.h"
 
 #include <string>
 #include <vector>
@@ -23,10 +24,11 @@ class world
 
 	std::string TileName[MAX_TILE_NAMES];
 
-	tile	*Tiles;
+	tile *Tiles;
 
 	public:
-	//TODO(Cristoffer): temp public
+
+	// TODO(Cristoffer): temp public because mouse_picker lives in a wierd place right now.
 	terrain *Terrain;
 
 	world(int32 Width, int32 Height);

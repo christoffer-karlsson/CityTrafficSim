@@ -3,27 +3,29 @@
 application::application() :
 	Window("City Traffic Simulator and Planner | Mid Sweden University Thesis Project | Cristoffer Tanda", 1920, 1080), 
 	Timing(), 
-	Running(true),
-	Graphics(Window.GetHandle())
+	Running(true)
 {
 }
 
 void application::Run()
 {
+	// NOTE(Cristoffer): Statics.
+	direct3d::Init(Window.GetHandle());
+	camera::Init();
+	entity_manager::Init();
+	system_message::Init();
+	render_queue::Init();
+	light_source::Init();
+
 	// TODO(Cristoffer): Temporary until permanent interface classes exists. /////////
 	world *World = new world(200, 200);
 	user_interface *UI = new user_interface();
 	entity_manager *EntityManager = new entity_manager();
-	//object Object;
-	mouse_picker TerrainPicker(World, World->Terrain, &Graphics.GetCamera());
-
-	light_source::Init();
+	//mouse_picker TerrainPicker(World, World->Terrain, &Graphics.GetCamera());
 	///////////////////////////////////////////////////////////////////////////////////
 
 	Window.ShowMouseCursor(0);
 	Window.ClipMouseCursor(1);
-
-	bool32 EditMode = false;
 
 	real32 MoveX = 0.0f;
 	real32 MoveY = 0.0f;
@@ -41,6 +43,9 @@ void application::Run()
 	uint32 T3 = UI->AddNewText(SystemInfoElement, "Camera Position");
 	uint32 T4 = UI->AddNewText(SystemInfoElement, "Mouse World Position");
 	uint32 T5 = UI->AddNewText(SystemInfoElement, "Test");
+	uint32 T6 = UI->AddNewText(SystemInfoElement, "Test");
+	uint32 T7 = UI->AddNewText(SystemInfoElement, "Test");
+	uint32 T8 = UI->AddNewText(SystemInfoElement, "Test");
 	UI->SetBackgroundColor(SystemInfoElement, { 0.25f, 0.25f, 0.25f, 0.5f });
 	UI->SetOffset(SystemInfoElement, 10.0f, 10.0f);
 	UI->SetMargin(SystemInfoElement, 10.0f);
@@ -121,20 +126,17 @@ void application::Run()
 			DispatchMessage(&Message);
 		}
 
-
 		if(KeyReleased(KEY_ESCAPE))
 		{
 			Running = FALSE;
 		}
 
-		// TODO(Cristoffer): Temporary input control for adjusting camera.
-
 		if(KeyReleased(KEY_TAB))
 		{
-			EditMode = !EditMode;
+			application_state::ToggleEditMode();
 
-			if(EditMode) Window.ShowMouseCursor(1);
-			if(!EditMode) Window.ShowMouseCursor(0);
+			if(application_state::GetEditModeEnabled()) Window.ShowMouseCursor(1);
+			if(!application_state::GetEditModeEnabled()) Window.ShowMouseCursor(0);
 		}
 
 		real32 CameraMovementSpeed = (real32)Timing.GetFrameTimeDeltaMilliseconds() * (15.0f / 1000.0f);
@@ -144,75 +146,73 @@ void application::Run()
 			CameraMovementSpeed *= 6.0f;
 		}
 
-		if(!EditMode)
+		if(!application_state::GetEditModeEnabled())
 		{
-			Graphics.GetCamera().LookX(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawX() * 300.0f / 1000.0f));
-			Graphics.GetCamera().LookY(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawY() * 300.0f / 1000.0f));
+			camera::LookX(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawX() * 300.0f / 1000.0f));
+			camera::LookY(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawY() * 300.0f / 1000.0f));
 		}
 		
-		if(EditMode)
+		if(application_state::GetEditModeEnabled())
 		{
-			TerrainPicker.TestMouseCollision();
-
 			if(MouseClicked(MOUSE_BUTTON_LEFT))
 			{
-				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, tile_type::ROAD_Z);
-				SystemMessage("Placed Z road tile at: " + std::to_string((int32)global_data_collector::CurrentlyPickedTileX) + ", " + std::to_string((int32)global_data_collector::CurrentlyPickedTileY) + ".");
+				//World->SetTile(0, 0, tile_type::ROAD_Z);
+				//SystemMessage("Placed Z road tile at: " + std::to_string(CurrentlyPickedTileX) + ", " + std::to_string(CurrentlyPickedTileY) + ".");
 			}
 
 			if(MouseClicked(MOUSE_BUTTON_RIGHT))
 			{
-				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, tile_type::ROAD_X);
-				SystemMessage("Placed X road tile at: " + std::to_string((int32)global_data_collector::CurrentlyPickedTileX) + ", " + std::to_string((int32)global_data_collector::CurrentlyPickedTileY) + ".");
+				//World->SetTile(CurrentlyPickedTileX, CurrentlyPickedTileY, tile_type::ROAD_X);
+				//SystemMessage("Placed X road tile at: " + std::to_string(CurrentlyPickedTileX) + ", " + std::to_string(CurrentlyPickedTileY) + ".");
 			}
 
 			if(MouseClicked(MOUSE_BUTTON_MIDDLE))
 			{
-				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, tile_type::CROSSROAD);
-				SystemMessage("Placed crossroad tile at: " + std::to_string((int32)global_data_collector::CurrentlyPickedTileX) + ", " + std::to_string((int32)global_data_collector::CurrentlyPickedTileY) + ".");
+				//World->SetTile(CurrentlyPickedTileX, CurrentlyPickedTileY, tile_type::CROSSROAD);
+				//SystemMessage("Placed crossroad tile at: " + std::to_string(CurrentlyPickedTileX) + ", " + std::to_string(CurrentlyPickedTileY) + ".");
 			}
 
 			if(MouseClicked(MOUSE_BUTTON_MIDDLE))
 			{
-				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, tile_type::CROSSROAD);
-				SystemMessage("Placed crossroad tile at: " + std::to_string((int32)global_data_collector::CurrentlyPickedTileX) + ", " + std::to_string((int32)global_data_collector::CurrentlyPickedTileY) + ".");
+				//World->SetTile(CurrentlyPickedTileX, CurrentlyPickedTileY, tile_type::CROSSROAD);
+				//SystemMessage("Placed crossroad tile at: " + std::to_string(CurrentlyPickedTileX) + ", " + std::to_string(CurrentlyPickedTileY) + ".");
 			}
 
 			if(KeyReleased(KEY_DELETE))
 			{
-				World->SetTile(global_data_collector::CurrentlyPickedTileX, global_data_collector::CurrentlyPickedTileY, tile_type::GRASS);
-				SystemMessage("Tile deleted at: " + std::to_string((int32)global_data_collector::CurrentlyPickedTileX) + ", " + std::to_string((int32)global_data_collector::CurrentlyPickedTileY) + ".");
+				//World->SetTile(CurrentlyPickedTileX, CurrentlyPickedTileY, tile_type::GRASS);
+				//SystemMessage("Tile deleted at: " + std::to_string(CurrentlyPickedTileX) + ", " + std::to_string(CurrentlyPickedTileY) + ".");
 			}
 		}
 
 		if(KeyPressed(KEY_W))
 		{
-			Graphics.GetCamera().MoveForward(CameraMovementSpeed);
+			camera::MoveForward(CameraMovementSpeed);
 		}
 
 		if(KeyPressed(KEY_S))
 		{
-			Graphics.GetCamera().MoveBackward(CameraMovementSpeed);
+			camera::MoveBackward(CameraMovementSpeed);
 		}
 
 		if(KeyPressed(KEY_A))
 		{
-			Graphics.GetCamera().StrafeLeft(CameraMovementSpeed);
+			camera::StrafeLeft(CameraMovementSpeed);
 		}
 
 		if(KeyPressed(KEY_D))
 		{
-			Graphics.GetCamera().StrafeRight(CameraMovementSpeed);
+			camera::StrafeRight(CameraMovementSpeed);
 		}
 
 		if(KeyPressed(KEY_SPACE))
 		{
-			Graphics.GetCamera().MoveUp(CameraMovementSpeed);
+			camera::MoveUp(CameraMovementSpeed);
 		}
 
 		if(KeyPressed(KEY_CONTROL))
 		{
-			Graphics.GetCamera().MoveDown(CameraMovementSpeed);
+			camera::MoveDown(CameraMovementSpeed);
 		}
 
 		if(KeyReleased(KEY_F5))
@@ -264,14 +264,12 @@ void application::Run()
 
 		if(KeyReleased(KEY_1))
 		{
-			sys_message.Push("Added new message.");
+			entity_manager::CreateEntity({1.0f, 1.0f, 1.0f}, entity_type::Vehicle);
 		}
 		if(KeyReleased(KEY_2))
 		{
-			sys_message.Push("Added new message.");
+			
 		}
-
-		//Object.UpdateModel();
 
 		UI->UpdateText(SystemInfoElement, T1, ("Frame Per Second: " + 
 												std::to_string(Timing.GetFramesPerSecond())));
@@ -280,29 +278,35 @@ void application::Run()
 												std::to_string(Timing.GetFrameTimeDeltaMilliseconds())));
 
 		UI->UpdateText(SystemInfoElement, T3, ("Camera Position: " + 
-												std::to_string(Graphics.GetCamera().GetPositionX()) + ", " + 
-												std::to_string(Graphics.GetCamera().GetPositionY()) + ", " + 
-												std::to_string(Graphics.GetCamera().GetPositionZ())));
+												std::to_string(camera::GetPositionX()) + ", " +
+												std::to_string(camera::GetPositionY()) + ", " +
+												std::to_string(camera::GetPositionZ())));
 		
 		UI->UpdateText(SystemInfoElement, T4, ("Mouse World Position: " +
-												std::to_string(global_data_collector::CurrentlyPickedTileX) + ", " +
-												std::to_string(global_data_collector::CurrentlyPickedTileY)));
+												std::to_string(0) + ", " +
+												std::to_string(0)));
 
 		UI->UpdateText(SystemInfoElement, T5, ("Light Source Position: " +
 			std::to_string(light_source::Position.x) + ", " +
 			std::to_string(light_source::Position.y) + ", " +
 			std::to_string(light_source::Position.z)));
 
-		if(EditMode)
+		UI->UpdateText(SystemInfoElement, T6, ("CollisionIndex: " +
+			std::to_string(logger::GetUINT(logger::ref::CollisionIndex))));
+
+		UI->UpdateText(SystemInfoElement, T7, ("Hit: " +
+			std::to_string(logger::GetUINT(logger::ref::Hit))));
+
+		if(application_state::GetEditModeEnabled())
 		{
 			UI->SetHidden(EditModeElement, false);
 
 			UI->SetHidden(MouseTip, false);
 
-			UI->UpdateText(MouseTip, MouseTipText, 
-			World->GetTileName((int32)global_data_collector::CurrentlyPickedTileX, (int32)global_data_collector::CurrentlyPickedTileY));
+			UI->UpdateText(MouseTip, MouseTipText,
+				World->GetTileName(/*CurrentlyPickedTileX*/0, /*CurrentlyPickedTileY*/0));
 		}
-		else if(!EditMode)
+		else if(!application_state::GetEditModeEnabled())
 		{
 			UI->SetHidden(EditModeElement, true);
 			UI->SetHidden(MouseTip, true);
@@ -310,20 +314,13 @@ void application::Run()
 
 		UI->BuildElements();
 
-		// NOTE(Cristoffer): Temporary render test.
-		Graphics.BeginFrame();
+		render_queue::Push(UI, render_layer::UserInterface);
 
-		//global_device_info::Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		//Object.Draw(Graphics.GetCamera());
-		
-		Graphics.TestDrawTerrain(World->Terrain);
-		Graphics.TestDrawLines();
-		Graphics.TestDrawUI(UI);
+		system_message::Update();
 
-		global_device_info::Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		system_message::GetInstance().Display(Graphics.GetCamera());
+		entity_manager::Simulate();
 
-		Graphics.EndFrame();
+		render_queue::Render();
 
 		Timing.EndFrameTimer();
 	}

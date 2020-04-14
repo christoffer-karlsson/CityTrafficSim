@@ -4,9 +4,6 @@
 #include "texture.h"
 #include "light_source.h"
 
-#include "mouse.h"
-#include "external/SimpleMath.h"
-
 struct cbuffer_input
 {
 	XMMATRIX MVP;
@@ -39,7 +36,7 @@ class terrain : public drawable
 
 	terrain(int64 Width, int64 Height);
 
-	void Draw(camera &Camera) override;
+	void Draw() override;
 
 	void UpdateTileHighlighResource(uint64 Width, int64 X, int64 Y, real32 IsHighlighted);
 	void UpdateTileTypeResource(uint64 Width, int64 X, int64 Y, tile_type Type);

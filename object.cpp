@@ -24,8 +24,9 @@ object::object(obj_file &File, vec3 Position, vec3 Scale, vec3 Rotation, vec4 Co
 		vertex Vertex;
 
 		Vertex.Position = vec3(Vert.x, Vert.y, Vert.z);
-		Vertex.Color = Color;
 		Vertex.Normal = vec3(0.5f, 0.5f, 0.5f);
+		Vertex.Color = Color;
+		Vertex.HighlightColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 		Vertices.push_back(Vertex);
 	}
@@ -55,17 +56,18 @@ object::object(obj_file &File, vec3 Position, vec3 Scale, vec3 Rotation, vec4 Co
 	Shader->AddInputElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
 	Shader->AddInputElement("COLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
 	Shader->AddInputElement("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
+	Shader->AddInputElement("HIGHLIGHTCOLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
 	Shader->CommitInputElements();
 
 	Texture = nullptr;
 
-	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), (uint32)Vertices.size(), DYNAMIC);
+	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), (uint32)Vertices.size(), accessibility::Dynamic);
 	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint32), (uint32)Indices.size());
 
 	ConstantBuffer = new constant_buffer(&VS_Input, sizeof(cb));
 }
 
-void object::Draw(camera &Camera)
+void object::Draw()
 {
 	struct cb
 	{
@@ -76,7 +78,7 @@ void object::Draw(camera &Camera)
 
 	} VS_Input;
 
-	VS_Input.MVP = XMMatrixTranspose(Model * XMMATRIX(Camera.GetViewMatrix()) * XMMATRIX(Camera.GetProjectionMatrix()));
+	VS_Input.MVP = XMMatrixTranspose(Model * XMMATRIX(camera::GetViewMatrix()) * XMMATRIX(camera::GetProjectionMatrix()));
 	VS_Input.Model = XMMatrixTranspose(Model);
 	VS_Input.AmbientLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	//VS_Input.LightPosition = XMFLOAT3(Camera.GetPositionX(), Camera.GetPositionY(), Camera.GetPositionZ());
@@ -90,5 +92,5 @@ void object::Draw(camera &Camera)
 	ConstantBuffer->Bind();
 	ConstantBuffer->Update(&VS_Input);
 
-	global_device_info::Context->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
+	direct3d::GetContext()->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
 }

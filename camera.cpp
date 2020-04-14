@@ -1,9 +1,22 @@
 #include "camera.h"
 
-camera::camera()
+XMMATRIX camera::View;
+XMMATRIX camera::Projection;
+XMMATRIX camera::Ortho;
+
+XMFLOAT3 camera::Position;
+XMFLOAT3 camera::ViewDirection;
+XMFLOAT3 camera::UpDirection;
+XMFLOAT3 camera::SideDirection;
+
+real32 camera::FieldOfView;
+real32 camera::AspectRatio;
+real32 camera::NearZ;
+real32 camera::FarZ;
+
+void camera::Init()
 {
 	// TODO(Cristoffer): Perhaps need different projections when doing UI stuff later.
-	//CameraType = CAM_PERSPECTIVE;
 
 	Position = XMFLOAT3(50.0f, 60.0f, 0.0f);
 	ViewDirection = XMFLOAT3(0.0f, 0.0f, 1.0f);
@@ -11,7 +24,7 @@ camera::camera()
 	SideDirection = XMFLOAT3(1.0f, 0.0f, 0.0f);
 
 	FieldOfView = 70.0f;
-	AspectRatio = global_device_info::FrameBufferWidth / global_device_info::FrameBufferHeight;
+	AspectRatio = direct3d::GetBufferWidth() / direct3d::GetBufferHeight();
 	NearZ = 0.1f;
 	FarZ = 1000.0f;
 
@@ -19,24 +32,10 @@ camera::camera()
 
 	Projection = XMMatrixPerspectiveFovLH(FieldOfView, AspectRatio, NearZ, FarZ);
 
-	Ortho = XMMatrixOrthographicLH((real32)global_device_info::FrameBufferWidth, (real32)global_device_info::FrameBufferHeight, NearZ, FarZ);
-
-	/*if(CameraType == CAM_ORTHOGRAPHIC)
-	{
-		Projection = XMMatrixOrthographicLH(16.0f, 9.0f, -1.0f, 20.0f);
-	}
-	else if(CameraType == CAM_PERSPECTIVE)
-	{
-		Projection = XMMatrixPerspectiveFovLH(FieldOfView, AspectRatio, DrawStartZ, DrawDistanceZ);
-	}
-	else
-	{
-		Projection = XMMatrixIdentity();
-	}*/
+	Ortho = XMMatrixOrthographicLH(direct3d::GetBufferWidth(), direct3d::GetBufferHeight(), NearZ, FarZ);
 
 	Update();
 }
-
 
 void camera::SetPosition(real32 X, real32 Y, real32 Z)
 {
@@ -156,17 +155,17 @@ void camera::Update()
 		FXMVECTOR(XMLoadFloat3(&UpDirection)));
 }
 
-real32 camera::GetPositionX() const
+real32 camera::GetPositionX()
 {
 	return Position.x;
 }
 
-real32 camera::GetPositionY() const
+real32 camera::GetPositionY()
 {
 	return Position.y;
 }
 
-real32 camera::GetPositionZ() const
+real32 camera::GetPositionZ()
 {
 	return Position.z;
 }

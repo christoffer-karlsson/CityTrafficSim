@@ -7,39 +7,25 @@
 #include "common.h"
 #include "camera.h"
 #include "mouse.h"
-#include "global_device_info.h"
-#include "global_data_collector.h"
-#include "threading.h"
-#include "vertex_buffer.h"
-
-#include "world.h"
+#include "direct3d.h"
 
 #include "external/SimpleMath.h"
-#include <DirectXMath.h>
+
+#include <vector>
 
 class mouse_picker
 {
 	private:
 
-	world *World;
-	terrain	*Terrain;
-	camera	*Camera;
-
-	vec2 CurrentMousePositionInWorld;
-
-	void RayTriangleIntersectWork();
+	uint32 CollisionIndex;
 
 	public:
 
-	work_id ThreadWorkID;
-
-	mouse_picker(world *World, terrain *Terrain, camera *Camera);
+	mouse_picker() = default;
 	~mouse_picker() = default;
 
-	mouse_picker(mouse_picker const &Object) = delete;
-	void operator=(mouse_picker const &Object) = delete;
+	// NOTE(Cristoffer): Returns true if collision is found, stores the index in given container.
+	bool32 TestMouseCollision(XMMATRIX &Model, std::vector<vec3> &Vertices);
 
-	void TestMouseCollision();
-
-	vec2 &GetMousePositionInWorld();
+	uint32 GetCollisionIndex();
 };

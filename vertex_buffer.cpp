@@ -1,6 +1,6 @@
 #include "vertex_buffer.h"
 
-vertex_buffer::vertex_buffer(void *VertexData, uint32 Stride, uint32 Size, ACCESSIBILITY CPUAccess) :
+vertex_buffer::vertex_buffer(void *VertexData, uint32 Stride, uint32 Size, accessibility CPUAccess) :
 	VertexBuffer(nullptr), 
 	IndexBuffer(nullptr),
 	VertexBufferStride(Stride), 
@@ -21,7 +21,7 @@ vertex_buffer::vertex_buffer(void *VertexData, uint32 Stride, uint32 Size, ACCES
 	BufferDesc.CPUAccessFlags = 0;
 	BufferDesc.MiscFlags = 0;
 
-	if(CPUAccess == DYNAMIC)
+	if(CPUAccess == accessibility::Dynamic)
 	{
 		BufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		BufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -32,7 +32,7 @@ vertex_buffer::vertex_buffer(void *VertexData, uint32 Stride, uint32 Size, ACCES
 	SubResourceData.SysMemPitch = 0;
 	SubResourceData.SysMemSlicePitch = 0;
 
-	HR = global_device_info::Device->CreateBuffer(&BufferDesc, &SubResourceData, &VertexBuffer);
+	HR = direct3d::GetDevice()->CreateBuffer(&BufferDesc, &SubResourceData, &VertexBuffer);
 	D3D_ERROR_CHECK(HR);
 }
 
@@ -53,7 +53,7 @@ void vertex_buffer::AddIndexBuffer(void *IndicesData, uint32 Stride, uint32 Size
 	D3D11_SUBRESOURCE_DATA SubResourceData = {};
 	SubResourceData.pSysMem = IndicesData;
 
-	HR = global_device_info::Device->CreateBuffer(&BufferDesc, &SubResourceData, &IndexBuffer);
+	HR = direct3d::GetDevice()->CreateBuffer(&BufferDesc, &SubResourceData, &IndexBuffer);
 	D3D_ERROR_CHECK(HR);
 }
 
@@ -61,11 +61,11 @@ void vertex_buffer::Bind()
 {
 	uint32 Offset = 0;
 
-	global_device_info::Context->IASetVertexBuffers(0, 1, &VertexBuffer, &VertexBufferStride, &Offset);
+	direct3d::GetContext()->IASetVertexBuffers(0, 1, &VertexBuffer, &VertexBufferStride, &Offset);
 
 	if(IndexBufferSize > 0)
 	{
-		global_device_info::Context->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+		direct3d::GetContext()->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	}
 }
 
@@ -74,15 +74,15 @@ void vertex_buffer::UpdateDynamicBuffer(void *VertexData, uint32 Stride, uint32 
 	// NOTE(Cristoffer): Need better structure so that objects that didn't declare
 	// dynamic buffer could not access this method. Assertion for now.
 
-	assert(CPUAccess == DYNAMIC);
+	assert(CPUAccess == accessibility::Dynamic);
 
 	D3D11_MAPPED_SUBRESOURCE Resource;
 
-	global_device_info::Context->Map(VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &Resource);
+	direct3d::GetContext()->Map(VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &Resource);
 
 	memcpy(Resource.pData, VertexData, Stride * Size);
 
-	global_device_info::Context->Unmap(VertexBuffer, 0);
+	direct3d::GetContext()->Unmap(VertexBuffer, 0);
 }
 
 uint32 vertex_buffer::GetVertexCount() const

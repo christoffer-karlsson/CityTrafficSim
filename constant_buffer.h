@@ -1,10 +1,7 @@
 #pragma once
 
 #include "common.h"
-#include "diagnostics.h"
-#include "global_device_info.h"
-
-#include <d3d11.h>
+#include "direct3d.h"
 
 class constant_buffer
 {
