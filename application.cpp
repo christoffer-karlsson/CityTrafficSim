@@ -12,16 +12,16 @@ void application::Run()
 	// NOTE(Cristoffer): Statics.
 	direct3d::Init(Window.GetHandle());
 	camera::Init();
+	logger::Init();
 	entity_manager::Init();
 	system_message::Init();
 	render_queue::Init();
 	light_source::Init();
 
-	// TODO(Cristoffer): Temporary until permanent interface classes exists. /////////
 	world *World = new world(200, 200);
+
+	// TODO(Cristoffer): Temporary until permanent interface classes exists. /////////
 	user_interface *UI = new user_interface();
-	entity_manager *EntityManager = new entity_manager();
-	//mouse_picker TerrainPicker(World, World->Terrain, &Graphics.GetCamera());
 	///////////////////////////////////////////////////////////////////////////////////
 
 	Window.ShowMouseCursor(0);
@@ -38,14 +38,15 @@ void application::Run()
 	real32 Scale = 0.0f;
 
 	uint32 SystemInfoElement = UI->CreateElement(screen_anchor::TOP_LEFT, 10.0f, 10.0f);
-	uint32 T1 = UI->AddNewText(SystemInfoElement, "FPS");
-	uint32 T2 = UI->AddNewText(SystemInfoElement, "Frame Time");
-	uint32 T3 = UI->AddNewText(SystemInfoElement, "Camera Position");
-	uint32 T4 = UI->AddNewText(SystemInfoElement, "Mouse World Position");
-	uint32 T5 = UI->AddNewText(SystemInfoElement, "Test");
-	uint32 T6 = UI->AddNewText(SystemInfoElement, "Test");
-	uint32 T7 = UI->AddNewText(SystemInfoElement, "Test");
-	uint32 T8 = UI->AddNewText(SystemInfoElement, "Test");
+	uint32 T1 = UI->AddNewText(SystemInfoElement, "<element>");
+	uint32 T2 = UI->AddNewText(SystemInfoElement, "<element>");
+	uint32 T3 = UI->AddNewText(SystemInfoElement, "<element>");
+	uint32 T4 = UI->AddNewText(SystemInfoElement, "<element>");
+	uint32 T5 = UI->AddNewText(SystemInfoElement, "<element>");
+	uint32 T6 = UI->AddNewText(SystemInfoElement, "<element>");
+	uint32 T7 = UI->AddNewText(SystemInfoElement, "<element>");
+	//uint32 T8 = UI->AddNewText(SystemInfoElement, "<element>");
+	//uint32 T9 = UI->AddNewText(SystemInfoElement, "<element>");
 	UI->SetBackgroundColor(SystemInfoElement, { 0.25f, 0.25f, 0.25f, 0.5f });
 	UI->SetOffset(SystemInfoElement, 10.0f, 10.0f);
 	UI->SetMargin(SystemInfoElement, 10.0f);
@@ -154,34 +155,46 @@ void application::Run()
 		
 		if(application_state::GetEditModeEnabled())
 		{
+			vec3u MousePosition = application_state::GetMouseCoordinateInWorldTrunc();
+
 			if(MouseClicked(MOUSE_BUTTON_LEFT))
 			{
-				//World->SetTile(0, 0, tile_type::ROAD_Z);
-				//SystemMessage("Placed Z road tile at: " + std::to_string(CurrentlyPickedTileX) + ", " + std::to_string(CurrentlyPickedTileY) + ".");
+				World->SetTile(MousePosition, tile_type::ROAD_Z);
+
+				SystemMessage("Placed Z road tile at: " + 
+					std::to_string(MousePosition.x) + ", " + 
+					std::to_string(MousePosition.y) + ", " +
+					std::to_string(MousePosition.z) + ".");
 			}
 
 			if(MouseClicked(MOUSE_BUTTON_RIGHT))
 			{
-				//World->SetTile(CurrentlyPickedTileX, CurrentlyPickedTileY, tile_type::ROAD_X);
-				//SystemMessage("Placed X road tile at: " + std::to_string(CurrentlyPickedTileX) + ", " + std::to_string(CurrentlyPickedTileY) + ".");
+				World->SetTile(MousePosition, tile_type::ROAD_X);
+
+				SystemMessage("Placed X road tile at: " +
+					std::to_string(MousePosition.x) + ", " +
+					std::to_string(MousePosition.y) + ", " +
+					std::to_string(MousePosition.z) + ".");
 			}
 
 			if(MouseClicked(MOUSE_BUTTON_MIDDLE))
 			{
-				//World->SetTile(CurrentlyPickedTileX, CurrentlyPickedTileY, tile_type::CROSSROAD);
-				//SystemMessage("Placed crossroad tile at: " + std::to_string(CurrentlyPickedTileX) + ", " + std::to_string(CurrentlyPickedTileY) + ".");
-			}
+				World->SetTile(MousePosition, tile_type::CROSSROAD);
 
-			if(MouseClicked(MOUSE_BUTTON_MIDDLE))
-			{
-				//World->SetTile(CurrentlyPickedTileX, CurrentlyPickedTileY, tile_type::CROSSROAD);
-				//SystemMessage("Placed crossroad tile at: " + std::to_string(CurrentlyPickedTileX) + ", " + std::to_string(CurrentlyPickedTileY) + ".");
+				SystemMessage("Placed crossroad tile at: " +
+					std::to_string(MousePosition.x) + ", " +
+					std::to_string(MousePosition.y) + ", " +
+					std::to_string(MousePosition.z) + ".");
 			}
 
 			if(KeyReleased(KEY_DELETE))
 			{
-				//World->SetTile(CurrentlyPickedTileX, CurrentlyPickedTileY, tile_type::GRASS);
-				//SystemMessage("Tile deleted at: " + std::to_string(CurrentlyPickedTileX) + ", " + std::to_string(CurrentlyPickedTileY) + ".");
+				World->SetTile(MousePosition, tile_type::GRASS);
+
+				SystemMessage("Tile deleted at: " +
+					std::to_string(MousePosition.x) + ", " +
+					std::to_string(MousePosition.y) + ", " +
+					std::to_string(MousePosition.z) + ".");
 			}
 		}
 
@@ -281,30 +294,35 @@ void application::Run()
 												std::to_string(camera::GetPositionX()) + ", " +
 												std::to_string(camera::GetPositionY()) + ", " +
 												std::to_string(camera::GetPositionZ())));
-		
-		UI->UpdateText(SystemInfoElement, T4, ("Mouse World Position: " +
-												std::to_string(0) + ", " +
-												std::to_string(0)));
 
-		UI->UpdateText(SystemInfoElement, T5, ("Light Source Position: " +
+		UI->UpdateText(SystemInfoElement, T4, ("Light Source Position: " +
 			std::to_string(light_source::Position.x) + ", " +
 			std::to_string(light_source::Position.y) + ", " +
 			std::to_string(light_source::Position.z)));
 
-		UI->UpdateText(SystemInfoElement, T6, ("CollisionIndex: " +
-			std::to_string(logger::GetUINT(logger::ref::CollisionIndex))));
+		UI->UpdateText(SystemInfoElement, T5, ("Entity Count: " +
+			std::to_string(logger::GetUINT(logger::ref::EntityCount))));
 
-		UI->UpdateText(SystemInfoElement, T7, ("Hit: " +
-			std::to_string(logger::GetUINT(logger::ref::Hit))));
+		UI->UpdateText(SystemInfoElement, T6, ("Mouse World (Real): " +
+			std::to_string(application_state::GetMouseCoordinateInWorld().x) + ", " +
+			std::to_string(application_state::GetMouseCoordinateInWorld().y) + ", " +
+			std::to_string(application_state::GetMouseCoordinateInWorld().z)));
+
+		UI->UpdateText(SystemInfoElement, T7, ("Mouse World (Trunc): " +
+			std::to_string(application_state::GetMouseCoordinateInWorldTrunc().x) + ", " +
+			std::to_string(application_state::GetMouseCoordinateInWorldTrunc().y) + ", " +
+			std::to_string(application_state::GetMouseCoordinateInWorldTrunc().z)));
 
 		if(application_state::GetEditModeEnabled())
 		{
+			render_queue::TestMouseCollision();
+
 			UI->SetHidden(EditModeElement, false);
 
 			UI->SetHidden(MouseTip, false);
 
 			UI->UpdateText(MouseTip, MouseTipText,
-				World->GetTileName(/*CurrentlyPickedTileX*/0, /*CurrentlyPickedTileY*/0));
+				World->GetTileDescription(Truncate(application_state::GetMouseCoordinateInWorld())));
 		}
 		else if(!application_state::GetEditModeEnabled())
 		{

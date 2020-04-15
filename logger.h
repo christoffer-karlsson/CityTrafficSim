@@ -11,6 +11,7 @@
 // 1. Put MyVariable name in the enum.
 // 2. logger::LogINT(MyVariable, logger::ref::MyVariable);
 // 3. logger::GetINT(logger::ref::MyVariable);
+
 class logger
 {
 	private:
@@ -23,22 +24,34 @@ class logger
 
 	enum ref
 	{
-		EntityCount, CollisionIndex, Hit
+		EntityCount, MouseWorldX, MouseWorldY
+	};
+
+	static void Init()
+	{
+		for(uint32 Index = 0;
+			Index < MAX_LOG;
+			Index++)
+		{
+			ValueINT[Index] = 0;
+			ValueUINT[Index] = 0;
+			ValueREAL[Index] = 0;
+		}
 	};
 
 	static void LogINT(int32 Value, ref Reference)
 	{
-		ValueINT[Reference] = (int32)Value;
+		ValueINT[Reference] = Value;
 	};
 
 	static void LogUINT(uint32 Value, ref Reference)
 	{
-		ValueUINT[Reference] = (uint32)Value;
+		ValueUINT[Reference] = Value;
 	};
 
 	static void LogREAL(real32 Value, ref Reference)
 	{
-		ValueREAL[Reference] = (real32)Value;
+		ValueREAL[Reference] = Value;
 	};
 
 	static int32 GetINT(ref Reference)
@@ -48,7 +61,7 @@ class logger
 
 	static uint32 GetUINT(ref Reference)
 	{
-		return ValueINT[Reference];
+		return ValueUINT[Reference];
 	};
 
 	static real32 GetREAL(ref Reference)

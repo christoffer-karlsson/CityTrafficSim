@@ -3,7 +3,7 @@ struct input
     float3 Position : POSITION;
     float3 Normal : NORMAL;
     float2 UV : TEXCOORD;
-    float1 IsPicked : ISPICKED;
+    float4 HightlightColor : HIGHLIGHTCOLOR;
 };
 
 struct output
@@ -14,7 +14,7 @@ struct output
     float3 Normal : NORMAL;
     float4 AmbientLight : AMBIENTLIGHT;
     float3 LightPosition : LIGHTPOSITION;
-    float1 IsPicked : ISPICKED;
+    float4 HightlightColor : HIGHLIGHTCOLOR;
 };
 
 
@@ -38,7 +38,7 @@ output main(input Input)
     
     Output.UV = Input.UV;
     
-    Output.IsPicked = Input.IsPicked;
+    Output.HightlightColor = Input.HightlightColor;
     
     Output.LightPosition = LightPosition;
     

@@ -1,15 +1,25 @@
 #include "render_queue.h"
 
-std::vector<drawable*> render_queue::World;
+work_id render_queue::ThreadWorkID;
+
+vec3u render_queue::OldCollisionPosition;
+
+drawable *render_queue::Terrain;
+
 std::vector<drawable*> render_queue::Agents;
 std::vector<drawable*> render_queue::UserInterfaceLayer;
 std::vector<drawable*> render_queue::Graphs;
 
+void render_queue::Init()
+{
+	
+}
+
 void render_queue::Push(drawable *Drawable, render_layer Layer)
 {
-	if(Layer == render_layer::World)
+	if(Layer == render_layer::Terrain)
 	{
-		World.push_back(Drawable);
+		Terrain = Drawable;
 	}
 
 	if(Layer == render_layer::Agents)
@@ -32,22 +42,7 @@ void render_queue::Render()
 {
 	direct3d::BeginFrame();
 
-	mouse_picker WorldPicker;
-
-	for(auto Iterator = World.begin();
-		Iterator != World.end();
-		Iterator++)
-	{
-		(*Iterator)->Draw();
-
-		if(application_state::GetEditModeEnabled())
-		{
-			bool32 Hit = WorldPicker.TestMouseCollision((*Iterator)->GetModel(), (*Iterator)->GetVertexTriangles());
-			
-			logger::LogUINT(WorldPicker.GetCollisionIndex(), logger::ref::CollisionIndex);
-			logger::LogUINT(Hit, logger::ref::Hit);
-		}
-	}
+	Terrain->Draw();
 
 	for(auto Iterator = Agents.begin();
 		Iterator != Agents.end();
@@ -68,22 +63,52 @@ void render_queue::Render()
 		Iterator++)
 	{
 		(*Iterator)->Draw();
-
-		if(application_state::GetEditModeEnabled())
-		{
-			bool32 Hit = WorldPicker.TestMouseCollision((*Iterator)->GetModel(), (*Iterator)->GetVertexTriangles());
-			
-			logger::LogUINT(WorldPicker.GetCollisionIndex(), logger::ref::CollisionIndex);
-			logger::LogUINT(Hit, logger::ref::Hit);
-		}
 	}
 
 	direct3d::EndFrame();
 
-	// TODO(Cristoffer): Should the render queue store drawables forever?
-	// Store for now until entities is up and running.
+	// NOTE(Cristoffer): Renderer only stores drawable pointers that
+	// should get drawn for the frame, then clears them, with some exceptions
+	// like the terrain, which is permanent.
 	//World.clear();
 	//Agents.clear();
 	UserInterfaceLayer.clear();
 	//Graphs.clear();
+}
+
+void render_queue::TestMouseCollision()
+{
+	auto ThreadWork = [&]
+	{
+		mouse_picker WorldPicker;
+
+		bool32 Hit = WorldPicker.TestMouseCollision(Terrain->GetModel(), Terrain->GetCollisionModel());
+
+		Terrain->UpdateHighlightColorResource(OldCollisionPosition, 0);
+
+		if(Hit)
+		{
+			vec3 NewCollisionPosition = WorldPicker.GetCollisionPosition();
+
+			application_state::SetMouseCoordinateInWorld(NewCollisionPosition);
+
+			vec3u NewCollisionPositionTruncated = application_state::GetMouseCoordinateInWorldTrunc();
+
+			Terrain->UpdateHighlightColorResource(NewCollisionPositionTruncated, 1);
+
+			OldCollisionPosition = NewCollisionPositionTruncated;
+		}
+	};
+
+	if(USE_MULTI_THREADING)
+	{
+		if(thread_pool.WorkDone(ThreadWorkID))
+		{
+			thread_pool.AddBackgroundWork(ThreadWorkID, ThreadWork);
+		}
+	}
+	else
+	{
+		ThreadWork();
+	}
 }

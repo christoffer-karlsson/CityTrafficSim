@@ -4,6 +4,16 @@
 #include "texture.h"
 #include "light_source.h"
 
+enum class tile_type
+{
+	GRASS,
+	ROAD_Z,
+	ROAD_X,
+	CROSSROAD,
+	SIDEWALK,
+	WATER,
+};
+
 struct cbuffer_input
 {
 	XMMATRIX MVP;
@@ -17,31 +27,34 @@ struct terrain_vertex
 	vec3	Position;
 	vec3	Normal;
 	vec2	TextureUVCoordinate;
-	real32	IsHighlighted = 0.0f;
+	vec4	HighlightColor;
 };
 
 class terrain : public drawable
 {
 	private:
 
-	std::vector<vec2> WorldCoordinate;
 	std::vector<terrain_vertex> Vertices;
 	std::vector<uint32> Indices;
 
+	uint64 WidthX;
+	uint64 WidthZ;
+
 	protected:
 
-	uv_quad GetTextureCoordinateFromTileType(tile_type Type);
+	texture_coordinates GetTextureCoordinateFromTileType(tile_type Type);
 
 	public:
 
-	terrain(int64 Width, int64 Height);
+	terrain(uint64 WidthX, uint64 WidthZ);
 
 	void Draw() override;
 
-	void UpdateTileHighlighResource(uint64 Width, int64 X, int64 Y, real32 IsHighlighted);
-	void UpdateTileTypeResource(uint64 Width, int64 X, int64 Y, tile_type Type);
+	void UpdateHighlightColorResource(vec3u Position, bool32 IsHighlighted) override;
+	void UpdateTileTypeResource(vec3u Position, tile_type Type);
+
+	uint32 GetWidthX();
+	uint32 GetWidthZ();
 
 	std::vector<terrain_vertex> &GetVertexData();
-
-	vec2 GetWorldCoordinate(uint64 Index);
 };

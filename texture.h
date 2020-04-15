@@ -13,8 +13,13 @@ using namespace DirectX;
 
 // TODO(Cristoffer): Add support for texture slots.
 
-struct uv;
-struct uv_quad;
+struct texture_coordinates
+{
+	vec2 TopLeft;
+	vec2 TopRight;
+	vec2 BottomLeft;
+	vec2 BottomRight;
+};
 
 class texture
 {
@@ -36,15 +41,6 @@ class texture
 	~texture();
 
 	void Bind();
-	uv_quad GetUVFromSliceCoordinates(int32 X, int32 Y);
-};
 
-struct uv
-{
-	real32 U, V;
-};
-
-struct uv_quad
-{
-	uv TextureCoordinate[4];
+	texture_coordinates GetUVFromSliceCoordinates(int32 X, int32 Y);
 };

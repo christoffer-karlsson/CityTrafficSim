@@ -12,12 +12,12 @@ void persistence::SaveWorldMap(world *World)
 		return;
 	}
 
-	for(int32 X = 0; X < World->GetWidth(); X++)
+	for(uint32 X = 0; X < World->GetWidthX(); X++)
 	{
-		for(int32 Y = 0; Y < World->GetHeight(); Y++)
+		for(uint32 Z = 0; Z < World->GetWidthZ(); Z++)
 		{
-			File << "tile" << SPACE << X << SPACE << Y << SPACE;
-			File << World->GetTile(X, Y).Type;
+			File << "tile" << SPACE << X << SPACE << 0 << SPACE << Z << SPACE;
+			File << World->GetTileID(vec3u(X, 0, Z));
 			File << NEWLINE;
 		}
 	}
@@ -44,13 +44,14 @@ void persistence::LoadSavedWorldMap(world *World)
 	{
 		if(Word == "tile")
 		{
-			std::string X, Y, TileType;
+			std::string X, Y, Z, TileType;
 
 			std::getline(File, X, SPACE);
 			std::getline(File, Y, SPACE);
+			std::getline(File, Z, SPACE);
 			std::getline(File, TileType, NEWLINE);
-			
-			World->SetTile(std::stoi(X), std::stoi(Y), (tile_type)std::stoi(TileType));
+
+			World->SetTile(vec3u(std::stoi(X), std::stoi(Y), std::stoi(Z)), World->GetTileType(std::stoi(TileType)));
 		}
 		else
 		{

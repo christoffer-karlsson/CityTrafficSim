@@ -30,14 +30,14 @@ void texture::Bind()
 	direct3d::GetContext()->PSSetSamplers(0, 1, &Sampler);
 }
 
-uv_quad texture::GetUVFromSliceCoordinates(int32 X, int32 Y)
+texture_coordinates texture::GetUVFromSliceCoordinates(int32 X, int32 Y)
 {
-	uv_quad Result;
+	texture_coordinates Result;
 	
-	Result.TextureCoordinate[0] = { (0.0f + X) / (real32)SlicesInX, (0.0f + Y) / (real32)SlicesInY };
-	Result.TextureCoordinate[1] = { (1.0f + X) / (real32)SlicesInX, (0.0f + Y) / (real32)SlicesInY };
-	Result.TextureCoordinate[2] = { (0.0f + X) / (real32)SlicesInX, (1.0f + Y) / (real32)SlicesInY };
-	Result.TextureCoordinate[3] = { (1.0f + X) / (real32)SlicesInX, (1.0f + Y) / (real32)SlicesInY };
+	Result.TopLeft	= { (0.0f + X) / (real32)SlicesInX, (0.0f + Y) / (real32)SlicesInY };
+	Result.TopRight = { (1.0f + X) / (real32)SlicesInX, (0.0f + Y) / (real32)SlicesInY };
+	Result.BottomLeft = { (0.0f + X) / (real32)SlicesInX, (1.0f + Y) / (real32)SlicesInY };
+	Result.BottomRight = { (1.0f + X) / (real32)SlicesInX, (1.0f + Y) / (real32)SlicesInY };
 
 	return Result;
 }

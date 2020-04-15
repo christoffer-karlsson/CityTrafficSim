@@ -1,105 +1,84 @@
 #include "terrain.h"
 
-uv_quad terrain::GetTextureCoordinateFromTileType(tile_type Type)
+terrain::terrain(uint64 WidthX, uint64 WidthZ) :
+	WidthX(WidthX),
+	WidthZ(WidthZ)
 {
-	uv_quad Result;
-
-	if(Type == tile_type::GRASS)
-	{
-		Result = Texture->GetUVFromSliceCoordinates(0, 0);
-	}
-	else if(Type == tile_type::ROAD_Z)
-	{
-		Result = Texture->GetUVFromSliceCoordinates(2, 0);
-	}
-	else if(Type == tile_type::ROAD_X)
-	{
-		Result = Texture->GetUVFromSliceCoordinates(1, 0);
-	}
-	else if(Type == tile_type::CROSSROAD)
-	{
-		Result = Texture->GetUVFromSliceCoordinates(3, 0);
-	}
-	else
-	{
-		Result = Texture->GetUVFromSliceCoordinates(0, 0);
-	}
-
-	return Result;
-}
-
-terrain::terrain(int64 Width, int64 Height)
-{
-	// NOTE(Cristoffer): Since it is easier to think about ground in X,Y space,
-	// it just takes those two dimensions. But Y is getting mapped to Z in data,
-	// since Y is height in 3d coordinate space.
+	// NOTE(Cristoffer): Vertex positions for the collision model.
+	CollisionModel.push_back(vec3(0.0f, 0.0f, 0.0f));	  // 0
+	CollisionModel.push_back(vec3(0.0f, 0.0f, 200.0f));	  // 1
+	CollisionModel.push_back(vec3(200.0f, 0.0f, 0.0f));	  // 2
+	CollisionModel.push_back(vec3(0.0f, 0.0f, 200.0f));	  // 1
+	CollisionModel.push_back(vec3(200.0f, 0.0f, 0.0f));	  // 2
+	CollisionModel.push_back(vec3(200.0f, 0.0f, 200.0f)); // 3
 
 	Texture = new texture(L"data/tile-atlas-256x256x10x10.png", 2560, 2560, 10, 10);
 
-	int64 QuadCount = 0;
+	int64 VertexCount = 0;
 
-	for(uint64 X = 0; X < Width; X++)
+	for(uint64 X = 0; X < WidthX; X++)
 	{
-		for(uint64 Z = 0; Z < Height; Z++)
+		for(uint64 Z = 0; Z < WidthZ; Z++)
 		{
-			uv_quad UV = Texture->GetUVFromSliceCoordinates(0, 0);
+			// NOTE(Cristoffer): Forming a terrain with quads. Each quad has two triangles.
+			// Storing two triangles and the two extra verticies because its needed
+			// for the mouse picker, so its easier to check triangles with correct data
+			// padding.
 
-			terrain_vertex Vertex[4];
+			texture_coordinates UV = Texture->GetUVFromSliceCoordinates(0, 0);
 
-			Vertex[0].Position = vec3((real32)X - 0.5f, 0.0f, (real32)Z - 0.5f);
-			Vertex[1].Position = vec3((real32)X - 0.5f, 0.0f, (real32)Z + 0.5f);
-			Vertex[2].Position = vec3((real32)X + 0.5f, 0.0f, (real32)Z - 0.5f);
-			Vertex[3].Position = vec3((real32)X + 0.5f, 0.0f, (real32)Z + 0.5f);
+			terrain_vertex Vertex[6];
+
+			Vertex[0].Position = vec3((real32)X - 0.5f, 0.0f, (real32)Z - 0.5f); // 0
+			Vertex[1].Position = vec3((real32)X - 0.5f, 0.0f, (real32)Z + 0.5f); // 1
+			Vertex[2].Position = vec3((real32)X + 0.5f, 0.0f, (real32)Z - 0.5f); // 2
+			Vertex[3].Position = vec3((real32)X - 0.5f, 0.0f, (real32)Z + 0.5f); // 1
+			Vertex[4].Position = vec3((real32)X + 0.5f, 0.0f, (real32)Z + 0.5f); // 3
+			Vertex[5].Position = vec3((real32)X + 0.5f, 0.0f, (real32)Z - 0.5f); // 2
 			
 			// NOTE(Cristoffer): Normals in Y direction for now.
-			Vertex[0].Normal = vec3(0.0f, 1.0f, 0.0f);
-			Vertex[1].Normal = vec3(0.0f, 1.0f, 0.0f);
-			Vertex[2].Normal = vec3(0.0f, 1.0f, 0.0f);
-			Vertex[3].Normal = vec3(0.0f, 1.0f, 0.0f);
+			Vertex[0].Normal = vec3(0.0f, 1.0f, 0.0f); // 0
+			Vertex[1].Normal = vec3(0.0f, 1.0f, 0.0f); // 1
+			Vertex[2].Normal = vec3(0.0f, 1.0f, 0.0f); // 2
+			Vertex[3].Normal = vec3(0.0f, 1.0f, 0.0f); // 1
+			Vertex[4].Normal = vec3(0.0f, 1.0f, 0.0f); // 3
+			Vertex[5].Normal = vec3(0.0f, 1.0f, 0.0f); // 2
 
-			Vertex[0].TextureUVCoordinate = vec2(UV.TextureCoordinate[0].U, UV.TextureCoordinate[0].V);
-			Vertex[1].TextureUVCoordinate = vec2(UV.TextureCoordinate[1].U, UV.TextureCoordinate[1].V);
-			Vertex[2].TextureUVCoordinate = vec2(UV.TextureCoordinate[2].U, UV.TextureCoordinate[2].V);
-			Vertex[3].TextureUVCoordinate = vec2(UV.TextureCoordinate[3].U, UV.TextureCoordinate[3].V);
+			Vertex[0].TextureUVCoordinate = UV.BottomLeft;	// 0
+			Vertex[1].TextureUVCoordinate = UV.TopLeft;		// 1
+			Vertex[2].TextureUVCoordinate = UV.BottomRight; // 2
+			Vertex[3].TextureUVCoordinate = UV.TopLeft;		// 1
+			Vertex[4].TextureUVCoordinate = UV.TopRight;	// 3
+			Vertex[5].TextureUVCoordinate = UV.BottomRight; // 2
+
+			Vertex[0].HighlightColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			Vertex[1].HighlightColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			Vertex[2].HighlightColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			Vertex[3].HighlightColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			Vertex[4].HighlightColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			Vertex[5].HighlightColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 			Vertices.push_back(Vertex[0]);
 			Vertices.push_back(Vertex[1]);
 			Vertices.push_back(Vertex[2]);
 			Vertices.push_back(Vertex[3]);
+			Vertices.push_back(Vertex[4]);
+			Vertices.push_back(Vertex[5]);
 
-			// NOTE(Cristoffer): Store triangles for intersection test.
-			VertexTriangles.push_back({ (real32)X - 0.5f, 0.0f, (real32)Z - 0.5f });
-			VertexTriangles.push_back({ (real32)X - 0.5f, 0.0f, (real32)Z + 0.5f });
-			VertexTriangles.push_back({ (real32)X + 0.5f, 0.0f, (real32)Z - 0.5f });
-			VertexTriangles.push_back({ (real32)X - 0.5f, 0.0f, (real32)Z + 0.5f });
-			VertexTriangles.push_back({ (real32)X + 0.5f, 0.0f, (real32)Z + 0.5f });
-			VertexTriangles.push_back({ (real32)X + 0.5f, 0.0f, (real32)Z - 0.5f });
-
-			// TODO(Cristoffer): NEEDED??
-			WorldCoordinate.push_back({ vec2(X, Z) });
-			WorldCoordinate.push_back({ vec2(X, Z) });
-			WorldCoordinate.push_back({ vec2(X, Z) });
-			WorldCoordinate.push_back({ vec2(X, Z) });
-
-			QuadCount++;
+			VertexCount += 6;
 		}
 	}
 
-	for(uint32 Index = 0; Index < QuadCount; Index++)
+	for(uint32 Index = 0; Index < VertexCount; Index++)
 	{
-		Indices.push_back(0 + (Index * 4));
-		Indices.push_back(1 + (Index * 4));
-		Indices.push_back(2 + (Index * 4));
-		Indices.push_back(1 + (Index * 4));
-		Indices.push_back(3 + (Index * 4));
-		Indices.push_back(2 + (Index * 4));
+		Indices.push_back(Index);
 	}
 
 	Shader = new shader(L"terrain_vs.cso", L"terrain_ps.cso");
 	Shader->AddInputElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
 	Shader->AddInputElement("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
 	Shader->AddInputElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
-	Shader->AddInputElement("ISPICKED", DXGI_FORMAT_R32_FLOAT);
+	Shader->AddInputElement("HIGHLIGHTCOLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
 	Shader->CommitInputElements();
 
 	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(terrain_vertex), (uint32)Vertices.size(), accessibility::Dynamic);
@@ -121,7 +100,6 @@ void terrain::Draw()
 											   light_source::Position.y, 
 											   light_source::Position.z);
 
-
 	// TODO(Cristoffer): Is it bad to update the dynamic buffer before drawing?
 	// Should it be done earlier?
 	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(terrain_vertex), (uint32)Vertices.size());
@@ -135,48 +113,77 @@ void terrain::Draw()
 	direct3d::GetContext()->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
 }
 
-void terrain::UpdateTileHighlighResource(uint64 Width, int64 X, int64 Y, real32 IsHighlighted)
+void terrain::UpdateHighlightColorResource(vec3u Position, bool32 IsHighlighted)
 {
-	uint64 Index = WorldCoordinateToIndex(Width, 4, X, Y);
+	uint64 Index = WorldCoordinateToIndex(WidthX, 6, Position.x, Position.z);
 
-	if((Index + 4) > Vertices.size() || Index < 0)
+	vec4 HighlightColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+	if(IsHighlighted)
+	{
+		HighlightColor = vec4(1.5f, 1.5f, 1.5f, 1.0f);
+	}
+
+	if((Index + 6) > Vertices.size() || Index < 0)
 	{
 		return;
 	}
 
-	Vertices.at(Index + 0).IsHighlighted = IsHighlighted;
-	Vertices.at(Index + 1).IsHighlighted = IsHighlighted;
-	Vertices.at(Index + 2).IsHighlighted = IsHighlighted;
-	Vertices.at(Index + 3).IsHighlighted = IsHighlighted;
+	Vertices.at(Index + 0).HighlightColor = HighlightColor;
+	Vertices.at(Index + 1).HighlightColor = HighlightColor;
+	Vertices.at(Index + 2).HighlightColor = HighlightColor;
+	Vertices.at(Index + 3).HighlightColor = HighlightColor;
+	Vertices.at(Index + 4).HighlightColor = HighlightColor;
+	Vertices.at(Index + 5).HighlightColor = HighlightColor;
 }
 
-void terrain::UpdateTileTypeResource(uint64 Width, int64 X, int64 Y, tile_type Type)
+void terrain::UpdateTileTypeResource(vec3u Position, tile_type Type)
 {
-	uv_quad Atlas = GetTextureCoordinateFromTileType(Type);
+	texture_coordinates UV = GetTextureCoordinateFromTileType(Type);
 
-	uint64 Index = WorldCoordinateToIndex(Width, 4, X, Y);
+	uint64 Index = WorldCoordinateToIndex(WidthX, 6, Position.x, Position.z);
 
-	if((Index + 4) > Vertices.size() || Index < 0)
+	if((Index + 6) > Vertices.size() || Index < 0)
 	{
 		return;
 	}
 
-	Vertices.at(Index + 0).TextureUVCoordinate.x = Atlas.TextureCoordinate[0].U;
-	Vertices.at(Index + 0).TextureUVCoordinate.y = Atlas.TextureCoordinate[0].V;
-	Vertices.at(Index + 1).TextureUVCoordinate.x = Atlas.TextureCoordinate[1].U;
-	Vertices.at(Index + 1).TextureUVCoordinate.y = Atlas.TextureCoordinate[1].V;
-	Vertices.at(Index + 2).TextureUVCoordinate.x = Atlas.TextureCoordinate[2].U;
-	Vertices.at(Index + 2).TextureUVCoordinate.y = Atlas.TextureCoordinate[2].V;
-	Vertices.at(Index + 3).TextureUVCoordinate.x = Atlas.TextureCoordinate[3].U;
-	Vertices.at(Index + 3).TextureUVCoordinate.y = Atlas.TextureCoordinate[3].V;
+	Vertices.at(Index + 0).TextureUVCoordinate = UV.BottomLeft;
+	Vertices.at(Index + 1).TextureUVCoordinate = UV.TopLeft;
+	Vertices.at(Index + 2).TextureUVCoordinate = UV.BottomRight;
+	Vertices.at(Index + 3).TextureUVCoordinate = UV.TopLeft;
+	Vertices.at(Index + 4).TextureUVCoordinate = UV.TopRight;
+	Vertices.at(Index + 5).TextureUVCoordinate = UV.BottomRight;
+}
+
+uint32 terrain::GetWidthX()
+{
+	return WidthX;
+}
+
+uint32 terrain::GetWidthZ()
+{
+	return WidthZ;
+}
+
+texture_coordinates terrain::GetTextureCoordinateFromTileType(tile_type Type)
+{
+	texture_coordinates Result;
+
+	switch(Type)
+	{
+		case tile_type::GRASS:		Result = Texture->GetUVFromSliceCoordinates(0, 0); break;
+		case tile_type::ROAD_Z:		Result = Texture->GetUVFromSliceCoordinates(2, 0); break;
+		case tile_type::ROAD_X:		Result = Texture->GetUVFromSliceCoordinates(1, 0); break;
+		case tile_type::CROSSROAD:	Result = Texture->GetUVFromSliceCoordinates(3, 0); break;
+
+		default: Result = Texture->GetUVFromSliceCoordinates(0, 0); break;
+	}
+
+	return Result;
 }
 
 std::vector<terrain_vertex> &terrain::GetVertexData()
 {
 	return Vertices;
-}
-
-vec2 terrain::GetWorldCoordinate(uint64 Index)
-{
-	return WorldCoordinate.at(Index);
 }

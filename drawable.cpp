@@ -70,7 +70,7 @@ XMMATRIX &drawable::GetModel()
 	return Model;
 }
 
-std::vector<vec3> &drawable::GetVertexTriangles()
+std::vector<vec3> &drawable::GetCollisionModel()
 {
-	return VertexTriangles;
+	return CollisionModel;
 }

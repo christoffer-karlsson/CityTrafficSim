@@ -2,8 +2,6 @@
 
 bool32 mouse_picker::TestMouseCollision(XMMATRIX &Model, std::vector<vec3> &Vertices)
 {
-	vec2 NewMousePositionInWorld(0.0f, 0.0f);
-
 	XMMATRIX View, Projection;
 
 	View = camera::GetViewMatrix();
@@ -21,13 +19,11 @@ bool32 mouse_picker::TestMouseCollision(XMMATRIX &Model, std::vector<vec3> &Vert
 	RayDirection = XMVector3Normalize(RayDirection - RayOrigin);
 
 	// NOTE(Cristoffer): DX SimpleMath library for calculating the ray 
-	//intersection with triangle geometry.
+	// intersection with triangle geometry.
 	SimpleMath::Ray Ray(RayOrigin, RayDirection);
-
-	// NOTE(Cristoffer): Distance to the intersection (from origin).
-	real32 Distance;
-
-	for(uint64 Index = 0; (Index + 3) < Vertices.size(); Index += 3)
+	
+	// NOTE(Cristoffer): Iterate and collision test the triangles with the ray.
+	for(uint64 Index = 0; Index < Vertices.size(); Index += 3)
 	{
 		XMFLOAT3 V1, V2, V3;
 
@@ -43,12 +39,21 @@ bool32 mouse_picker::TestMouseCollision(XMMATRIX &Model, std::vector<vec3> &Vert
 		V3.y = Vertices.at(Index + 2).y;
 		V3.z = Vertices.at(Index + 2).z;
 
+		real32 Distance;
+
 		// NOTE(Cristoffer): Do the intersection test with triangle coordinates.
+		// If intersection found, we get the distance. With the distance we can simply
+		// calculate where in the world the intersection happened with the formula:
+		// P = Origin + Distance * Direction.
 		if(Ray.Intersects(V1, V2, V3, Distance))
 		{
-			// NOTE(Cristoffer): Index in the vertex buffer where the intersection is found.
-			CollisionIndex = (uint32)Index;
-			
+			XMVECTOR Position = RayOrigin + Distance * RayDirection;
+
+			XMFLOAT4 Vector;
+			XMStoreFloat4(&Vector, Position);
+
+			CollisionPosition = vec3(Vector.x, Vector.y, Vector.z);
+
 			return 1;
 		}
 	}
@@ -56,7 +61,7 @@ bool32 mouse_picker::TestMouseCollision(XMMATRIX &Model, std::vector<vec3> &Vert
 	return 0;
 }
 
-uint32 mouse_picker::GetCollisionIndex()
+vec3 mouse_picker::GetCollisionPosition()
 {
-	return CollisionIndex;
+	return CollisionPosition;
 }

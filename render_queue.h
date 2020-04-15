@@ -12,22 +12,28 @@
 
 enum class render_layer
 {
-	World, Agents, UserInterface, Graphs
+	Terrain, Agents, UserInterface, Graphs
 };
 
 class render_queue
 {
 	private:
 
+	static work_id ThreadWorkID;
+
+	static vec3u OldCollisionPosition;
+
 	// TODO(Cristoffer): Containter for this.
-	static std::vector<drawable*> World;
+	static drawable *Terrain;
+
 	static std::vector<drawable*> Agents;
 	static std::vector<drawable*> UserInterfaceLayer;
 	static std::vector<drawable*> Graphs;
 
 	public:
 
-	static void Init(){};
+	static void Init();
 	static void Push(drawable *Drawable, render_layer Layer);
 	static void Render();
+	static void TestMouseCollision();
 };

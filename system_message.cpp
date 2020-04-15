@@ -21,18 +21,22 @@ void system_message::Init()
 	}
 
 	real32 ExtraOffset = 0;
+	real32 Margin = 10.0f;
+	real32 Offset = 10.0f;
+	real32 BetweenDistance = 50.0f;
+	real32 VerticalOffsetCentered = (MAX_MESSAGES_ALLOWED * (Offset + Margin)) / 2.0f;
 
 	for(uint32 Index = 0;
 		Index < MAX_MESSAGES_ALLOWED;
 		Index++)
 	{
-		ExtraOffset = Index * 50.0f;
+		ExtraOffset = Index * BetweenDistance;
 
 		UIElementID[Index] = UI->CreateElement(screen_anchor::MIDDLE_LEFT, 10.0f, 10.0f);
 		UITextID[Index] = UI->AddNewText(UIElementID[Index], "system_message");
 		UI->SetBackgroundColor(UIElementID[Index], { 0.25f, 0.25f, 0.25f, 0.5f });
-		UI->SetOffset(UIElementID[Index], 10.0f, 10.0f + ExtraOffset);
-		UI->SetMargin(UIElementID[Index], 10.0f);
+		UI->SetOffset(UIElementID[Index], Offset, Offset + ExtraOffset - VerticalOffsetCentered);
+		UI->SetMargin(UIElementID[Index], Margin);
 		UI->SetAdjustWidthToText(UIElementID[Index], true);
 		UI->SetHidden(UIElementID[Index], false);
 	}

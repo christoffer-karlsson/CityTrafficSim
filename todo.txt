@@ -1,10 +1,5 @@
 TODO
-- more general mouse picker for different objects
-- mouse_picker proper screen size
-- mouse_picker class has to be aware of editmode, so that highlight can be turned off
-- WorldCoordinate (terrain.cpp), same data, two places?
-- global_state class
-- entities
+- fix truncate error when converting from mouse coordinates to tile coordinates
 - more ui elements (button, textbox, selecting)
 - ui picking 
 - ui tile selecting
@@ -15,6 +10,16 @@ FUTURE (MAYBE) TODO
 - implement a way to reinitialize graphics api (for changing buffer resolution etc.)
 
 FINISHED
+- mouse_picker class has to be aware of editmode, so that highlight can be turned off
+- more general mouse picker for different objects
+- WorldCoordinate (terrain.cpp), same data, two places?
+- global_state class
+- mouse picker general geometry
+- app state
+- mouse_picker proper screen size
+- entities
+- render manager
+- entity manager
 - some basic shader dynamic lightning so that objects are easier to understand
 - save states, persistant memory for saving map etc
 - multithreading class

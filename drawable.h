@@ -27,7 +27,7 @@ class drawable
 	vertex_buffer	*VertexBuffer;
 	constant_buffer *ConstantBuffer;
 
-	std::vector<vec3> VertexTriangles;
+	std::vector<vec3> CollisionModel;
 
 	vec3 Position;
 	vec3 Rotation;
@@ -39,6 +39,9 @@ class drawable
 	virtual ~drawable();
 
 	virtual void Draw() = 0;
+
+	// NOTE(Cristoffer): Override this if drawable child has a highlight color resource.
+	virtual void UpdateHighlightColorResource(vec3u Position, bool32 IsHighlighted){};
 
 	// NOTE(Cristoffer): Set up initial model properly for each drawable when created.
 	// This will be used as reference to be able to reset rotations etc.
@@ -52,7 +55,7 @@ class drawable
 
 	XMMATRIX &GetModel();
 
-	std::vector<vec3> &GetVertexTriangles();
+	std::vector<vec3> &GetCollisionModel();
 
 	// NOTE(Cristoffer): Needed for 16-byte alignments due to DirectX::XMMATRIX, when allocating to heap.
 

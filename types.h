@@ -18,17 +18,6 @@ typedef uint64_t uint64;
 typedef float  real32;
 typedef double real64;
 
-// NOTE(Cristoffer): This cannot be a strong type, because used for indexing.
-enum tile_type
-{
-	GRASS,
-	ROAD_Z,
-	ROAD_X,
-	CROSSROAD,
-	SIDEWALK,
-	WATER,
-};
-
 struct vec2
 {
 	real32 x, y;
@@ -133,6 +122,124 @@ struct vec3
 	friend vec3 operator*(const vec3 &lhs, const real32 &rhs)
 	{
 		vec3 Result;
+
+		Result.x = lhs.x * rhs;
+		Result.y = lhs.y * rhs;
+		Result.z = lhs.z * rhs;
+
+		return Result;
+	};
+};
+
+struct vec3u
+{
+	uint32 x, y, z;
+
+	vec3u()
+	{
+		x = 0;
+		y = 0;
+		z = 0;
+	}
+
+	vec3u(uint32 x, uint32 y, uint32 z)
+	{
+		this->x = x;
+		this->y = y;
+		this->z = z;
+	}
+
+	friend vec3u operator+(const vec3u &lhs, const vec3u &rhs)
+	{
+		vec3u Result;
+
+		Result.x = lhs.x + rhs.x;
+		Result.y = lhs.y + rhs.y;
+		Result.z = lhs.z + rhs.z;
+
+		return Result;
+	};
+
+	friend uint32 operator*(const vec3u &lhs, const vec3u &rhs)
+	{
+		uint32 Result = lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
+
+		return Result;
+	};
+
+	friend vec3u operator*(const uint32 &lhs, const vec3u &rhs)
+	{
+		vec3u Result;
+
+		Result.x = lhs * rhs.x;
+		Result.y = lhs * rhs.y;
+		Result.z = lhs * rhs.z;
+
+		return Result;
+	};
+
+	friend vec3u operator*(const vec3u &lhs, const uint32 &rhs)
+	{
+		vec3u Result;
+
+		Result.x = lhs.x * rhs;
+		Result.y = lhs.y * rhs;
+		Result.z = lhs.z * rhs;
+
+		return Result;
+	};
+};
+
+struct vec3i
+{
+	int32 x, y, z;
+
+	vec3i()
+	{
+		x = 0;
+		y = 0;
+		z = 0;
+	}
+
+	vec3i(int32 x, int32 y, int32 z)
+	{
+		this->x = x;
+		this->y = y;
+		this->z = z;
+	}
+
+	friend vec3i operator+(const vec3i &lhs, const vec3i &rhs)
+	{
+		vec3i Result;
+
+		Result.x = lhs.x + rhs.x;
+		Result.y = lhs.y + rhs.y;
+		Result.z = lhs.z + rhs.z;
+
+		return Result;
+	};
+
+	friend int32 operator*(const vec3i &lhs, const vec3i &rhs)
+	{
+		int32 Result = lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
+
+		return Result;
+	};
+
+	friend vec3i operator*(const int32 &lhs, const vec3i &rhs)
+	{
+		vec3i Result;
+
+		Result.x = lhs * rhs.x;
+		Result.y = lhs * rhs.y;
+		Result.z = lhs * rhs.z;
+
+		return Result;
+	};
+
+	friend vec3i operator*(const vec3i &lhs, const int32 &rhs)
+	{
+		vec3i Result;
 
 		Result.x = lhs.x * rhs;
 		Result.y = lhs.y * rhs;

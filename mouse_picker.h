@@ -17,7 +17,7 @@ class mouse_picker
 {
 	private:
 
-	uint32 CollisionIndex;
+	vec3 CollisionPosition;
 
 	public:
 
@@ -27,5 +27,5 @@ class mouse_picker
 	// NOTE(Cristoffer): Returns true if collision is found, stores the index in given container.
 	bool32 TestMouseCollision(XMMATRIX &Model, std::vector<vec3> &Vertices);
 
-	uint32 GetCollisionIndex();
+	vec3 GetCollisionPosition();
 };

@@ -1,28 +1,11 @@
 #include "world.h"
 
-world::world(int32 Width, int32 Height) :
-	Terrain(new terrain(Width, Height))
+world::world(uint32 WidthX, uint32 WidthZ) :
+	Terrain(new terrain(WidthX, WidthZ))
 {
-	this->Width = Width;
-	this->Height = Height;
+	render_queue::Push(Terrain, render_layer::Terrain);
 
-	render_queue::Push(Terrain, render_layer::World);
-
-	Tiles = new tile[Width * Height];
-
-	for(uint32 Index = 0;
-		Index < MAX_TILE_NAMES;
-		Index++)
-	{
-		TileName[Index];
-	}
-
-	TileName[tile_type::GRASS] = "Grass";
-	TileName[tile_type::ROAD_Z] = "Road in Z direction";
-	TileName[tile_type::ROAD_X] = "Road in X direction";
-	TileName[tile_type::CROSSROAD] = "Crossroad";
-	TileName[tile_type::SIDEWALK] = "Sidewalk";
-	TileName[tile_type::WATER] = "Water";
+	Tiles = new tile[WidthX * WidthZ];
 }
 
 world::~world()
@@ -30,40 +13,88 @@ world::~world()
 	delete[] Tiles;
 }
 
-void world::SetTile(int32 X, int32 Y, tile_type Type)
+void world::SetTile(vec3u Position, tile_type Type)
 {
-	int32 Pitch = Width * Y;
+	uint32 Pitch = Terrain->GetWidthX() * Position.z;
 
-	Tiles[Pitch + X].Type = Type;
+	Tiles[Pitch + Position.x].Type = Type;
 
-	Terrain->UpdateTileTypeResource(Width, X, Y, Type);
+	Terrain->UpdateTileTypeResource(Position, Type);
 }
 
-void world::SetTileHighlighted(int32 X, int32 Y, bool SetHighlighted)
+void world::SetTileHighlighted(vec3u Position, bool32 Set)
 {
-	Terrain->UpdateTileHighlighResource(Width, X, Y, SetHighlighted);
+	Terrain->UpdateHighlightColorResource(Position, Set);
 }
 
-int32 world::GetWidth() const
+uint32 world::GetWidthX() const
 {
-	return Width;
+	return Terrain->GetWidthX();
 }
 
-int32 world::GetHeight() const
+uint32 world::GetWidthZ() const
 {
-	return Height;
+	return Terrain->GetWidthZ();
 }
 
-std::string &world::GetTileName(int32 X, int32 Y)
+uint32 world::GetTileID(vec3u Position)
 {
-	tile &Tile = GetTile(X, Y);
+	tile &Tile = GetTile(Position);
 
-	return TileName[Tile.Type];
+	uint32 ID = 0;
+
+	switch(Tile.Type)
+	{
+		case	tile_type::GRASS:		ID = 0; break;
+		case	tile_type::ROAD_Z:		ID = 1; break;
+		case	tile_type::ROAD_X:		ID = 2; break;
+		case	tile_type::CROSSROAD:	ID = 3; break;
+		case	tile_type::SIDEWALK:	ID = 4; break;
+		case	tile_type::WATER:		ID = 5; break;
+	}
+
+	return ID;
 }
 
-tile &world::GetTile(int32 X, int32 Y)
+tile_type world::GetTileType(uint32 ID)
 {
-	int32 Pitch = Width * Y;
+	tile_type Type = tile_type::GRASS;
 
-	return Tiles[Pitch + X];
+	switch(ID)
+	{
+		case	0:		Type = tile_type::GRASS; break;
+		case	1:		Type = tile_type::ROAD_Z; break;
+		case	2:		Type = tile_type::ROAD_X; break;
+		case	3:		Type = tile_type::CROSSROAD; break;
+		case	4:		Type = tile_type::SIDEWALK; break;
+		case	5:		Type = tile_type::WATER; break;
+	}
+
+	return Type;
+}
+
+std::string world::GetTileDescription(vec3u Position)
+{
+	tile &Tile = GetTile(Position);
+
+	std::string Description = "NULL";
+
+	switch(Tile.Type)
+	{
+		case	tile_type::GRASS:		Description = "Grass."; break;
+		case	tile_type::ROAD_Z:		Description = "Road in north-south direction."; break;
+		case	tile_type::ROAD_X:		Description = "Road in east-west direction."; break;
+		case	tile_type::CROSSROAD:	Description = "Crossroad."; break;
+		case	tile_type::SIDEWALK:	Description = "Sidewalk."; break;
+		case	tile_type::WATER:		Description = "Water."; break;
+	}
+
+	return Description;
+}
+
+tile &world::GetTile(vec3u Position)
+{
+	uint32 Pitch = Terrain->GetWidthX() * Position.z;
+
+	return Tiles[Pitch + Position.x];
 }

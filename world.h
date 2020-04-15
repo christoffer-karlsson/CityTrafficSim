@@ -18,27 +18,21 @@ class world
 {
 	private:
 
-	int32 Width;
-	int32 Height;
-	const real32 Size = 1.0f;
-
-	std::string TileName[MAX_TILE_NAMES];
-
-	tile *Tiles;
+	terrain *Terrain;
+	tile	*Tiles;
 
 	public:
 
-	// TODO(Cristoffer): temp public because mouse_picker lives in a wierd place right now.
-	terrain *Terrain;
-
-	world(int32 Width, int32 Height);
+	world(uint32 Width, uint32 Height);
 	~world();
 
-	void SetTile(int32 PositionX, int32 PositionY, tile_type Type);
-	void SetTileHighlighted(int32 PositionX, int32 PositionY, bool SetHighlighted);
+	void SetTile(vec3u Position, tile_type Type);
+	void SetTileHighlighted(vec3u Position, bool32 Set);
 
-	int32 GetWidth() const;
-	int32 GetHeight() const;
-	std::string &GetTileName(int32 PositionX, int32 PositionY);
-	tile &GetTile(int32 PositionX, int32 PositionY);
+	uint32 GetWidthX() const;
+	uint32 GetWidthZ() const;
+	uint32 GetTileID(vec3u Position);
+	tile_type GetTileType(uint32 ID);
+	std::string GetTileDescription(vec3u Position);
+	tile &GetTile(vec3u Position);
 };
