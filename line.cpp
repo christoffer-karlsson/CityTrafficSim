@@ -23,20 +23,18 @@ line::line(real32 PositionX1, real32 PositionY1, real32 PositionZ1, real32 Posit
 		{PositionX2,PositionY2,PositionZ2},
 	};
 
-	Shader = new shader(L"line_vs.cso", L"line_ps.cso");
+	/*Shader = new shader(L"line_vs.cso", L"line_ps.cso");
 	Shader->AddInputElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
-	Shader->CommitInputElements();
-
-	Texture = nullptr;
+	Shader->CommitInputElements();*/
 
 	VertexBuffer = new vertex_buffer(Vertices.data(), (uint32)sizeof(vertex), (uint32)Vertices.size(), accessibility::Static);
 
-	ConstantBuffer = new constant_buffer(&VS_Input, sizeof(VS_Input));
+	ConstantBuffer[0] = new constant_buffer(&VS_Input, sizeof(VS_Input));
 }
 
 void line::Draw()
 {
-	struct cb
+	/*struct cb
 	{
 		XMMATRIX MVP;
 
@@ -46,8 +44,8 @@ void line::Draw()
 
 	VertexBuffer->Bind();
 	Shader->Bind();
-	ConstantBuffer->Bind();
-	ConstantBuffer->Update(&VS_Input);
+	ConstantBuffer[0]->Bind();
+	ConstantBuffer[0]->Update(&VS_Input);
 
-	direct3d::GetContext()->Draw(VertexBuffer->GetVertexCount(), 0);
+	direct3d::GetContext()->Draw(VertexBuffer->GetVertexCount(), 0);*/
 }

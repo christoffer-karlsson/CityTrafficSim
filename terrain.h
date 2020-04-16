@@ -12,29 +12,21 @@ enum class tile_type
 	CROSSROAD,
 	SIDEWALK,
 	WATER,
-};
-
-struct cbuffer_input
-{
-	XMMATRIX MVP;
-	XMMATRIX Model;
-	XMFLOAT4 AmbientLight;
-	XMFLOAT3 LightPosition;
-};
-
-struct terrain_vertex
-{
-	vec3	Position;
-	vec3	Normal;
-	vec2	TextureUVCoordinate;
-	vec4	HighlightColor;
+	GROUND,
+	BUILDING
 };
 
 class terrain : public drawable
 {
 	private:
 
-	std::vector<terrain_vertex> Vertices;
+	struct cbuffer_input
+	{
+		XMMATRIX MVP;
+		XMMATRIX Model;
+	};
+
+	std::vector<vertex> Vertices;
 	std::vector<uint32> Indices;
 
 	uint64 WidthX;
@@ -56,5 +48,5 @@ class terrain : public drawable
 	uint32 GetWidthX();
 	uint32 GetWidthZ();
 
-	std::vector<terrain_vertex> &GetVertexData();
+	std::vector<vertex> &GetVertexData();
 };

@@ -4,17 +4,15 @@
 #include "persistence.h"
 #include "light_source.h"
 
-struct vertex
-{
-	vec3 Position;
-	vec4 Color;
-	vec3 Normal;
-	vec4 HighlightColor;
-};
-
 class object : public drawable
 {
 	private:
+
+	struct cbuffer_input
+	{
+		XMMATRIX MVP;
+		XMMATRIX Model;
+	};
 
 	obj_file *Asset;
 

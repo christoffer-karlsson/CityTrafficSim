@@ -3,6 +3,11 @@
 #include "common.h"
 #include "direct3d.h"
 
+enum class shader_set_type
+{
+	SetVertexShader, SetPixelShader
+};
+
 class constant_buffer
 {
 	private:
@@ -18,5 +23,5 @@ class constant_buffer
 
 	void Update(void *ShaderInput);
 
-	void Bind();
+	void Bind(uint32 Slot, shader_set_type ShaderType);
 };

@@ -105,17 +105,48 @@ user_interface::user_interface() :
 		Indices.push_back(2 + (Index * 4));
 	}
 
-	Shader = new shader(L"user_interface_vs.cso", L"user_interface_ps.cso");
-	Shader->AddInputElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
-	Shader->AddInputElement("COLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
-	Shader->AddInputElement("ISHIGHLIGHTED", DXGI_FORMAT_R32_FLOAT);
-	Shader->CommitInputElements();
+	VertexShader = new vertex_shader(L"user_interface_vs.cso");
+	VertexShader->AddInputElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
+	VertexShader->AddInputElement("COLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
+	VertexShader->AddInputElement("ISHIGHLIGHTED", DXGI_FORMAT_R32_FLOAT);
+	VertexShader->CommitInputElements();
+
+	PixelShader = new pixel_shader(L"user_interface_ps.cso");
 
 	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(ui_vertex), (uint32)Vertices.size(), accessibility::Dynamic);
 	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint32), (uint32)Indices.size());
+}
 
-	ConstantBuffer = nullptr;
-	Texture = nullptr;
+void user_interface::Draw()
+{
+	// NOTE(Cristoffer): Wait for thread to finish before drawing.
+	thread_pool.WaitThread(ThreadWorkID);
+
+	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(ui_vertex), (uint32)Vertices.size());
+
+	VertexBuffer->Bind();
+	VertexShader->Bind();
+	PixelShader->Bind();
+
+	direct3d::GetContext()->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
+
+	// TODO(Cristoffer): Does this need device context in order to do alpha?
+	//DXTKSpriteBatch->Begin(SpriteSortMode_Deferred, direct3d::GetAlphaBlendState());
+
+	DXTKSpriteBatch->Begin();
+
+	for(uint32 ID = 0; ID < ElementCount; ID++)
+	{
+		XMVECTOR Color = XMVectorSet(
+			Element[ID]->TextColor.x,
+			Element[ID]->TextColor.y,
+			Element[ID]->TextColor.z,
+			Element[ID]->TextColor.w);
+
+		DXTKSpriteFont->DrawString(DXTKSpriteBatch.get(), Element[ID]->MegaString.c_str(), XMFLOAT2(Element[ID]->TextPositionX, Element[ID]->TextPositionY), Color);
+	}
+
+	DXTKSpriteBatch->End();
 }
 
 user_interface::~user_interface()
@@ -654,35 +685,4 @@ void user_interface::BuildElements()
 		CalculateTextPositions();
 		CalculateVertices();
 	}
-}
-
-void user_interface::Draw()
-{
-	// NOTE(Cristoffer): Wait for thread to finish before drawing.
-	thread_pool.WaitThread(ThreadWorkID);
-
-	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(ui_vertex), (uint32)Vertices.size());
-
-	VertexBuffer->Bind();
-	Shader->Bind();
-
-	direct3d::GetContext()->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
-
-	// TODO(Cristoffer): Does this need device context in order to do alpha?
-	//DXTKSpriteBatch->Begin(SpriteSortMode_Deferred, direct3d::GetAlphaBlendState());
-
-	DXTKSpriteBatch->Begin();
-
-	for(uint32 ID = 0; ID < ElementCount; ID++)
-	{
-		XMVECTOR Color = XMVectorSet(
-			Element[ID]->TextColor.x, 
-			Element[ID]->TextColor.y, 
-			Element[ID]->TextColor.z, 
-			Element[ID]->TextColor.w);
-
-		DXTKSpriteFont->DrawString(DXTKSpriteBatch.get(), Element[ID]->MegaString.c_str(), XMFLOAT2(Element[ID]->TextPositionX, Element[ID]->TextPositionY), Color);
-	}
-
-	DXTKSpriteBatch->End();
 }

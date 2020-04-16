@@ -78,9 +78,6 @@
     <ClCompile Include="texture.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="shader.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="constant_buffer.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
@@ -89,9 +86,6 @@
     </ClCompile>
     <ClCompile Include="camera.cpp">
       <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="building.cpp">
-      <Filter>Source Files\graphics\drawables</Filter>
     </ClCompile>
     <ClCompile Include="world.cpp">
       <Filter>Source Files</Filter>
@@ -147,6 +141,15 @@
     <ClCompile Include="drawable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="buildings.cpp">
+      <Filter>Source Files\graphics\drawables</Filter>
+    </ClCompile>
+    <ClCompile Include="vertex_shader.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="pixel_shader.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -185,9 +188,6 @@
     <ClInclude Include="texture.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="shader.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="constant_buffer.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
@@ -196,9 +196,6 @@
     </ClInclude>
     <ClInclude Include="camera.h">
       <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="building.h">
-      <Filter>Header Files\graphics\drawables</Filter>
     </ClInclude>
     <ClInclude Include="world.h">
       <Filter>Header Files</Filter>
@@ -265,6 +262,15 @@
     </ClInclude>
     <ClInclude Include="drawable.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="buildings.h">
+      <Filter>Header Files\graphics\drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="vertex_shader.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="pixel_shader.h">
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -32,9 +32,17 @@ void constant_buffer::Update(void *ShaderInput)
 	direct3d::GetContext()->Unmap(ConstantBuffer, 0);
 }
 
-void constant_buffer::Bind()
+void constant_buffer::Bind(uint32 Slot, shader_set_type ShaderType)
 {
-	direct3d::GetContext()->VSSetConstantBuffers(0, 1, &ConstantBuffer);
+	if(ShaderType == shader_set_type::SetVertexShader)
+	{
+		direct3d::GetContext()->VSSetConstantBuffers(Slot, 1, &ConstantBuffer);
+	}
+
+	if(ShaderType == shader_set_type::SetPixelShader)
+	{
+		direct3d::GetContext()->PSSetConstantBuffers(Slot, 1, &ConstantBuffer);
+	}
 }
 
 constant_buffer::~constant_buffer()

@@ -10,15 +10,6 @@ object::object(obj_file *Asset, vec3 Position, vec3 Scale, vec3 Rotation, vec4 C
 
 	SetInitialModel(Position, Scale, Rotation);
 
-	struct cb
-	{
-		XMMATRIX MVP;
-		XMMATRIX Model;
-		XMFLOAT4 AmbientLight;
-		XMFLOAT3 LightPosition;
-
-	} VS_Input;
-
 	// NOTE(Cristoffer): Store vertex data.
 	for(auto Vert : Asset->Vertices)
 	{
@@ -53,45 +44,45 @@ object::object(obj_file *Asset, vec3 Position, vec3 Scale, vec3 Rotation, vec4 C
 		Indices.push_back(Indicies.Position);
 	}
 
-	Shader = new shader(L"vehicle_vs.cso", L"vehicle_ps.cso");
-	Shader->AddInputElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
-	Shader->AddInputElement("COLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
-	Shader->AddInputElement("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
-	Shader->AddInputElement("HIGHLIGHTCOLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
-	Shader->CommitInputElements();
+	VertexShader = new vertex_shader(L"vehicle_vs.cso");
+	VertexShader->AddInputElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
+	VertexShader->AddInputElement("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
+	VertexShader->AddInputElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
+	VertexShader->AddInputElement("COLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
+	VertexShader->AddInputElement("HIGHLIGHTCOLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
+	VertexShader->CommitInputElements();
 
-	Texture = nullptr;
+	PixelShader = new pixel_shader(L"vehicle_ps.cso");
 
 	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), (uint32)Vertices.size(), accessibility::Dynamic);
 	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint32), (uint32)Indices.size());
 
-	ConstantBuffer = new constant_buffer(&VS_Input, sizeof(cb));
+	cbuffer_input VertexShaderInput;
+	ConstantBuffer[0] = new constant_buffer(&VertexShaderInput, sizeof(VertexShaderInput));
+
+	cbuffer_light PixelShaderInput;
+	ConstantBuffer[1] = new constant_buffer(&PixelShaderInput, sizeof(PixelShaderInput));
 }
 
 void object::Draw()
 {
-	struct cb
-	{
-		XMMATRIX MVP;
-		XMMATRIX Model;
-		XMFLOAT4 AmbientLight;
-		XMFLOAT3 LightPosition;
+	cbuffer_input VertexShaderInput;
 
-	} VS_Input;
+	VertexShaderInput.MVP = XMMatrixTranspose(Model * XMMATRIX(camera::GetViewMatrix()) * XMMATRIX(camera::GetProjectionMatrix()));
+	VertexShaderInput.Model = XMMatrixTranspose(Model);
 
-	VS_Input.MVP = XMMatrixTranspose(Model * XMMATRIX(camera::GetViewMatrix()) * XMMATRIX(camera::GetProjectionMatrix()));
-	VS_Input.Model = XMMatrixTranspose(Model);
-	VS_Input.AmbientLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	//VS_Input.LightPosition = XMFLOAT3(Camera.GetPositionX(), Camera.GetPositionY(), Camera.GetPositionZ());
-	VS_Input.LightPosition = XMFLOAT3(light_source::Position.x, 
-									  light_source::Position.y, 
-									  light_source::Position.z);
+	cbuffer_light &PixelShaderInput = light_source::GetConstantBuffer();
 
-	//Texture->Bind();
 	VertexBuffer->Bind();
-	Shader->Bind();
-	ConstantBuffer->Bind();
-	ConstantBuffer->Update(&VS_Input);
+	VertexShader->Bind();
+
+	VertexShader->Bind();
+	ConstantBuffer[0]->Bind(0, shader_set_type::SetVertexShader);
+	PixelShader->Bind();
+	ConstantBuffer[1]->Bind(0, shader_set_type::SetPixelShader);
+
+	ConstantBuffer[0]->Update(&VertexShaderInput);
+	ConstantBuffer[1]->Update(&PixelShaderInput);
 
 	direct3d::GetContext()->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
 }

@@ -27,7 +27,7 @@ terrain::terrain(uint64 WidthX, uint64 WidthZ) :
 
 			texture_coordinates UV = Texture->GetUVFromSliceCoordinates(0, 0);
 
-			terrain_vertex Vertex[6];
+			vertex Vertex[6];
 
 			Vertex[0].Position = vec3((real32)X - 0.5f, 0.0f, (real32)Z - 0.5f); // 0
 			Vertex[1].Position = vec3((real32)X - 0.5f, 0.0f, (real32)Z + 0.5f); // 1
@@ -43,6 +43,13 @@ terrain::terrain(uint64 WidthX, uint64 WidthZ) :
 			Vertex[3].Normal = vec3(0.0f, 1.0f, 0.0f); // 1
 			Vertex[4].Normal = vec3(0.0f, 1.0f, 0.0f); // 3
 			Vertex[5].Normal = vec3(0.0f, 1.0f, 0.0f); // 2
+
+			Vertex[0].Color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // 0
+			Vertex[1].Color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // 1
+			Vertex[2].Color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // 2
+			Vertex[3].Color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // 1
+			Vertex[4].Color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // 3
+			Vertex[5].Color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // 2
 
 			Vertex[0].TextureUVCoordinate = UV.BottomLeft;	// 0
 			Vertex[1].TextureUVCoordinate = UV.TopLeft;		// 1
@@ -74,18 +81,23 @@ terrain::terrain(uint64 WidthX, uint64 WidthZ) :
 		Indices.push_back(Index);
 	}
 
-	Shader = new shader(L"terrain_vs.cso", L"terrain_ps.cso");
-	Shader->AddInputElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
-	Shader->AddInputElement("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
-	Shader->AddInputElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
-	Shader->AddInputElement("HIGHLIGHTCOLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
-	Shader->CommitInputElements();
+	VertexShader = new vertex_shader(L"terrain_vs.cso");
+	VertexShader->AddInputElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
+	VertexShader->AddInputElement("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
+	VertexShader->AddInputElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
+	VertexShader->AddInputElement("COLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
+	VertexShader->AddInputElement("HIGHLIGHTCOLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
+	VertexShader->CommitInputElements();
 
-	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(terrain_vertex), (uint32)Vertices.size(), accessibility::Dynamic);
+	PixelShader = new pixel_shader(L"terrain_ps.cso");
+
+	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), (uint32)Vertices.size(), accessibility::Dynamic);
 	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint32), (uint32)Indices.size());
 
 	cbuffer_input VertexShaderInput;
-	ConstantBuffer = new constant_buffer(&VertexShaderInput, sizeof(VertexShaderInput));
+	ConstantBuffer[0] = new constant_buffer(&VertexShaderInput, sizeof(VertexShaderInput));
+	cbuffer_light LightBuffer;
+	ConstantBuffer[1] = new constant_buffer(&LightBuffer, sizeof(LightBuffer));
 }
 
 void terrain::Draw()
@@ -95,20 +107,21 @@ void terrain::Draw()
 	VertexShaderInput.MVP = XMMatrixTranspose(Model * 
 											  XMMATRIX(camera::GetViewMatrix()) * 
 											  XMMATRIX(camera::GetProjectionMatrix()));
-	VertexShaderInput.AmbientLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	VertexShaderInput.LightPosition = XMFLOAT3(light_source::Position.x, 
-											   light_source::Position.y, 
-											   light_source::Position.z);
 
-	// TODO(Cristoffer): Is it bad to update the dynamic buffer before drawing?
-	// Should it be done earlier?
-	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(terrain_vertex), (uint32)Vertices.size());
+	cbuffer_light &PixelShaderInput = light_source::GetConstantBuffer();
+
+	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(vertex), (uint32)Vertices.size());
 
 	Texture->Bind();
 	VertexBuffer->Bind();
-	Shader->Bind();
-	ConstantBuffer->Bind();
-	ConstantBuffer->Update(&VertexShaderInput);
+
+	VertexShader->Bind();
+	ConstantBuffer[0]->Bind(0, shader_set_type::SetVertexShader);
+	PixelShader->Bind();
+	ConstantBuffer[1]->Bind(0, shader_set_type::SetPixelShader);
+
+	ConstantBuffer[0]->Update(&VertexShaderInput);
+	ConstantBuffer[1]->Update(&PixelShaderInput);
 
 	direct3d::GetContext()->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
 }
@@ -173,9 +186,12 @@ texture_coordinates terrain::GetTextureCoordinateFromTileType(tile_type Type)
 	switch(Type)
 	{
 		case tile_type::GRASS:		Result = Texture->GetUVFromSliceCoordinates(0, 0); break;
-		case tile_type::ROAD_Z:		Result = Texture->GetUVFromSliceCoordinates(2, 0); break;
-		case tile_type::ROAD_X:		Result = Texture->GetUVFromSliceCoordinates(1, 0); break;
+		case tile_type::ROAD_Z:		Result = Texture->GetUVFromSliceCoordinates(1, 0); break;
+		case tile_type::ROAD_X:		Result = Texture->GetUVFromSliceCoordinates(2, 0); break;
 		case tile_type::CROSSROAD:	Result = Texture->GetUVFromSliceCoordinates(3, 0); break;
+		case tile_type::GROUND:		Result = Texture->GetUVFromSliceCoordinates(4, 0); break;
+		case tile_type::WATER:		Result = Texture->GetUVFromSliceCoordinates(5, 0); break;
+		case tile_type::BUILDING:	Result = Texture->GetUVFromSliceCoordinates(0, 9); break;
 
 		default: Result = Texture->GetUVFromSliceCoordinates(0, 0); break;
 	}
@@ -183,7 +199,7 @@ texture_coordinates terrain::GetTextureCoordinateFromTileType(tile_type Type)
 	return Result;
 }
 
-std::vector<terrain_vertex> &terrain::GetVertexData()
+std::vector<vertex> &terrain::GetVertexData()
 {
 	return Vertices;
 }

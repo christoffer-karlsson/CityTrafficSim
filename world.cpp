@@ -51,6 +51,8 @@ uint32 world::GetTileID(vec3u Position)
 		case	tile_type::CROSSROAD:	ID = 3; break;
 		case	tile_type::SIDEWALK:	ID = 4; break;
 		case	tile_type::WATER:		ID = 5; break;
+		case	tile_type::GROUND:		ID = 6; break;
+		case	tile_type::BUILDING:	ID = 7; break;
 	}
 
 	return ID;
@@ -68,6 +70,8 @@ tile_type world::GetTileType(uint32 ID)
 		case	3:		Type = tile_type::CROSSROAD; break;
 		case	4:		Type = tile_type::SIDEWALK; break;
 		case	5:		Type = tile_type::WATER; break;
+		case	6:		Type = tile_type::GROUND; break;
+		case	7:		Type = tile_type::BUILDING; break;
 	}
 
 	return Type;
@@ -87,6 +91,8 @@ std::string world::GetTileDescription(vec3u Position)
 		case	tile_type::CROSSROAD:	Description = "Crossroad."; break;
 		case	tile_type::SIDEWALK:	Description = "Sidewalk."; break;
 		case	tile_type::WATER:		Description = "Water."; break;
+		case	tile_type::GROUND:		Description = "Ground."; break;
+		case	tile_type::BUILDING:	Description = "Building."; break;
 	}
 
 	return Description;

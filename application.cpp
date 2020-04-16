@@ -17,7 +17,7 @@ void application::Run()
 	render_manager::Init();
 	asset_manager::Init();
 	system_message::Init();
-	light_source::Init();
+	light_source::Init(vec3(100.0f, 200.0f, 100.0f));
 	
 
 
@@ -163,43 +163,91 @@ void application::Run()
 			if(MouseClicked(MOUSE_BUTTON_LEFT))
 			{
 				entity_manager::CreateEntity(application_state::GetMouseCoordinateInWorld(), entity_type::Car);
-
-				/*World->SetTile(MousePosition, tile_type::ROAD_Z);
-
-				SystemMessage("Placed Z road tile at: " + 
-					std::to_string(MousePosition.x) + ", " + 
-					std::to_string(MousePosition.y) + ", " +
-					std::to_string(MousePosition.z) + ".");*/
 			}
 
 			if(MouseClicked(MOUSE_BUTTON_RIGHT))
 			{
-				World->SetTile(MousePosition, tile_type::ROAD_X);
-
-				SystemMessage("Placed X road tile at: " +
-					std::to_string(MousePosition.x) + ", " +
-					std::to_string(MousePosition.y) + ", " +
-					std::to_string(MousePosition.z) + ".");
+				
 			}
 
 			if(MouseClicked(MOUSE_BUTTON_MIDDLE))
 			{
-				World->SetTile(MousePosition, tile_type::CROSSROAD);
-
-				SystemMessage("Placed crossroad tile at: " +
-					std::to_string(MousePosition.x) + ", " +
-					std::to_string(MousePosition.y) + ", " +
-					std::to_string(MousePosition.z) + ".");
+				
 			}
 
 			if(KeyReleased(KEY_DELETE))
 			{
 				World->SetTile(MousePosition, tile_type::GRASS);
 
-				SystemMessage("Tile deleted at: " +
+				SystemMessage("Tile deleted at " +
 					std::to_string(MousePosition.x) + ", " +
 					std::to_string(MousePosition.y) + ", " +
 					std::to_string(MousePosition.z) + ".");
+			}
+
+			if(KeyReleased(KEY_1))
+			{
+				World->SetTile(MousePosition, tile_type::ROAD_Z);
+
+				SystemMessage("Placed north-south road tile at " +
+					std::to_string(MousePosition.x) + ", " +
+					std::to_string(MousePosition.y) + ", " +
+					std::to_string(MousePosition.z) + ".");
+			}
+
+			if(KeyReleased(KEY_2))
+			{
+				World->SetTile(MousePosition, tile_type::ROAD_X);
+
+				SystemMessage("Placed east-west road tile at " +
+					std::to_string(MousePosition.x) + ", " +
+					std::to_string(MousePosition.y) + ", " +
+					std::to_string(MousePosition.z) + ".");
+			}
+
+			if(KeyReleased(KEY_3))
+			{
+				World->SetTile(MousePosition, tile_type::CROSSROAD);
+
+				SystemMessage("Placed crossroad tile at " +
+					std::to_string(MousePosition.x) + ", " +
+					std::to_string(MousePosition.y) + ", " +
+					std::to_string(MousePosition.z) + ".");
+			}
+
+			if(KeyReleased(KEY_4))
+			{
+				World->SetTile(MousePosition, tile_type::GROUND);
+
+				SystemMessage("Placed ground tile at " +
+					std::to_string(MousePosition.x) + ", " +
+					std::to_string(MousePosition.y) + ", " +
+					std::to_string(MousePosition.z) + ".");
+			}
+
+			if(KeyReleased(KEY_5))
+			{
+				World->SetTile(MousePosition, tile_type::WATER);
+
+				SystemMessage("Placed water tile at " +
+					std::to_string(MousePosition.x) + ", " +
+					std::to_string(MousePosition.y) + ", " +
+					std::to_string(MousePosition.z) + ".");
+			}
+
+			if(KeyReleased(KEY_6))
+			{
+				World->SetTile(MousePosition, tile_type::BUILDING);
+
+				SystemMessage("Placed building tile at " +
+					std::to_string(MousePosition.x) + ", " +
+					std::to_string(MousePosition.y) + ", " +
+					std::to_string(MousePosition.z) + ".");
+			}
+
+			if(KeyReleased(KEY_7))
+			{
+
 			}
 		}
 
@@ -245,48 +293,39 @@ void application::Run()
 
 		if(KeyReleased(KEY_ARROWRIGHT))
 		{
-			PosX += 1.0f;
-			light_source::Position.x += +1.0f;
+			//PosX += 1.0f;
+			//light_source::Position.x += +1.0f;
 			//Object.SetPosition({ PosX, PosY, PosZ });
 		}
 		if(KeyReleased(KEY_ARROWLEFT))
 		{
-			PosX -= 1.0f;
-			light_source::Position.x += -1.0f;
+			//PosX -= 1.0f;
+			//light_source::SetPosition.x += -1.0f;
 			//Object.SetPosition({ PosX, PosY, PosZ });
 		}
 		if(KeyReleased(KEY_ARROWDOWN))
 		{
-			PosZ -= 1.0f;
-			light_source::Position.z += +1.0f;
+			//PosZ -= 1.0f;
+			//light_source::Position.z += +1.0f;
 			//Object.SetPosition({ PosX, PosY, PosZ });
 		}
 		if(KeyReleased(KEY_ARROWUP))
 		{
-			PosZ += 1.0f;
-			light_source::Position.z += +1.0f;
+			//PosZ += 1.0f;
+			//light_source::Position.z += +1.0f;
 			//Object.SetPosition({ PosX, PosY, PosZ });
 		}
 		if(GetMouseScrollUp())
 		{
-			Angle += 1.0f;
-			light_source::Position.y += +1.0f;
+			//Angle += 1.0f;
+			//light_source::Position.y += +1.0f;
 			//Object.SetRotation({ 0.0f, Angle, 0.0f });
 		}
 		if(GetMouseScrollDown())
 		{
-			Angle -= 1.0f;
-			light_source::Position.y += -1.0f;
+			//Angle -= 1.0f;
+			//light_source::Position.y += -1.0f;
 			//Object.SetRotation({ 0.0f, Angle, 0.0f });
-		}
-
-		if(KeyReleased(KEY_1))
-		{
-			entity_manager::CreateEntity({1.0f, 1.0f, 1.0f}, entity_type::Vehicle);
-		}
-		if(KeyReleased(KEY_2))
-		{
-			
 		}
 
 		UI->UpdateText(SystemInfoElement, T1, ("Frame Per Second: " + 
@@ -300,10 +339,12 @@ void application::Run()
 												std::to_string(camera::GetPositionY()) + ", " +
 												std::to_string(camera::GetPositionZ())));
 
+		vec3 LightPosition = light_source::GetPosition();
+
 		UI->UpdateText(SystemInfoElement, T4, ("Light Source Position: " +
-			std::to_string(light_source::Position.x) + ", " +
-			std::to_string(light_source::Position.y) + ", " +
-			std::to_string(light_source::Position.z)));
+			std::to_string(LightPosition.x) + ", " +
+			std::to_string(LightPosition.y) + ", " +
+			std::to_string(LightPosition.z)));
 
 		UI->UpdateText(SystemInfoElement, T5, ("Entity Count: " +
 			std::to_string(logger::GetUINT(logger::ref::EntityCount))));

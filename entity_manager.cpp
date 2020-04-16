@@ -83,6 +83,8 @@ void entity_manager::Simulate()
 			{
 				// NOTE(Cristoffer): If entity is flagged to get destroyed, add it to the vector.
 				EntityReleaseID.push_back(Entity[Index].get()->GetID());
+
+				continue;
 			}
 
 			if(Entity[Index].get()->GetSimulated())

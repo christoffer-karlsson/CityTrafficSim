@@ -152,7 +152,7 @@
     <ClCompile Include="application_state.cpp" />
     <ClCompile Include="asset_manager.cpp" />
     <ClCompile Include="camera.cpp" />
-    <ClCompile Include="building.cpp" />
+    <ClCompile Include="buildings.cpp" />
     <ClCompile Include="direct3d.cpp" />
     <ClCompile Include="constant_buffer.cpp" />
     <ClCompile Include="diagnostics.cpp" />
@@ -163,12 +163,13 @@
     <ClCompile Include="light_source.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="persistence.cpp" />
+    <ClCompile Include="pixel_shader.cpp" />
     <ClCompile Include="render_manager.cpp" />
     <ClCompile Include="system_message.cpp" />
     <ClCompile Include="terrain.cpp" />
     <ClCompile Include="line.cpp" />
     <ClCompile Include="mouse_picker.cpp" />
-    <ClCompile Include="shader.cpp" />
+    <ClCompile Include="vertex_shader.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="threading.cpp" />
     <ClCompile Include="user_interface.cpp" />
@@ -189,7 +190,7 @@
     <ClInclude Include="asset_manager.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="common.h" />
-    <ClInclude Include="building.h" />
+    <ClInclude Include="buildings.h" />
     <ClInclude Include="direct3d.h" />
     <ClInclude Include="constant_buffer.h" />
     <ClInclude Include="diagnostics.h" />
@@ -202,12 +203,13 @@
     <ClInclude Include="math.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="persistence.h" />
+    <ClInclude Include="pixel_shader.h" />
     <ClInclude Include="render_manager.h" />
     <ClInclude Include="system_message.h" />
     <ClInclude Include="terrain.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="mouse_picker.h" />
-    <ClInclude Include="shader.h" />
+    <ClInclude Include="vertex_shader.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="threading.h" />
     <ClInclude Include="types.h" />

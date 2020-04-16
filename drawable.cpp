@@ -5,15 +5,23 @@ drawable::drawable()
 	Model = XMMatrixIdentity();
 	InitialModel = XMMatrixIdentity();
 	Texture = nullptr;
-	Shader = nullptr;
+	VertexShader = nullptr;
+	PixelShader = nullptr;
 	VertexBuffer = nullptr;
-	ConstantBuffer = nullptr;
+
+	for(uint32 Index = 0;
+		Index < MAX_CONSTANT_BUFFERS;
+		Index++)
+	{
+		ConstantBuffer[Index] = nullptr;
+	}
 }
 
 drawable::~drawable()
 {
 	delete Texture;
-	delete Shader;
+	delete VertexShader;
+	delete PixelShader;
 	delete VertexBuffer;
 	delete ConstantBuffer;
 }

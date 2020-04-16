@@ -6,11 +6,31 @@
 #include "math.h"
 #include "texture.h"
 #include "vertex_buffer.h"
-#include "shader.h"
+#include "vertex_shader.h"
+#include "pixel_shader.h"
 #include "constant_buffer.h"
 
 #include <memory>
 #include <vector>
+
+#define MAX_CONSTANT_BUFFERS 10
+
+struct vertex
+{
+	vec3 Position;
+	vec3 Normal;
+	vec2 TextureUVCoordinate;
+	vec4 Color;
+	vec4 HighlightColor;
+
+	vertex()
+	{
+		// NOTE(Cristoffer): Defaults so that drawables that don't use
+		// them don't need to define them.
+		HighlightColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		TextureUVCoordinate = vec2(0.0f, 0.0f);
+	}
+};
 
 class drawable
 {
@@ -23,9 +43,10 @@ class drawable
 	XMMATRIX Model;
 
 	texture			*Texture;
-	shader			*Shader;
+	vertex_shader	*VertexShader;
+	pixel_shader	*PixelShader;
 	vertex_buffer	*VertexBuffer;
-	constant_buffer *ConstantBuffer;
+	constant_buffer *ConstantBuffer[MAX_CONSTANT_BUFFERS];
 
 	std::vector<vec3> CollisionModel;
 

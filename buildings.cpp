@@ -1,6 +1,6 @@
-#include "building.h"
+#include "buildings.h"
 
-building::building(real32 PosX, real32 PosY, real32 PosZ, real32 SizeX, real32 SizeY, real32 SizeZ)
+buildings::buildings(real32 PosX, real32 PosY, real32 PosZ, real32 SizeX, real32 SizeY, real32 SizeZ)
 {
 	//SetModelPosition(PosX, PosY, PosZ);
 
@@ -74,23 +74,23 @@ building::building(real32 PosX, real32 PosY, real32 PosZ, real32 SizeX, real32 S
 		20, 21, 22, 21, 23, 22,		// Mesh 6
 	};
 
-	Shader = new shader(L"cube_vs.cso", L"cube_ps.cso");
+	/*Shader = new shader(L"cube_vs.cso", L"cube_ps.cso");
 	Shader->AddInputElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
 	Shader->AddInputElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
 	Shader->AddInputElement("AMBLIGHT", DXGI_FORMAT_R32G32B32A32_FLOAT);
-	Shader->CommitInputElements();
+	Shader->CommitInputElements();*/
 
 	Texture = new texture(L"data/2x3_texture-2.png", 256, 256, 1, 1);
 
 	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), (uint32)Vertices.size(), accessibility::Static);
 	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint32), (uint32)Indices.size());
 
-	ConstantBuffer = new constant_buffer(&VS_Input, sizeof(cb));
+	ConstantBuffer[0] = new constant_buffer(&VS_Input, sizeof(cb));
 }
 
-void building::Draw()
+void buildings::Draw()
 {
-	struct cb
+	/*struct cb
 	{
 		XMMATRIX MVP;
 		XMFLOAT4 AmbientLight;
@@ -104,8 +104,8 @@ void building::Draw()
 	Texture->Bind();
 	VertexBuffer->Bind();
 	Shader->Bind();
-	ConstantBuffer->Bind();
-	ConstantBuffer->Update(&VS_Input);
+	ConstantBuffer[0]->Bind();
+	ConstantBuffer[0]->Update(&VS_Input);
 
-	direct3d::GetContext()->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
+	direct3d::GetContext()->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);*/
 }
