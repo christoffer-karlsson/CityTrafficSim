@@ -8,7 +8,7 @@
 #include "common.h"
 #include "logger.h"
 #include "system_message.h"
-#include "vehicle.h"
+#include "entity_car.h"
 
 #include <string>
 #include <vector>

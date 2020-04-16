@@ -52,12 +52,12 @@ uint32 entity_manager::CreateEntity(vec3 Position, entity_type Type)
 		{
 			case entity_type::Vehicle:	
 			
-			Entity[ID] = std::make_unique<vehicle>(ID, vec3(0.0f, 0.0f, 0.0f)); 
+			Entity[ID] = std::make_unique<entity_car>(ID, Position); 
 			break;
 
 			case entity_type::Car:		
 			
-			Entity[ID] = std::make_unique<vehicle>(ID, vec3(0.0f, 0.0f, 0.0f)); 
+			Entity[ID] = std::make_unique<entity_car>(ID, Position);
 			break;
 		}
 
@@ -71,14 +71,32 @@ void entity_manager::Simulate()
 {
 	logger::LogUINT(EntityCount, logger::ref::EntityCount);
 
+	std::vector<uint32> EntityReleaseID;
+
 	for(uint32 Index = 0;
 		Index < MAX_ENTITIES;
 		Index++)
 	{
 		if(Entity[Index] != nullptr)
 		{
-			Entity[Index].get()->Update();
+			if(!(Entity[Index].get()->GetAlive()))
+			{
+				// NOTE(Cristoffer): If entity is flagged to get destroyed, add it to the vector.
+				EntityReleaseID.push_back(Entity[Index].get()->GetID());
+			}
+
+			if(Entity[Index].get()->GetSimulated())
+			{
+				// NOTE(Cristoffer): If flagged for simulation, update the entity.
+				Entity[Index].get()->Update();
+			}
 		}
+	}
+
+	// NOTE(Cristoffer): Destroy all entities that are flagged as not alive.
+	for(auto ID : EntityReleaseID)
+	{
+		ReleaseEntity(ID);
 	}
 }
 

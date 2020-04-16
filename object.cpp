@@ -1,11 +1,12 @@
 #include "object.h"
 
-object::object(obj_file &File, vec3 Position, vec3 Scale, vec3 Rotation, vec4 Color)
+object::object(obj_file *Asset, vec3 Position, vec3 Scale, vec3 Rotation, vec4 Color) :
+	Asset(Asset)
 {
-
-	//vec3 Position(0.0f, 0.0f, 0.0f);
-	//vec3 Scale(1.0f, 1.0f, 1.0f);
-	//vec3 Rotation(0.0f, 180.0f, 0.0f);
+	// TODO(Cristoffer): Even if the data exists in memory it gets copier
+	// per object at the moment. The because the data has to be padded in
+	// such a way that the graphics driver can read it. Implement a better 
+	// way down the line.
 
 	SetInitialModel(Position, Scale, Rotation);
 
@@ -19,7 +20,7 @@ object::object(obj_file &File, vec3 Position, vec3 Scale, vec3 Rotation, vec4 Co
 	} VS_Input;
 
 	// NOTE(Cristoffer): Store vertex data.
-	for(auto const &Vert : File.Vertices)
+	for(auto Vert : Asset->Vertices)
 	{
 		vertex Vertex;
 
@@ -32,13 +33,13 @@ object::object(obj_file &File, vec3 Position, vec3 Scale, vec3 Rotation, vec4 Co
 	}
 
 	// NOTE(Cristoffer): Store the normals.
-	for(auto const &Vertex : File.Normals)
+	for(auto Vertex : Asset->Normals)
 	{
 		Normals.push_back(Vertex);
 	}
 	
 	// NOTE(Cristoffer): Fill the normal vertices based on mapped index.
-	for(auto const Element : File.FaceIndices)
+	for(auto Element : Asset->FaceIndices)
 	{
 		uint32 VertexIndex = Element.Position;
 		uint32 NormalIndex = Element.Normal;
@@ -47,7 +48,7 @@ object::object(obj_file &File, vec3 Position, vec3 Scale, vec3 Rotation, vec4 Co
 	}
 
 	// NOTE(Cristoffer): Vertex indicies for index buffer.
-	for(auto const &Indicies : File.FaceIndices)
+	for(auto Indicies : Asset->FaceIndices)
 	{
 		Indices.push_back(Indicies.Position);
 	}

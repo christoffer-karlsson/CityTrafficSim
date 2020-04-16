@@ -15,7 +15,7 @@ enum class render_layer
 	Terrain, Agents, UserInterface, Graphs
 };
 
-class render_queue
+class render_manager
 {
 	private:
 

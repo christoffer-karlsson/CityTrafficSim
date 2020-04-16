@@ -139,5 +139,5 @@ void system_message::Update()
 
 	UI->BuildElements();
 
-	render_queue::Push(UI, render_layer::UserInterface);
+	render_manager::Push(UI, render_layer::UserInterface);
 }

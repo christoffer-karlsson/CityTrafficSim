@@ -3,7 +3,7 @@
 world::world(uint32 WidthX, uint32 WidthZ) :
 	Terrain(new terrain(WidthX, WidthZ))
 {
-	render_queue::Push(Terrain, render_layer::Terrain);
+	render_manager::Push(Terrain, render_layer::Terrain);
 
 	Tiles = new tile[WidthX * WidthZ];
 }

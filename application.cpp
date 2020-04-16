@@ -14,9 +14,12 @@ void application::Run()
 	camera::Init();
 	logger::Init();
 	entity_manager::Init();
+	render_manager::Init();
+	asset_manager::Init();
 	system_message::Init();
-	render_queue::Init();
 	light_source::Init();
+	
+
 
 	world *World = new world(200, 200);
 
@@ -159,12 +162,14 @@ void application::Run()
 
 			if(MouseClicked(MOUSE_BUTTON_LEFT))
 			{
-				World->SetTile(MousePosition, tile_type::ROAD_Z);
+				entity_manager::CreateEntity(application_state::GetMouseCoordinateInWorld(), entity_type::Car);
+
+				/*World->SetTile(MousePosition, tile_type::ROAD_Z);
 
 				SystemMessage("Placed Z road tile at: " + 
 					std::to_string(MousePosition.x) + ", " + 
 					std::to_string(MousePosition.y) + ", " +
-					std::to_string(MousePosition.z) + ".");
+					std::to_string(MousePosition.z) + ".");*/
 			}
 
 			if(MouseClicked(MOUSE_BUTTON_RIGHT))
@@ -315,7 +320,7 @@ void application::Run()
 
 		if(application_state::GetEditModeEnabled())
 		{
-			render_queue::TestMouseCollision();
+			render_manager::TestMouseCollision();
 
 			UI->SetHidden(EditModeElement, false);
 
@@ -332,13 +337,13 @@ void application::Run()
 
 		UI->BuildElements();
 
-		render_queue::Push(UI, render_layer::UserInterface);
+		render_manager::Push(UI, render_layer::UserInterface);
 
 		system_message::Update();
 
 		entity_manager::Simulate();
 
-		render_queue::Render();
+		render_manager::Render();
 
 		Timing.EndFrameTimer();
 	}

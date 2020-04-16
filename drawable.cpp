@@ -24,7 +24,7 @@ void drawable::SetInitialModel(vec3 Position, vec3 Scale, vec3 Rotation)
 	SetRotation(Rotation);
 	SetScale(Scale);
 
-	UpdateModel();
+	Update();
 
 	// NOTE(Cristoffer): Store copy of the "initial" model.
 	//InitialModel = Model;
@@ -45,7 +45,22 @@ void drawable::SetScale(vec3 Scale)
 	this->Scale = Scale;
 }
 
-void drawable::UpdateModel()
+vec3 &drawable::GetPosition()
+{
+	return Position;
+}
+
+vec3 &drawable::GetRotation()
+{
+	return Rotation;
+}
+
+vec3 &drawable::GetScale()
+{
+	return Scale;
+}
+
+void drawable::Update()
 {
 	Model = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 

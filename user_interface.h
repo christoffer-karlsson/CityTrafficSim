@@ -5,7 +5,7 @@
 #include "drawable.h"
 #include "threading.h"
 #include "math.h"
-#include "render_queue.h"
+#include "render_manager.h"
 
 #include "external/SimpleMath.h"
 #include "external/SpriteBatch.h"

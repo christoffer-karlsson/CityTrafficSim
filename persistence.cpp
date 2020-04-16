@@ -66,19 +66,19 @@ void persistence::LoadSavedWorldMap(world *World)
 	SystemMessage("World map loaded.");
 }
 
-obj_file persistence::LoadObjectFile(std::string Filename)
+obj_file *persistence::LoadObjectFile(std::string Filename)
 {
 	std::string Word;
 
-	obj_file Destination;
+	obj_file *Destination = new obj_file;
 
 	std::ifstream File(OBJECT_FILES_DEFAULT_PATH + Filename);
 
 	if(!File.is_open())
 	{
-		SystemMessage("Error! Could not open file.");
+		SystemMessage("Error! Could not open file: " + Filename);
 		// TODO(Cristoffer): Handle file read error.
-		return Destination;
+		return nullptr;
 	}
 
 	while(std::getline(File, Word, SPACE))
@@ -92,7 +92,7 @@ obj_file persistence::LoadObjectFile(std::string Filename)
 			std::getline(File, Y, SPACE);
 			std::getline(File, Z, NEWLINE);
 
-			Destination.Vertices.push_back(vec3(std::stof(X), std::stof(Y), std::stof(Z)));
+			Destination->Vertices.push_back(vec3(std::stof(X), std::stof(Y), std::stof(Z)));
 		}
 		else if(Word == "vn")
 		{
@@ -102,7 +102,7 @@ obj_file persistence::LoadObjectFile(std::string Filename)
 			std::getline(File, Y, SPACE);
 			std::getline(File, Z, NEWLINE);
 
-			Destination.Normals.push_back(vec3(std::stof(X), std::stof(Y), std::stof(Z)));
+			Destination->Normals.push_back(vec3(std::stof(X), std::stof(Y), std::stof(Z)));
 		}
 		// NOTE(Cristoffer): Faces or indicies.
 		// Ex: f 1/1/1 2/2/1 3/3/1
@@ -184,7 +184,7 @@ obj_file persistence::LoadObjectFile(std::string Filename)
 					Face.Normal = std::stoi(Normal) - 1;
 				}
 				
-				Destination.FaceIndices.push_back(Face);
+				Destination->FaceIndices.push_back(Face);
 
 				Position.clear();
 				TextureCoordinate.clear();
@@ -199,7 +199,6 @@ obj_file persistence::LoadObjectFile(std::string Filename)
 		else
 		{
 			// NOTE(Cristoffer): If we don't recognize the line or don't use it.
-
 			std::string Trash;
 
 			std::getline(File, Trash, NEWLINE);

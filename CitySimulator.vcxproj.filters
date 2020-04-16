@@ -120,13 +120,7 @@
     <ClCompile Include="entity_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vehicle.cpp">
-      <Filter>Source Files\entities</Filter>
-    </ClCompile>
     <ClCompile Include="object.cpp">
-      <Filter>Source Files\graphics\drawables</Filter>
-    </ClCompile>
-    <ClCompile Include="drawable.cpp">
       <Filter>Source Files\graphics\drawables</Filter>
     </ClCompile>
     <ClCompile Include="system_message.cpp">
@@ -135,13 +129,22 @@
     <ClCompile Include="light_source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="render_queue.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="application_state.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="logger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="render_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="asset_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="entity_car.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="drawable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -233,22 +236,13 @@
     <ClInclude Include="entity_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vehicle.h">
-      <Filter>Header Files\entities</Filter>
-    </ClInclude>
     <ClInclude Include="object.h">
-      <Filter>Header Files\graphics\drawables</Filter>
-    </ClInclude>
-    <ClInclude Include="drawable.h">
       <Filter>Header Files\graphics\drawables</Filter>
     </ClInclude>
     <ClInclude Include="system_message.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="light_source.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="render_queue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="math.h">
@@ -258,6 +252,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="render_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="asset_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="entity_car.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="drawable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

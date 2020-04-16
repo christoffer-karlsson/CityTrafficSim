@@ -1,21 +1,21 @@
-#include "render_queue.h"
+#include "render_manager.h"
 
-work_id render_queue::ThreadWorkID;
+work_id render_manager::ThreadWorkID;
 
-vec3u render_queue::OldCollisionPosition;
+vec3u render_manager::OldCollisionPosition;
 
-drawable *render_queue::Terrain;
+drawable *render_manager::Terrain;
 
-std::vector<drawable*> render_queue::Agents;
-std::vector<drawable*> render_queue::UserInterfaceLayer;
-std::vector<drawable*> render_queue::Graphs;
+std::vector<drawable*> render_manager::Agents;
+std::vector<drawable*> render_manager::UserInterfaceLayer;
+std::vector<drawable*> render_manager::Graphs;
 
-void render_queue::Init()
+void render_manager::Init()
 {
 	
 }
 
-void render_queue::Push(drawable *Drawable, render_layer Layer)
+void render_manager::Push(drawable *Drawable, render_layer Layer)
 {
 	if(Layer == render_layer::Terrain)
 	{
@@ -38,7 +38,7 @@ void render_queue::Push(drawable *Drawable, render_layer Layer)
 	}
 }
 
-void render_queue::Render()
+void render_manager::Render()
 {
 	direct3d::BeginFrame();
 
@@ -71,12 +71,12 @@ void render_queue::Render()
 	// should get drawn for the frame, then clears them, with some exceptions
 	// like the terrain, which is permanent.
 	//World.clear();
-	//Agents.clear();
+	Agents.clear();
 	UserInterfaceLayer.clear();
 	//Graphs.clear();
 }
 
-void render_queue::TestMouseCollision()
+void render_manager::TestMouseCollision()
 {
 	auto ThreadWork = [&]
 	{

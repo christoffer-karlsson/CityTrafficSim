@@ -41,5 +41,6 @@ class persistence
 
 	void SaveWorldMap(world *World);
 	void LoadSavedWorldMap(world *World);
-	obj_file LoadObjectFile(std::string Filename);
+
+	obj_file *LoadObjectFile(std::string Filename);
 };

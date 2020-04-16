@@ -2,7 +2,7 @@
 
 #include "common.h"
 #include "terrain.h"
-#include "render_queue.h"
+#include "render_manager.h"
 
 #include <string>
 #include <vector>

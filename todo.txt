@@ -1,4 +1,7 @@
 TODO
+- memory copy when creating data for the gpu to read, avoid copy (object.cpp)
+- memory manager
+- asset manager
 - fix truncate error when converting from mouse coordinates to tile coordinates
 - more ui elements (button, textbox, selecting)
 - ui picking 

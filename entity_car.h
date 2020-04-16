@@ -4,8 +4,11 @@
 #include "entity.h"
 #include "math.h"
 #include "object.h"
+#include "asset_manager.h"
+#include "render_manager.h"
+#include "timing.h"
 
-class vehicle : public entity
+class entity_car : public entity
 {
 	private:
 
@@ -13,8 +16,7 @@ class vehicle : public entity
 
 	public:
 
-	vehicle(uint32 ID, vec3 Position);
-	~vehicle();
+	entity_car(uint32 ID, vec3 Position);
 
 	void Update() override;
 };

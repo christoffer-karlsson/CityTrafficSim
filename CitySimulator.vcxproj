@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClCompile Include="application.cpp" />
     <ClCompile Include="application_state.cpp" />
+    <ClCompile Include="asset_manager.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="building.cpp" />
     <ClCompile Include="direct3d.cpp" />
@@ -162,7 +163,7 @@
     <ClCompile Include="light_source.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="persistence.cpp" />
-    <ClCompile Include="render_queue.cpp" />
+    <ClCompile Include="render_manager.cpp" />
     <ClCompile Include="system_message.cpp" />
     <ClCompile Include="terrain.cpp" />
     <ClCompile Include="line.cpp" />
@@ -171,7 +172,7 @@
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="threading.cpp" />
     <ClCompile Include="user_interface.cpp" />
-    <ClCompile Include="vehicle.cpp" />
+    <ClCompile Include="entity_car.cpp" />
     <ClCompile Include="vertex_buffer.cpp" />
     <ClCompile Include="external\WICTextureLoader.cpp" />
     <ClCompile Include="keyboard.cpp" />
@@ -185,6 +186,7 @@
   <ItemGroup>
     <ClInclude Include="application.h" />
     <ClInclude Include="application_state.h" />
+    <ClInclude Include="asset_manager.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="building.h" />
@@ -200,7 +202,7 @@
     <ClInclude Include="math.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="persistence.h" />
-    <ClInclude Include="render_queue.h" />
+    <ClInclude Include="render_manager.h" />
     <ClInclude Include="system_message.h" />
     <ClInclude Include="terrain.h" />
     <ClInclude Include="line.h" />
@@ -210,7 +212,7 @@
     <ClInclude Include="threading.h" />
     <ClInclude Include="types.h" />
     <ClInclude Include="user_interface.h" />
-    <ClInclude Include="vehicle.h" />
+    <ClInclude Include="entity_car.h" />
     <ClInclude Include="vertex_buffer.h" />
     <ClInclude Include="external\SpriteBatch.h" />
     <ClInclude Include="external\SpriteFont.h" />

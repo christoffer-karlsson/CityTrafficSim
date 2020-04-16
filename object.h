@@ -16,14 +16,15 @@ class object : public drawable
 {
 	private:
 
-
-	public:
+	obj_file *Asset;
 
 	std::vector<vertex> Vertices;
 	std::vector<uint32> Indices;
 	std::vector<vec3> Normals;
 
-	object(obj_file &File, vec3 Position, vec3 Scale, vec3 Rotation, vec4 Color);
+	public:
+
+	object(obj_file *Asset, vec3 Position, vec3 Scale, vec3 Rotation, vec4 Color);
 
 	void Draw();
 };

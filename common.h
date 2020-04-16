@@ -6,7 +6,7 @@
 
 #include <cassert>
 
-#define BUILD_NUMBER 23
+#define BUILD_NUMBER 24
 #define SHOW_BUILD_NUMBER 1
 
 // NOTE(Cristoffer): Enable debug stuff, such as assertions. Turn off

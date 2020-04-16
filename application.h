@@ -11,10 +11,11 @@
 #include "math.h"
 #include "entity_manager.h"
 #include "light_source.h"
-#include "render_queue.h"
+#include "render_manager.h"
 #include "application_state.h"
 #include "logger.h"
 #include "system_message.h"
+#include "asset_manager.h"
 
 #include <windows.h>
 #include <string>

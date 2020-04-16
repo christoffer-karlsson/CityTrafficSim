@@ -51,7 +51,11 @@ class drawable
 	void SetRotation(vec3 Rotation);
 	void SetScale(vec3 Scale);
 
-	void UpdateModel();
+	vec3 &GetPosition();
+	vec3 &GetRotation();
+	vec3 &GetScale();
+
+	void Update();
 
 	XMMATRIX &GetModel();
 
