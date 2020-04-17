@@ -9,28 +9,13 @@
 #include "vertex_shader.h"
 #include "pixel_shader.h"
 #include "constant_buffer.h"
+#include "light_source.h"
+#include "model.h"
 
 #include <memory>
 #include <vector>
 
 #define MAX_CONSTANT_BUFFERS 10
-
-struct vertex
-{
-	vec3 Position;
-	vec3 Normal;
-	vec2 TextureUVCoordinate;
-	vec4 Color;
-	vec4 HighlightColor;
-
-	vertex()
-	{
-		// NOTE(Cristoffer): Defaults so that drawables that don't use
-		// them don't need to define them.
-		HighlightColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-		TextureUVCoordinate = vec2(0.0f, 0.0f);
-	}
-};
 
 class drawable
 {

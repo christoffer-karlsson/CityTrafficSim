@@ -2,7 +2,7 @@ struct input
 {
     float3 Position : POSITION;
     float3 Normal : NORMAL;
-    float2 UV : TEXCOORD;
+    float3 UV : TEXCOORD;
     float4 Color : COLOR;
     float4 HightlightColor : HIGHLIGHTCOLOR;
 };
@@ -33,7 +33,7 @@ output main(input Input)
     
     Output.HightlightColor = Input.HightlightColor;
     Output.Color = Input.Color;
-    Output.UV = Input.UV;
+    Output.UV = float2(Input.UV.x, Input.UV.y);
     
     return Output;
 }

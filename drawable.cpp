@@ -23,7 +23,13 @@ drawable::~drawable()
 	delete VertexShader;
 	delete PixelShader;
 	delete VertexBuffer;
-	delete ConstantBuffer;
+
+	for(uint32 Index = 0;
+		Index < MAX_CONSTANT_BUFFERS;
+		Index++)
+	{
+		delete ConstantBuffer[Index];
+	}
 }
 
 void drawable::SetInitialModel(vec3 Position, vec3 Scale, vec3 Rotation)

@@ -51,12 +51,12 @@ terrain::terrain(uint64 WidthX, uint64 WidthZ) :
 			Vertex[4].Color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // 3
 			Vertex[5].Color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // 2
 
-			Vertex[0].TextureUVCoordinate = UV.BottomLeft;	// 0
-			Vertex[1].TextureUVCoordinate = UV.TopLeft;		// 1
-			Vertex[2].TextureUVCoordinate = UV.BottomRight; // 2
-			Vertex[3].TextureUVCoordinate = UV.TopLeft;		// 1
-			Vertex[4].TextureUVCoordinate = UV.TopRight;	// 3
-			Vertex[5].TextureUVCoordinate = UV.BottomRight; // 2
+			Vertex[0].TextureUVCoordinate = vec3(UV.BottomLeft, 0.0f);	// 0
+			Vertex[1].TextureUVCoordinate = vec3(UV.TopLeft, 0.0f);		// 1
+			Vertex[2].TextureUVCoordinate = vec3(UV.BottomRight, 0.0f); // 2
+			Vertex[3].TextureUVCoordinate = vec3(UV.TopLeft, 0.0f);		// 1
+			Vertex[4].TextureUVCoordinate = vec3(UV.TopRight, 0.0f);	// 3
+			Vertex[5].TextureUVCoordinate = vec3(UV.BottomRight, 0.0f); // 2
 
 			Vertex[0].HighlightColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 			Vertex[1].HighlightColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -161,12 +161,12 @@ void terrain::UpdateTileTypeResource(vec3u Position, tile_type Type)
 		return;
 	}
 
-	Vertices.at(Index + 0).TextureUVCoordinate = UV.BottomLeft;
-	Vertices.at(Index + 1).TextureUVCoordinate = UV.TopLeft;
-	Vertices.at(Index + 2).TextureUVCoordinate = UV.BottomRight;
-	Vertices.at(Index + 3).TextureUVCoordinate = UV.TopLeft;
-	Vertices.at(Index + 4).TextureUVCoordinate = UV.TopRight;
-	Vertices.at(Index + 5).TextureUVCoordinate = UV.BottomRight;
+	Vertices.at(Index + 0).TextureUVCoordinate = vec3(UV.BottomLeft, 0.0f);
+	Vertices.at(Index + 1).TextureUVCoordinate = vec3(UV.TopLeft, 0.0f);
+	Vertices.at(Index + 2).TextureUVCoordinate = vec3(UV.BottomRight, 0.0f);
+	Vertices.at(Index + 3).TextureUVCoordinate = vec3(UV.TopLeft, 0.0f);
+	Vertices.at(Index + 4).TextureUVCoordinate = vec3(UV.TopRight, 0.0f);
+	Vertices.at(Index + 5).TextureUVCoordinate = vec3(UV.BottomRight, 0.0f);
 }
 
 uint32 terrain::GetWidthX()

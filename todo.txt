@@ -1,4 +1,5 @@
 TODO
+- instanced drawing for high amount of same models
 - memory copy when creating data for the gpu to read, avoid copy (object.cpp)
 - memory manager
 - asset manager
@@ -13,6 +14,7 @@ FUTURE (MAYBE) TODO
 - implement a way to reinitialize graphics api (for changing buffer resolution etc.)
 
 FINISHED
+- model interface
 - mouse_picker class has to be aware of editmode, so that highlight can be turned off
 - more general mouse picker for different objects
 - WorldCoordinate (terrain.cpp), same data, two places?

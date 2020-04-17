@@ -90,6 +90,13 @@ struct vec3
 		this->z = z;
 	}
 
+	vec3(vec2 &V, real32 z)
+	{
+		this->x = V.x;
+		this->y = V.y;
+		this->z = z;
+	}
+
 	friend vec3 operator+(const vec3 &lhs, const vec3 &rhs)
 	{
 		vec3 Result;

@@ -14,7 +14,7 @@
 #include <vector>
 #include <stack>
 
-#define MAX_ENTITIES 1000
+#define MAX_ENTITIES 5000
 
 enum class entity_type
 {

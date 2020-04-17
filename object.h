@@ -1,8 +1,9 @@
+// object.h
+// An abstract drawable that takes one model asset and draws it. 
+
 #pragma once
 
 #include "drawable.h"
-#include "persistence.h"
-#include "light_source.h"
 
 class object : public drawable
 {
@@ -14,15 +15,11 @@ class object : public drawable
 		XMMATRIX Model;
 	};
 
-	obj_file *Asset;
-
-	std::vector<vertex> Vertices;
-	std::vector<uint32> Indices;
-	std::vector<vec3> Normals;
+	model *Asset;
 
 	public:
 
-	object(obj_file *Asset, vec3 Position, vec3 Scale, vec3 Rotation, vec4 Color);
+	object(model *Asset, vec3 Position, vec3 Scale, vec3 Rotation, vec4 Color);
 
 	void Draw();
 };

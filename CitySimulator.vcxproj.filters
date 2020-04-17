@@ -40,7 +40,7 @@
     <Filter Include="Source Files\entities">
       <UniqueIdentifier>{b283f871-e0b4-42bf-a756-c7abfc916cc2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\entities">
+    <Filter Include="Header Files\entity">
       <UniqueIdentifier>{0551fedc-2107-489d-92a8-96329963b288}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -150,6 +150,12 @@
     <ClCompile Include="pixel_shader.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="drawable_cars.cpp">
+      <Filter>Source Files\graphics\drawables</Filter>
+    </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -258,7 +264,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="entity_car.h">
-      <Filter>Header Files\entities</Filter>
+      <Filter>Header Files\entity</Filter>
     </ClInclude>
     <ClInclude Include="drawable.h">
       <Filter>Header Files</Filter>
@@ -271,6 +277,15 @@
     </ClInclude>
     <ClInclude Include="pixel_shader.h">
       <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="drawable_cars.h">
+      <Filter>Header Files\graphics\drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="obj_file.h">
+      <Filter>Header Files\header-only</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

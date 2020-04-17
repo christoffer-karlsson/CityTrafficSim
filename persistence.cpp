@@ -1,15 +1,14 @@
 #include "persistence.h"
 
-void persistence::SaveWorldMap(world *World)
+bool32 persistence::SaveWorldMap(world *World)
 {
 	std::ofstream File;
 	File.open(WorldSaveFile);
 
 	if(!File.is_open())
 	{
-		SystemMessage("Error! Could not open file.");
 		// TODO(Cristoffer): Handle file read error.
-		return;
+		return 0;
 	}
 
 	for(uint32 X = 0; X < World->GetWidthX(); X++)
@@ -24,10 +23,10 @@ void persistence::SaveWorldMap(world *World)
 
 	File.close();
 
-	SystemMessage("World map saved.");
+	return 1;
 }
 
-void persistence::LoadSavedWorldMap(world *World)
+bool32 persistence::LoadSavedWorldMap(world *World)
 {
 	std::string Word;
 
@@ -35,9 +34,8 @@ void persistence::LoadSavedWorldMap(world *World)
 
 	if(!File.is_open())
 	{
-		SystemMessage("Error! Could not open file.");
 		// TODO(Cristoffer): Handle file read error.
-		return;
+		return 0;
 	}
 
 	while(std::getline(File, Word, SPACE))
@@ -63,22 +61,21 @@ void persistence::LoadSavedWorldMap(world *World)
 
 	File.close();
 
-	SystemMessage("World map loaded.");
+	return 1;
 }
 
-obj_file *persistence::LoadObjectFile(std::string Filename)
+obj_file persistence::LoadObjectFile(std::string Filename)
 {
 	std::string Word;
 
-	obj_file *Destination = new obj_file;
+	obj_file Destination;
 
 	std::ifstream File(OBJECT_FILES_DEFAULT_PATH + Filename);
 
 	if(!File.is_open())
 	{
-		SystemMessage("Error! Could not open file: " + Filename);
 		// TODO(Cristoffer): Handle file read error.
-		return nullptr;
+		return Destination;
 	}
 
 	while(std::getline(File, Word, SPACE))
@@ -86,23 +83,35 @@ obj_file *persistence::LoadObjectFile(std::string Filename)
 		// NOTE(Cristoffer): Vertex position.
 		if(Word == "v")
 		{
-			std::string X, Y, Z;
+			std::string x, y, z;
 
-			std::getline(File, X, SPACE);
-			std::getline(File, Y, SPACE);
-			std::getline(File, Z, NEWLINE);
+			std::getline(File, x, SPACE);
+			std::getline(File, y, SPACE);
+			std::getline(File, z, NEWLINE);
 
-			Destination->Vertices.push_back(vec3(std::stof(X), std::stof(Y), std::stof(Z)));
+			Destination.Vertices.push_back(vec3(std::stof(x), std::stof(y), std::stof(z)));
 		}
+		// NOTE(Cristoffer): Normal positions.
 		else if(Word == "vn")
 		{
-			std::string X, Y, Z;
+			std::string x, y, z;
 
-			std::getline(File, X, SPACE);
-			std::getline(File, Y, SPACE);
-			std::getline(File, Z, NEWLINE);
+			std::getline(File, x, SPACE);
+			std::getline(File, y, SPACE);
+			std::getline(File, z, NEWLINE);
 
-			Destination->Normals.push_back(vec3(std::stof(X), std::stof(Y), std::stof(Z)));
+			Destination.Normals.push_back(vec3(std::stof(x), std::stof(y), std::stof(z)));
+		}
+		// NOTE(Cristoffer): Texture UV position;
+		else if(Word == "vt")
+		{
+			std::string x, y, z;
+
+			std::getline(File, x, SPACE);
+			std::getline(File, y, SPACE);
+			std::getline(File, z, NEWLINE);
+
+			Destination.TextureUVs.push_back(vec3(std::stof(x), std::stof(y), std::stof(z)));
 		}
 		// NOTE(Cristoffer): Faces or indicies.
 		// Ex: f 1/1/1 2/2/1 3/3/1
@@ -166,7 +175,7 @@ obj_file *persistence::LoadObjectFile(std::string Filename)
 					Normal += CurrentChar;
 				}
 
-				// NOTE(Cristoffer): -1 because .obj index start at 1, and c++ starts at 0.
+				// NOTE(Cristoffer): -1 because .obj format index start at 1, and c++ starts at 0.
 				face Face;
 				
 				if(!Position.empty())
@@ -184,7 +193,7 @@ obj_file *persistence::LoadObjectFile(std::string Filename)
 					Face.Normal = std::stoi(Normal) - 1;
 				}
 				
-				Destination->FaceIndices.push_back(Face);
+				Destination.FaceIndices.push_back(Face);
 
 				Position.clear();
 				TextureCoordinate.clear();

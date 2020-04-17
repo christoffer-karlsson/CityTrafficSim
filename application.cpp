@@ -18,8 +18,6 @@ void application::Run()
 	asset_manager::Init();
 	system_message::Init();
 	light_source::Init(vec3(100.0f, 200.0f, 100.0f));
-	
-
 
 	world *World = new world(200, 200);
 
@@ -162,7 +160,7 @@ void application::Run()
 
 			if(MouseClicked(MOUSE_BUTTON_LEFT))
 			{
-				entity_manager::CreateEntity(application_state::GetMouseCoordinateInWorld(), entity_type::Car);
+				
 			}
 
 			if(MouseClicked(MOUSE_BUTTON_RIGHT))
@@ -245,10 +243,28 @@ void application::Run()
 					std::to_string(MousePosition.z) + ".");
 			}
 
-			if(KeyReleased(KEY_7))
-			{
+			
+		}
 
-			}
+		if(KeyReleased(KEY_8))
+		{
+			entity_manager::CreateEntity(application_state::GetMouseCoordinateInWorld(), entity_type::Car);
+		}
+
+		if(KeyReleased(KEY_9))
+		{
+			/*for(uint32 x = 0;
+				x < 70;
+				x++)
+			{
+				for(uint32 z = 0;
+					z < 70;
+					z++)
+				{
+					entity_manager::CreateEntity(vec3((real32)x + (x + 1.0f), 0.0f, (real32)z + (z + 1.0f)), entity_type::Car);
+				}
+			}*/
+			//entity_manager::CreateEntity(vec3(0.0f, 0.0f, 0.0f), entity_type::Car);
 		}
 
 		if(KeyPressed(KEY_W))
@@ -283,12 +299,30 @@ void application::Run()
 
 		if(KeyReleased(KEY_F5))
 		{
-			Persistence.SaveWorldMap(World);
+			bool32 Save = Persistence.SaveWorldMap(World);
+
+			if(Save)
+			{
+				SystemMessage("World map saved.");
+			}
+			else
+			{
+				SystemMessage("Error! Could not open file.");
+			}
 		}
 
 		if(KeyReleased(KEY_F9))
 		{
-			Persistence.LoadSavedWorldMap(World);
+			bool32 Load = Persistence.LoadSavedWorldMap(World);
+
+			if(Load)
+			{
+				SystemMessage("World map loaded.");
+			}
+			else
+			{
+				SystemMessage("Error! Could not open file.");
+			}
 		}
 
 		if(KeyReleased(KEY_ARROWRIGHT))

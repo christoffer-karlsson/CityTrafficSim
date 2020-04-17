@@ -1,8 +1,6 @@
 #pragma once
 
 #include "drawable.h"
-#include "texture.h"
-#include "light_source.h"
 
 enum class tile_type
 {

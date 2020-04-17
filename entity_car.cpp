@@ -8,7 +8,7 @@ entity_car::entity_car(uint32 ID, vec3 Position)
 	SetAlive(1);
 
 	SetDrawable(new object(
-		asset_manager::GetObjectFile(0),
+		asset_manager::GetModel(0),
 		Position,
 		vec3(1.0f, 1.0f, 1.0f),
 		vec3(0.0f, 180.0f, 0.0f),
@@ -27,7 +27,7 @@ void entity_car::Update()
 	}
 	else
 	{
-		Position.z += 0.1f;
+		//Position.z += 0.1f;
 	}
 
 	SetPosition(Position);

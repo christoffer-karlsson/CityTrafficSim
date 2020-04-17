@@ -1,29 +1,30 @@
 #include "asset_manager.h"
 
-obj_file *asset_manager::ObjectFile[];
+model *asset_manager::Model[];
 
 void asset_manager::Init()
 {
 	for(uint32 Index = 0;
-		Index < MAX_OBJECT_FILES;
+		Index < MAX_MODEL_FILES;
 		Index++)
 	{
-		ObjectFile[Index] = nullptr;
+		Model[Index] = nullptr;
 	}
 
 	persistence Persistence;
 
-	ObjectFile[0] = Persistence.LoadObjectFile("car.obj");
-	ObjectFile[1] = Persistence.LoadObjectFile("building.obj");
+	// TODO(Cristoffer): Implement a way to look up assets via text. 
+	Model[0] = new model(Persistence.LoadObjectFile("car.obj"));
+	Model[1] = new model(Persistence.LoadObjectFile("building.obj"));
 }
 
-obj_file *asset_manager::GetObjectFile(uint32 ID)
+model *asset_manager::GetModel(uint32 ID)
 {
-	obj_file *Result = nullptr;
+	model *Result = nullptr;
 
-	if(ID > 0 || ID < MAX_OBJECT_FILES)
+	if(ID > 0 || ID < MAX_MODEL_FILES)
 	{
-		Result = ObjectFile[ID];
+		Result = Model[ID];
 	}
 
 	return Result;

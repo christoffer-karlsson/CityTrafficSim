@@ -3,18 +3,18 @@
 #include "common.h"
 #include "persistence.h"
 
-#define MAX_OBJECT_FILES 5
+#define MAX_MODEL_FILES 5
 
 // NOTE(Cristoffer): Check for nullptr when getting assets.
 class asset_manager
 {
 	private:
 
-	static obj_file *ObjectFile[MAX_OBJECT_FILES];
+	static model *Model[MAX_MODEL_FILES];
 
 	public:
 
 	static void Init();
 
-	static obj_file *GetObjectFile(uint32 ID);
+	static model *GetModel(uint32 ID);
 };

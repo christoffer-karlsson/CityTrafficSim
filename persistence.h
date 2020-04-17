@@ -2,27 +2,13 @@
 
 #include "common.h"
 #include "world.h"
-#include "system_message.h"
+#include "obj_file.h"
 
 #include <fstream>
 #include <string>
 #include <vector>
 
 #define OBJECT_FILES_DEFAULT_PATH "data\\objects\\"
-
-struct face
-{
-	uint32 Position;
-	uint32 TextureCoordinate;
-	uint32 Normal;
-};
-
-struct obj_file
-{
-	std::vector<vec3> Vertices;
-	std::vector<vec3> Normals;
-	std::vector<face> FaceIndices;
-};
 
 class persistence
 {
@@ -39,8 +25,8 @@ class persistence
 	persistence() = default;
 	~persistence() = default;
 
-	void SaveWorldMap(world *World);
-	void LoadSavedWorldMap(world *World);
+	bool32 SaveWorldMap(world *World);
+	bool32 LoadSavedWorldMap(world *World);
 
-	obj_file *LoadObjectFile(std::string Filename);
+	obj_file LoadObjectFile(std::string Filename);
 };
