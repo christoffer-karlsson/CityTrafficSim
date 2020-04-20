@@ -16,6 +16,8 @@
 #include "logger.h"
 #include "system_message.h"
 #include "asset_manager.h"
+#include "drawable_cars.h"
+#include "world.h"
 
 #include <windows.h>
 #include <string>

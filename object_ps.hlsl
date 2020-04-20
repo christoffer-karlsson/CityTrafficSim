@@ -35,8 +35,8 @@ float4 main(input Input) : SV_Target
     
     float4 Color = float4(saturate(Diffuse + Ambient) * Input.Color, 1.0f);
     
-    // Add highlight color
-    Color = Color * Input.HightlightColor;
+    // Add highlight color and transparency
+    Color = Color * Input.HightlightColor * float4(1.0f, 1.0f, 1.0f, Input.Color.w);
 
     return Color;
 }

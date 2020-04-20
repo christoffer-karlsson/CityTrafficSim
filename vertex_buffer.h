@@ -17,26 +17,22 @@ class vertex_buffer
 {
 	private:
 
-	ID3D11Buffer	*VertexBuffer;
-	uint32			VertexBufferStride;
-	uint32			VertexBufferSize;
-
-	ID3D11Buffer	*IndexBuffer;
-	uint32			IndexBufferStride;
-	uint32			IndexBufferSize;
+	ID3D11Buffer *Buffer;
+	uint32		 Stride;
+	uint32		 Size;
 
 	accessibility	CPUAccess;
 
 	public:
 
-	vertex_buffer(void *VertexData, uint32 Stride, uint32 Size, accessibility CPUAccess);
+	vertex_buffer(void *Data, uint32 Stride, uint32 Size, accessibility CPUAccess);
 	~vertex_buffer();
 
-	void AddIndexBuffer(void *IndicesData, uint32 Stride, uint32 Size);
-
 	void Bind();
-	void UpdateDynamicBuffer(void *VertexData, uint32 Stride, uint32 Size);
+	void UpdateDynamicBuffer(void *Data, uint32 Stride, uint32 Size);
 
-	uint32 GetVertexCount() const;
-	uint32 GetIndexCount() const;
+	uint32 GetStride() const;
+	uint32 GetSize() const;
+
+	ID3D11Buffer *GetBuffer() const;
 };

@@ -1,6 +1,15 @@
+// drawable_cars.h
+// Instanced drawing of car model object.
+
 #pragma once
 
 #include "drawable.h"
+#include "drawable_cars_instance.h"
+
+// NOTE(Cristoffer): 512 is the limit by the gpu.
+// 1024 matrices are max, and we need 2 matrices per object.
+// Remember to change this value in shader also!
+#define MAX_INSTANCES 5000
 
 class drawable_cars : public drawable
 {
@@ -8,22 +17,22 @@ class drawable_cars : public drawable
 
 	struct cbuffer_input
 	{
-		XMMATRIX MVP;
-		XMMATRIX Model;
+		XMMATRIX ViewProjection;
 	};
 
-	model *Asset;
+	mesh *Asset;
 
-	std::vector<vertex> Vertices;
-	std::vector<uint32> Indices;
+	uint32 InstanceCount;
+
+	//drawable_cars_instance *Instance;
+
+	std::vector<drawable_cars_instance> Instance;
 
 	public:
 
-	drawable_cars(model *Asset, vec3 Position, vec3 Scale, vec3 Rotation, vec4 Color)
-	{
-	};
+	drawable_cars(mesh *Asset, uint32 InstanceCount);
 
-	void Draw()
-	{
-	};
+	void Draw();
+
+	void PushInstance(XMMATRIX &Model, vec4 &Color);
 };

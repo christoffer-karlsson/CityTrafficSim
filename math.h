@@ -2,8 +2,14 @@
 
 #include "common.h"
 #include <cmath>
+#include <random>
 
 #define math_pi 3.14159265359f
+
+inline real32 RadianToDegree(real32 Radian)
+{
+	return Radian * 180.0f / math_pi;
+}
 
 inline real32 DegreeToRadian(real32 Angle)
 {

@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include "persistence.h"
+#include "mesh.h"
 
 #define MAX_MODEL_FILES 5
 
@@ -10,11 +11,11 @@ class asset_manager
 {
 	private:
 
-	static model *Model[MAX_MODEL_FILES];
+	static mesh *Mesh[MAX_MODEL_FILES];
 
 	public:
 
 	static void Init();
 
-	static model *GetModel(uint32 ID);
+	static mesh *GetMesh(uint32 ID);
 };

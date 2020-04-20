@@ -9,6 +9,7 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
+#include <dxgidebug.h>
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -45,6 +46,8 @@ class direct3d
 	static void SetViewport();
 
 	public:
+
+	static IDXGIDebug *Debug;
 
 	~direct3d();
 

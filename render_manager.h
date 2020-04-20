@@ -7,12 +7,14 @@
 #include "mouse_picker.h"
 #include "application_state.h"
 #include "logger.h"
+#include "drawable_cars.h"
+#include "asset_manager.h"
 
 #include <vector>
 
 enum class render_layer
 {
-	Terrain, Agents, UserInterface, Graphs
+	Terrain, Agents, UserInterface, Graphs, Instanced
 };
 
 class render_manager
@@ -25,6 +27,7 @@ class render_manager
 
 	// TODO(Cristoffer): Containter for this.
 	static drawable *Terrain;
+	static drawable_cars *InstancedCars;
 
 	static std::vector<drawable*> Agents;
 	static std::vector<drawable*> UserInterfaceLayer;
@@ -36,4 +39,6 @@ class render_manager
 	static void Push(drawable *Drawable, render_layer Layer);
 	static void Render();
 	static void TestMouseCollision();
+
+	static drawable_cars *GetInstancedCars();
 };

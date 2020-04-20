@@ -82,17 +82,17 @@ terrain::terrain(uint64 WidthX, uint64 WidthZ) :
 	}
 
 	VertexShader = new vertex_shader(L"terrain_vs.cso");
-	VertexShader->AddInputElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
-	VertexShader->AddInputElement("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
-	VertexShader->AddInputElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
-	VertexShader->AddInputElement("COLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
-	VertexShader->AddInputElement("HIGHLIGHTCOLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
+	VertexShader->AddInputElement(0, "POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
+	VertexShader->AddInputElement(0, "NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
+	VertexShader->AddInputElement(0, "TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
+	VertexShader->AddInputElement(0, "COLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
+	VertexShader->AddInputElement(0, "HIGHLIGHTCOLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
 	VertexShader->CommitInputElements();
 
 	PixelShader = new pixel_shader(L"terrain_ps.cso");
 
 	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(vertex), (uint32)Vertices.size(), accessibility::Dynamic);
-	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint32), (uint32)Indices.size());
+	IndexBuffer = new index_buffer(Indices.data(), sizeof(uint32), (uint32)Indices.size());
 
 	cbuffer_input VertexShaderInput;
 	ConstantBuffer[0] = new constant_buffer(&VertexShaderInput, sizeof(VertexShaderInput));
@@ -103,8 +103,8 @@ terrain::terrain(uint64 WidthX, uint64 WidthZ) :
 void terrain::Draw()
 {
 	cbuffer_input VertexShaderInput;
-	VertexShaderInput.Model = XMMatrixTranspose(Model);
-	VertexShaderInput.MVP = XMMatrixTranspose(Model * 
+	VertexShaderInput.Model = XMMatrixTranspose(GetWorldModel().GetMatrix());
+	VertexShaderInput.MVP = XMMatrixTranspose(GetWorldModel().GetMatrix() *
 											  XMMATRIX(camera::GetViewMatrix()) * 
 											  XMMATRIX(camera::GetProjectionMatrix()));
 
@@ -114,6 +114,7 @@ void terrain::Draw()
 
 	Texture->Bind();
 	VertexBuffer->Bind();
+	IndexBuffer->Bind();
 
 	VertexShader->Bind();
 	ConstantBuffer[0]->Bind(0, shader_set_type::SetVertexShader);
@@ -123,7 +124,7 @@ void terrain::Draw()
 	ConstantBuffer[0]->Update(&VertexShaderInput);
 	ConstantBuffer[1]->Update(&PixelShaderInput);
 
-	direct3d::GetContext()->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
+	direct3d::GetContext()->DrawIndexed(IndexBuffer->GetSize(), 0, 0);
 }
 
 void terrain::UpdateHighlightColorResource(vec3u Position, bool32 IsHighlighted)

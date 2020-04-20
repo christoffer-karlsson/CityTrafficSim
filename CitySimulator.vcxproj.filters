@@ -28,9 +28,6 @@
     <Filter Include="Header Files\graphics\drawables">
       <UniqueIdentifier>{3120dd6b-c6ba-404d-993e-fd6de85c18c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\graphics\shaders">
-      <UniqueIdentifier>{23338537-ca4b-4ebe-91b2-960c39f51d63}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\data">
       <UniqueIdentifier>{b5681021-cc48-4575-a7c6-99d2a90ca3b6}</UniqueIdentifier>
     </Filter>
@@ -42,6 +39,9 @@
     </Filter>
     <Filter Include="Header Files\entity">
       <UniqueIdentifier>{0551fedc-2107-489d-92a8-96329963b288}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shaders">
+      <UniqueIdentifier>{23338537-ca4b-4ebe-91b2-960c39f51d63}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -114,13 +114,7 @@
     <ClCompile Include="entity_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="object.cpp">
-      <Filter>Source Files\graphics\drawables</Filter>
-    </ClCompile>
     <ClCompile Include="system_message.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="light_source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="application_state.cpp">
@@ -138,12 +132,6 @@
     <ClCompile Include="entity_car.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
-    <ClCompile Include="drawable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="buildings.cpp">
-      <Filter>Source Files\graphics\drawables</Filter>
-    </ClCompile>
     <ClCompile Include="vertex_shader.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
@@ -153,8 +141,26 @@
     <ClCompile Include="drawable_cars.cpp">
       <Filter>Source Files\graphics\drawables</Filter>
     </ClCompile>
-    <ClCompile Include="model.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="drawable_object.cpp">
+      <Filter>Source Files\graphics\drawables</Filter>
+    </ClCompile>
+    <ClCompile Include="instance_buffer.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="index_buffer.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="world_model.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="drawable.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="light_source.cpp">
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -239,13 +245,7 @@
     <ClInclude Include="entity_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="object.h">
-      <Filter>Header Files\graphics\drawables</Filter>
-    </ClInclude>
     <ClInclude Include="system_message.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="light_source.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="math.h">
@@ -266,12 +266,6 @@
     <ClInclude Include="entity_car.h">
       <Filter>Header Files\entity</Filter>
     </ClInclude>
-    <ClInclude Include="drawable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="buildings.h">
-      <Filter>Header Files\graphics\drawables</Filter>
-    </ClInclude>
     <ClInclude Include="vertex_shader.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
@@ -281,43 +275,70 @@
     <ClInclude Include="drawable_cars.h">
       <Filter>Header Files\graphics\drawables</Filter>
     </ClInclude>
-    <ClInclude Include="model.h">
+    <ClInclude Include="obj_file.h">
+      <Filter>Header Files\header-only</Filter>
+    </ClInclude>
+    <ClInclude Include="drawable_object.h">
+      <Filter>Header Files\graphics\drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="instance_buffer.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="obj_file.h">
+    <ClInclude Include="index_buffer.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="world_model.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="drawable.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="light_source.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="drawable_cars_instance.h">
       <Filter>Header Files\header-only</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="cube_vs.hlsl">
-      <Filter>Source Files\graphics\shaders</Filter>
+      <Filter>Resource Files\shaders</Filter>
     </FxCompile>
     <FxCompile Include="cube_ps.hlsl">
-      <Filter>Source Files\graphics\shaders</Filter>
+      <Filter>Resource Files\shaders</Filter>
     </FxCompile>
     <FxCompile Include="line_vs.hlsl">
-      <Filter>Source Files\graphics\shaders</Filter>
+      <Filter>Resource Files\shaders</Filter>
     </FxCompile>
     <FxCompile Include="line_ps.hlsl">
-      <Filter>Source Files\graphics\shaders</Filter>
+      <Filter>Resource Files\shaders</Filter>
     </FxCompile>
     <FxCompile Include="user_interface_ps.hlsl">
-      <Filter>Source Files\graphics\shaders</Filter>
+      <Filter>Resource Files\shaders</Filter>
     </FxCompile>
     <FxCompile Include="user_interface_vs.hlsl">
-      <Filter>Source Files\graphics\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="vehicle_vs.hlsl">
-      <Filter>Source Files\graphics\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="vehicle_ps.hlsl">
-      <Filter>Source Files\graphics\shaders</Filter>
+      <Filter>Resource Files\shaders</Filter>
     </FxCompile>
     <FxCompile Include="terrain_ps.hlsl">
-      <Filter>Source Files\graphics\shaders</Filter>
+      <Filter>Resource Files\shaders</Filter>
     </FxCompile>
     <FxCompile Include="terrain_vs.hlsl">
-      <Filter>Source Files\graphics\shaders</Filter>
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="object_ps.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="object_vs.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="cars_instanced_vs.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="cars_instanced_ps.hlsl">
+      <Filter>Resource Files\shaders</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

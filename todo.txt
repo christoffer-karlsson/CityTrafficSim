@@ -2,7 +2,6 @@ TODO
 - instanced drawing for high amount of same models
 - memory copy when creating data for the gpu to read, avoid copy (object.cpp)
 - memory manager
-- asset manager
 - fix truncate error when converting from mouse coordinates to tile coordinates
 - more ui elements (button, textbox, selecting)
 - ui picking 
@@ -14,6 +13,8 @@ FUTURE (MAYBE) TODO
 - implement a way to reinitialize graphics api (for changing buffer resolution etc.)
 
 FINISHED
+- asset manager
+- class for handling mesh
 - model interface
 - mouse_picker class has to be aware of editmode, so that highlight can be turned off
 - more general mouse picker for different objects

@@ -26,7 +26,7 @@ struct vertex
 	}
 };
 
-class model
+class mesh
 {
 	private:
 
@@ -40,7 +40,7 @@ class model
 
 	public:
 
-	model(obj_file File);
+	mesh(obj_file File);
 
 	std::vector<vertex> &GetVertices();
 	std::vector<uint32> &GetIndices();

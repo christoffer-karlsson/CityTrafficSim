@@ -7,6 +7,8 @@
 
 #include <vector>
 
+#define MAX_INPUT_SLOTS 15
+
 class vertex_shader
 {
 	private:
@@ -17,12 +19,14 @@ class vertex_shader
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> Layout;
 
+	uint32 ByteOffset[MAX_INPUT_SLOTS];
+
 	public:
 
 	vertex_shader(const wchar_t *File);
 	~vertex_shader();
 
-	void AddInputElement(LPCSTR SemanticName, DXGI_FORMAT Format);
+	void AddInputElement(uint32 Slot, LPCSTR SemanticName, DXGI_FORMAT Format, D3D11_INPUT_CLASSIFICATION Class = D3D11_INPUT_PER_VERTEX_DATA, uint32 SemanticIndex = 0);
 	void CommitInputElements();
 
 	void Bind();

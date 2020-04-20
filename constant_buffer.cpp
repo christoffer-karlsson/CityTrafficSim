@@ -14,10 +14,10 @@ constant_buffer::constant_buffer(void *ShaderInput, uint32 Size) :
 	BufferDesc.ByteWidth = Size;
 	BufferDesc.StructureByteStride = 0;
 
-	D3D11_SUBRESOURCE_DATA SubResourceData = {};
-	SubResourceData.pSysMem = ShaderInput;
+	//D3D11_SUBRESOURCE_DATA SubResourceData = {};
+	//SubResourceData.pSysMem = ShaderInput;
 
-	HR = direct3d::GetDevice()->CreateBuffer(&BufferDesc, &SubResourceData, &ConstantBuffer);
+	HR = direct3d::GetDevice()->CreateBuffer(&BufferDesc, nullptr, &ConstantBuffer);
 	D3D_ERROR_CHECK(HR);
 }
 

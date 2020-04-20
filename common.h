@@ -6,12 +6,13 @@
 
 #include <cassert>
 
-#define BUILD_NUMBER 25
+#define BUILD_NUMBER 26
 #define SHOW_BUILD_NUMBER 1
 
 // NOTE(Cristoffer): Enable debug stuff, such as assertions. Turn off
 // when building release.
 #define DEBUG_MODE 1
+#define DX_DEBUG 1
 
 // NOTE(Cristoffer): Define if multi-threading should be used.
 // Supports change at run time, so maybe make a changeable variable of

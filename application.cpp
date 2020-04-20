@@ -11,12 +11,12 @@ void application::Run()
 {
 	// NOTE(Cristoffer): Statics.
 	direct3d::Init(Window.GetHandle());
+	asset_manager::Init();
 	camera::Init();
 	logger::Init();
 	entity_manager::Init();
-	render_manager::Init();
-	asset_manager::Init();
 	system_message::Init();
+	render_manager::Init();
 	light_source::Init(vec3(100.0f, 200.0f, 100.0f));
 
 	world *World = new world(200, 200);
@@ -114,6 +114,11 @@ void application::Run()
 		// all the instances and shutting down.
 		if(!Running)
 		{
+			if(direct3d::Debug != nullptr)
+			{
+				direct3d::Debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+			}
+			
 			threading::GetInstance().WaitAllThreads();
 			threading::GetInstance().TerminateAllThreads();
 
@@ -165,7 +170,7 @@ void application::Run()
 
 			if(MouseClicked(MOUSE_BUTTON_RIGHT))
 			{
-				
+				entity_manager::CreateEntity(application_state::GetMouseCoordinateInWorld(), entity_type::Car);
 			}
 
 			if(MouseClicked(MOUSE_BUTTON_MIDDLE))
@@ -248,12 +253,12 @@ void application::Run()
 
 		if(KeyReleased(KEY_8))
 		{
-			entity_manager::CreateEntity(application_state::GetMouseCoordinateInWorld(), entity_type::Car);
+			//entity_manager::CreateEntity(application_state::GetMouseCoordinateInWorld(), entity_type::Car);
 		}
 
 		if(KeyReleased(KEY_9))
 		{
-			/*for(uint32 x = 0;
+			for(uint32 x = 0;
 				x < 70;
 				x++)
 			{
@@ -261,9 +266,9 @@ void application::Run()
 					z < 70;
 					z++)
 				{
-					entity_manager::CreateEntity(vec3((real32)x + (x + 1.0f), 0.0f, (real32)z + (z + 1.0f)), entity_type::Car);
+					entity_manager::CreateEntity(vec3((real32)x + (x + 2.0f), 0.0f, (real32)z + (z + 2.0f)), entity_type::Car);
 				}
-			}*/
+			}
 			//entity_manager::CreateEntity(vec3(0.0f, 0.0f, 0.0f), entity_type::Car);
 		}
 
@@ -299,7 +304,7 @@ void application::Run()
 
 		if(KeyReleased(KEY_F5))
 		{
-			bool32 Save = Persistence.SaveWorldMap(World);
+			/*bool32 Save = Persistence.SaveWorldMap(World);
 
 			if(Save)
 			{
@@ -308,12 +313,12 @@ void application::Run()
 			else
 			{
 				SystemMessage("Error! Could not open file.");
-			}
+			}*/
 		}
 
 		if(KeyReleased(KEY_F9))
 		{
-			bool32 Load = Persistence.LoadSavedWorldMap(World);
+			/*bool32 Load = Persistence.LoadSavedWorldMap(World);
 
 			if(Load)
 			{
@@ -322,7 +327,7 @@ void application::Run()
 			else
 			{
 				SystemMessage("Error! Could not open file.");
-			}
+			}*/
 		}
 
 		if(KeyReleased(KEY_ARROWRIGHT))

@@ -52,11 +52,11 @@ uint32 entity_manager::CreateEntity(vec3 Position, entity_type Type)
 		{
 			case entity_type::Vehicle:	
 			
-			Entity[ID] = std::make_unique<entity_car>(ID, Position); 
+			//Entity[ID] = std::make_unique<entity_car>(ID, Position); 
 			break;
 
 			case entity_type::Car:		
-			
+
 			Entity[ID] = std::make_unique<entity_car>(ID, Position);
 			break;
 		}
@@ -81,7 +81,7 @@ void entity_manager::Simulate()
 		{
 			if(!(Entity[Index].get()->GetAlive()))
 			{
-				// NOTE(Cristoffer): If entity is flagged to get destroyed, add it to the vector.
+				// NOTE(Cristoffer): If entity is flagged to get destroyed, add it to the release vector.
 				EntityReleaseID.push_back(Entity[Index].get()->GetID());
 
 				continue;

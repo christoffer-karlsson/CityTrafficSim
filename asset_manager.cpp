@@ -1,6 +1,6 @@
 #include "asset_manager.h"
 
-model *asset_manager::Model[];
+mesh *asset_manager::Mesh[];
 
 void asset_manager::Init()
 {
@@ -8,23 +8,23 @@ void asset_manager::Init()
 		Index < MAX_MODEL_FILES;
 		Index++)
 	{
-		Model[Index] = nullptr;
+		Mesh[Index] = nullptr;
 	}
 
 	persistence Persistence;
 
 	// TODO(Cristoffer): Implement a way to look up assets via text. 
-	Model[0] = new model(Persistence.LoadObjectFile("car.obj"));
-	Model[1] = new model(Persistence.LoadObjectFile("building.obj"));
+	Mesh[0] = new mesh(Persistence.LoadObjectFile("car.obj"));
+	Mesh[1] = new mesh(Persistence.LoadObjectFile("building.obj"));
 }
 
-model *asset_manager::GetModel(uint32 ID)
+mesh *asset_manager::GetMesh(uint32 ID)
 {
-	model *Result = nullptr;
+	mesh *Result = nullptr;
 
 	if(ID > 0 || ID < MAX_MODEL_FILES)
 	{
-		Result = Model[ID];
+		Result = Mesh[ID];
 	}
 
 	return Result;

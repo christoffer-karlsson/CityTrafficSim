@@ -1,12 +1,9 @@
 #include "vertex_buffer.h"
 
 vertex_buffer::vertex_buffer(void *VertexData, uint32 Stride, uint32 Size, accessibility CPUAccess) :
-	VertexBuffer(nullptr), 
-	IndexBuffer(nullptr),
-	VertexBufferStride(Stride), 
-	VertexBufferSize(Size),
-	IndexBufferStride(0), 
-	IndexBufferSize(0),
+	Buffer(nullptr), 
+	Stride(Stride), 
+	Size(Size),
 	CPUAccess(CPUAccess)
 {
 	HRESULT HR = S_OK;
@@ -32,28 +29,7 @@ vertex_buffer::vertex_buffer(void *VertexData, uint32 Stride, uint32 Size, acces
 	SubResourceData.SysMemPitch = 0;
 	SubResourceData.SysMemSlicePitch = 0;
 
-	HR = direct3d::GetDevice()->CreateBuffer(&BufferDesc, &SubResourceData, &VertexBuffer);
-	D3D_ERROR_CHECK(HR);
-}
-
-void vertex_buffer::AddIndexBuffer(void *IndicesData, uint32 Stride, uint32 Size)
-{
-	HRESULT HR = S_OK;
-
-	IndexBufferSize = Size;
-
-	D3D11_BUFFER_DESC BufferDesc = {};
-	BufferDesc.StructureByteStride = Stride;
-	BufferDesc.ByteWidth = Size * Stride;
-	BufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	BufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	BufferDesc.CPUAccessFlags = 0;
-	BufferDesc.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA SubResourceData = {};
-	SubResourceData.pSysMem = IndicesData;
-
-	HR = direct3d::GetDevice()->CreateBuffer(&BufferDesc, &SubResourceData, &IndexBuffer);
+	HR = direct3d::GetDevice()->CreateBuffer(&BufferDesc, &SubResourceData, &Buffer);
 	D3D_ERROR_CHECK(HR);
 }
 
@@ -61,15 +37,10 @@ void vertex_buffer::Bind()
 {
 	uint32 Offset = 0;
 
-	direct3d::GetContext()->IASetVertexBuffers(0, 1, &VertexBuffer, &VertexBufferStride, &Offset);
-
-	if(IndexBufferSize > 0)
-	{
-		direct3d::GetContext()->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	}
+	direct3d::GetContext()->IASetVertexBuffers(0, 1, &Buffer, &Stride, &Offset);
 }
 
-void vertex_buffer::UpdateDynamicBuffer(void *VertexData, uint32 Stride, uint32 Size)
+void vertex_buffer::UpdateDynamicBuffer(void *Data, uint32 Stride, uint32 Size)
 {
 	// NOTE(Cristoffer): Need better structure so that objects that didn't declare
 	// dynamic buffer could not access this method. Assertion for now.
@@ -78,32 +49,32 @@ void vertex_buffer::UpdateDynamicBuffer(void *VertexData, uint32 Stride, uint32 
 
 	D3D11_MAPPED_SUBRESOURCE Resource;
 
-	direct3d::GetContext()->Map(VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &Resource);
+	direct3d::GetContext()->Map(Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &Resource);
 
-	memcpy(Resource.pData, VertexData, Stride * Size);
+	memcpy(Resource.pData, Data, (size_t)Stride * (size_t)Size);
 
-	direct3d::GetContext()->Unmap(VertexBuffer, 0);
+	direct3d::GetContext()->Unmap(Buffer, 0);
 }
 
-uint32 vertex_buffer::GetVertexCount() const
+uint32 vertex_buffer::GetSize() const
 {
-	return VertexBufferSize;
+	return Size;
 }
 
-uint32 vertex_buffer::GetIndexCount() const
+uint32 vertex_buffer::GetStride() const
 {
-	return IndexBufferSize;
+	return Stride;
+}
+
+ID3D11Buffer *vertex_buffer::GetBuffer() const
+{
+	return Buffer;
 }
 
 vertex_buffer::~vertex_buffer()
 {
-	if(VertexBuffer != nullptr)
+	if(Buffer != nullptr)
 	{
-		VertexBuffer->Release();
-	}
-
-	if(IndexBuffer != nullptr)
-	{
-		IndexBuffer->Release();
+		Buffer->Release();
 	}
 }

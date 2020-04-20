@@ -5,6 +5,7 @@ work_id render_manager::ThreadWorkID;
 vec3u render_manager::OldCollisionPosition;
 
 drawable *render_manager::Terrain;
+drawable_cars *render_manager::InstancedCars;
 
 std::vector<drawable*> render_manager::Agents;
 std::vector<drawable*> render_manager::UserInterfaceLayer;
@@ -12,7 +13,8 @@ std::vector<drawable*> render_manager::Graphs;
 
 void render_manager::Init()
 {
-	
+	// NOTE(Cristoffer): Instanced drawables.
+	InstancedCars = new drawable_cars(asset_manager::GetMesh(0), 0);
 }
 
 void render_manager::Push(drawable *Drawable, render_layer Layer)
@@ -43,6 +45,8 @@ void render_manager::Render()
 	direct3d::BeginFrame();
 
 	Terrain->Draw();
+
+	InstancedCars->Draw();
 
 	for(auto Iterator = Agents.begin();
 		Iterator != Agents.end();
@@ -82,7 +86,7 @@ void render_manager::TestMouseCollision()
 	{
 		mouse_picker WorldPicker;
 
-		bool32 Hit = WorldPicker.TestMouseCollision(Terrain->GetModel(), Terrain->GetCollisionModel());
+		bool32 Hit = WorldPicker.TestMouseCollision(Terrain->GetWorldModel().GetMatrix(), Terrain->GetCollisionModel());
 
 		Terrain->UpdateHighlightColorResource(OldCollisionPosition, 0);
 
@@ -111,4 +115,9 @@ void render_manager::TestMouseCollision()
 	{
 		ThreadWork();
 	}
+}
+
+drawable_cars *render_manager::GetInstancedCars()
+{
+	return InstancedCars;
 }

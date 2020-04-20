@@ -1,6 +1,6 @@
-#include "model.h"
+#include "mesh.h"
 
-model::model(obj_file File)
+mesh::mesh(obj_file File)
 {
 	// NOTE(Cristoffer): Store vertex data.
 	for(auto E : File.Vertices)
@@ -66,37 +66,37 @@ model::model(obj_file File)
 	TotalSizeInBytes = sizeof(vertex) * Vertices.size() + sizeof(uint32) * Indices.size();
 }
 
-std::vector<vertex> &model::GetVertices()
+std::vector<vertex> &mesh::GetVertices()
 {
 	return Vertices;
 }
 
-std::vector<uint32> &model::GetIndices()
+std::vector<uint32> &mesh::GetIndices()
 {
 	return Indices;
 }
 
-uint32 model::GetVertexCount()
+uint32 mesh::GetVertexCount()
 {
 	return Vertices.size();
 }
 
-uint32 model::GetIndexCount()
+uint32 mesh::GetIndexCount()
 {
 	return Indices.size();
 }
 
-bool32 &model::GetHasNormals()
+bool32 &mesh::GetHasNormals()
 {
 	return HasNormals;
 }
 
-bool32 &model::GetHaxTexture()
+bool32 &mesh::GetHaxTexture()
 {
 	return HasTexture;
 }
 
-uint32 &model::GetTotalSizeInBytes()
+uint32 &mesh::GetTotalSizeInBytes()
 {
 	return TotalSizeInBytes;
 }

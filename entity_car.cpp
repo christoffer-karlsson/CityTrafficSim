@@ -2,37 +2,49 @@
 
 entity_car::entity_car(uint32 ID, vec3 Position)
 {
+	this->Drawable = render_manager::GetInstancedCars();
+
+	real32 R = static_cast <real32> (rand()) / static_cast <real32> (RAND_MAX);
+	real32 G = static_cast <real32> (rand()) / static_cast <real32> (RAND_MAX);
+	real32 B = static_cast <real32> (rand()) / static_cast <real32> (RAND_MAX);
+
+	this->Color = vec4(R, G, B, 1.0f);
+
 	SetID(ID);
 	SetCollidable(0);
 	SetSimulated(1);
 	SetAlive(1);
 
-	SetDrawable(new object(
-		asset_manager::GetModel(0),
-		Position,
-		vec3(1.0f, 1.0f, 1.0f),
-		vec3(0.0f, 180.0f, 0.0f),
-		vec4(0.5f, 0.5f, 0.5f, 1.0f)));
+	std::random_device rd; // obtain a random number from hardware
+	std::mt19937 eng(rd()); // seed the generator
+	std::uniform_real_distribution<> distr(1.0f, 7.0f); // define the range
 
-	this->Speed = 0.0f;
+	Speed = distr(eng);
+
+	std::random_device rd2;
+	std::mt19937 eng2(rd2());
+	std::uniform_real_distribution<> distr2(0.0f, 360.0f);
+
+	Angle = distr2(eng2);
+
+	WorldModel->Position = Position;
+	WorldModel->Rotation.y = Angle;
+	WorldModel->Scale = vec3(0.8f, 0.8f, 0.8f);
+
+	WorldModel->Update();
 }
 
 void entity_car::Update()
 {
-	vec3 Position = GetPosition();
+	Angle += Speed;
 
-	if(Position.z > 200.0f)
+	if(Angle > 360.0f)
 	{
-		SetAlive(0);
-	}
-	else
-	{
-		//Position.z += 0.1f;
+		Angle = Angle - 360.0f;
 	}
 
-	SetPosition(Position);
+	WorldModel->Rotation.y = Angle;
+	WorldModel->Update();
 
-	UpdateDrawable();
-
-	render_manager::Push(GetDrawable(), render_layer::Agents);
+	Drawable->PushInstance(WorldModel->GetMatrix(), Color);
 }

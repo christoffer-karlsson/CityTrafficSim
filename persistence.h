@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common.h"
-#include "world.h"
+//#include "world.h"
 #include "obj_file.h"
 
 #include <fstream>
@@ -25,8 +25,8 @@ class persistence
 	persistence() = default;
 	~persistence() = default;
 
-	bool32 SaveWorldMap(world *World);
-	bool32 LoadSavedWorldMap(world *World);
+	//bool32 SaveWorldMap(world *World);
+	//bool32 LoadSavedWorldMap(world *World);
 
 	obj_file LoadObjectFile(std::string Filename);
 };

@@ -106,15 +106,15 @@ user_interface::user_interface() :
 	}
 
 	VertexShader = new vertex_shader(L"user_interface_vs.cso");
-	VertexShader->AddInputElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
-	VertexShader->AddInputElement("COLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
-	VertexShader->AddInputElement("ISHIGHLIGHTED", DXGI_FORMAT_R32_FLOAT);
+	VertexShader->AddInputElement(0, "POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
+	VertexShader->AddInputElement(0, "COLOR", DXGI_FORMAT_R32G32B32A32_FLOAT);
+	VertexShader->AddInputElement(0, "ISHIGHLIGHTED", DXGI_FORMAT_R32_FLOAT);
 	VertexShader->CommitInputElements();
 
 	PixelShader = new pixel_shader(L"user_interface_ps.cso");
 
 	VertexBuffer = new vertex_buffer(Vertices.data(), sizeof(ui_vertex), (uint32)Vertices.size(), accessibility::Dynamic);
-	VertexBuffer->AddIndexBuffer(Indices.data(), sizeof(uint32), (uint32)Indices.size());
+	IndexBuffer = new index_buffer(Indices.data(), sizeof(uint32), (uint32)Indices.size());
 }
 
 void user_interface::Draw()
@@ -125,10 +125,11 @@ void user_interface::Draw()
 	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(ui_vertex), (uint32)Vertices.size());
 
 	VertexBuffer->Bind();
+	IndexBuffer->Bind();
 	VertexShader->Bind();
 	PixelShader->Bind();
 
-	direct3d::GetContext()->DrawIndexed(VertexBuffer->GetIndexCount(), 0, 0);
+	direct3d::GetContext()->DrawIndexed(IndexBuffer->GetSize(), 0, 0);
 
 	// TODO(Cristoffer): Does this need device context in order to do alpha?
 	//DXTKSpriteBatch->Begin(SpriteSortMode_Deferred, direct3d::GetAlphaBlendState());

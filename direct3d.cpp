@@ -15,6 +15,8 @@ ID3D11BlendState		*direct3d::AlphaBlendState;
 ID3D11Texture2D			*direct3d::DepthStencilBuffer;
 D3D11_VIEWPORT			 direct3d::Viewport;
 
+IDXGIDebug				*direct3d::Debug;
+
 void direct3d::Init(HWND WindowHandle)
 {
 	direct3d::WindowHandle = WindowHandle;
@@ -35,6 +37,24 @@ void direct3d::SetDevice()
 
 	HRESULT HR = S_OK;
 
+	D3D_FEATURE_LEVEL FeatureLevels[] =
+	{
+		D3D_FEATURE_LEVEL_11_1,
+		D3D_FEATURE_LEVEL_11_0,
+		D3D_FEATURE_LEVEL_10_1,
+		D3D_FEATURE_LEVEL_10_0,
+		D3D_FEATURE_LEVEL_9_3,
+		D3D_FEATURE_LEVEL_9_1
+	};
+
+	uint32 CreationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+
+	#if DX_DEBUG
+
+	CreationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+
+	#endif
+
 	DXGI_SWAP_CHAIN_DESC DeviceDescription = {};
 
 	DeviceDescription.BufferCount = 1;
@@ -54,9 +74,9 @@ void direct3d::SetDevice()
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
-		D3D11_CREATE_DEVICE_DEBUG,
-		nullptr,
-		0,
+		CreationFlags,
+		FeatureLevels,
+		ARRAYSIZE(FeatureLevels),
 		D3D11_SDK_VERSION,
 		&DeviceDescription,
 		&Swap,
@@ -66,6 +86,11 @@ void direct3d::SetDevice()
 	);
 
 	D3D_ERROR_CHECK(HR);
+
+	#if DX_DEBUG
+	HR = Device->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void **>(&Debug));
+	D3D_ERROR_CHECK(HR);
+	#endif
 }
 
 void direct3d::SetFrameBuffer()
