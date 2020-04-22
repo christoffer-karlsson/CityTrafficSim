@@ -1,8 +1,44 @@
 #include "mesh.h"
 
-mesh::mesh(obj_file File)
+void mesh::CreateMesh(obj_file &File)
 {
-	// NOTE(Cristoffer): Store vertex data.
+	if(File.Normals.size() > 0)
+	{
+		HasNormals = 1;
+	}
+
+	if(File.TextureUVs.size() > 0)
+	{
+		HasTexture = 1;
+	}
+
+	// NOTE(Cristoffer): Store all vertex data based on the indexes.
+	for(auto Index : File.FaceIndices)
+	{
+		vertex Vertex;
+
+		Vertex.Position = File.Vertices.at(Index.Position);
+
+		if(HasNormals)
+		{
+			Vertex.Normal = File.Normals.at(Index.Normal);
+		}
+
+		if(HasTexture)
+		{
+			Vertex.TextureUVCoordinate = File.TextureUVs.at(Index.TextureCoordinate);
+		}
+
+		Vertices.push_back(Vertex);
+
+		Indices.push_back(Index.Position);
+	}
+
+	TotalSizeInBytes = sizeof(vertex) * Vertices.size() + sizeof(uint32) * Indices.size();
+}
+
+void mesh::CreateIndexedMesh(obj_file &File)
+{
 	for(auto E : File.Vertices)
 	{
 		vertex Vertex;
@@ -64,6 +100,18 @@ mesh::mesh(obj_file File)
 	}
 
 	TotalSizeInBytes = sizeof(vertex) * Vertices.size() + sizeof(uint32) * Indices.size();
+}
+
+mesh::mesh(obj_file File, bool32 IndexedStorage)
+{
+	if(IndexedStorage)
+	{
+		CreateIndexedMesh(File);
+	}
+	else
+	{
+		CreateMesh(File);
+	}
 }
 
 std::vector<vertex> &mesh::GetVertices()

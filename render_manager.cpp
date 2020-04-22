@@ -5,7 +5,8 @@ work_id render_manager::ThreadWorkID;
 vec3u render_manager::OldCollisionPosition;
 
 drawable *render_manager::Terrain;
-drawable_cars *render_manager::InstancedCars;
+drawable_cars *render_manager::Cars;
+drawable_buildings *render_manager::Buildings;
 
 std::vector<drawable*> render_manager::Agents;
 std::vector<drawable*> render_manager::UserInterfaceLayer;
@@ -14,7 +15,8 @@ std::vector<drawable*> render_manager::Graphs;
 void render_manager::Init()
 {
 	// NOTE(Cristoffer): Instanced drawables.
-	InstancedCars = new drawable_cars(asset_manager::GetMesh(0), 0);
+	Cars = new drawable_cars(asset_manager::GetMesh(ASSET_MESH_CAR_INDEXED));
+	Buildings = new drawable_buildings(asset_manager::GetMesh(ASSET_MESH_BUILDING));
 }
 
 void render_manager::Push(drawable *Drawable, render_layer Layer)
@@ -46,7 +48,12 @@ void render_manager::Render()
 
 	Terrain->Draw();
 
-	InstancedCars->Draw();
+	if(!application_state::GetEditModeEnabled())
+	{
+		Buildings->Draw();
+	}
+
+	Cars->Draw();
 
 	for(auto Iterator = Agents.begin();
 		Iterator != Agents.end();
@@ -68,6 +75,11 @@ void render_manager::Render()
 	{
 		(*Iterator)->Draw();
 	}
+
+	#if DEBUG_MODE
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	#endif
 
 	direct3d::EndFrame();
 
@@ -117,7 +129,12 @@ void render_manager::TestMouseCollision()
 	}
 }
 
-drawable_cars *render_manager::GetInstancedCars()
+drawable_cars *render_manager::GetDrawableCars()
 {
-	return InstancedCars;
+	return Cars;
+}
+
+drawable_buildings *render_manager::GetDrawableBuildings()
+{
+	return Buildings;
 }

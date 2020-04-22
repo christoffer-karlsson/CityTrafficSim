@@ -14,6 +14,8 @@ real32 camera::AspectRatio;
 real32 camera::NearZ;
 real32 camera::FarZ;
 
+bool32 camera::InputDisabled = 0;
+
 void camera::Init()
 {
 	// TODO(Cristoffer): Perhaps need different projections when doing UI stuff later.
@@ -37,15 +39,105 @@ void camera::Init()
 	Update();
 }
 
+void camera::DisableInput()
+{
+	InputDisabled = 1;
+}
+
+void camera::EnableInput()
+{
+	InputDisabled = 0;
+}
+
 void camera::SetPosition(real32 X, real32 Y, real32 Z)
 {
+	if(InputDisabled) return;
+
 	Position = XMFLOAT3(X, Y, Z);
+
+	Update();
+}
+
+void camera::PanForward(real32 Value)
+{
+	if(InputDisabled) return;
+
+	// NOTE(Cristoffer): To get a 45 degree angle on the pan.
+	XMFLOAT3 PanAxis = XMFLOAT3(1.0f, 0.0f, 1.0f);
+
+	XMVECTOR PanDirection = XMVector3Cross(XMLoadFloat3(&PanAxis), XMLoadFloat3(&UpDirection));
+
+	PanDirection = XMVectorScale(PanDirection, Value);
+
+	XMVECTOR OldPosition = XMLoadFloat3(&Position);
+	XMVECTOR NewPosition = XMVectorAdd(OldPosition, PanDirection);
+
+	XMStoreFloat3(&Position, NewPosition);
+
+	Update();
+}
+
+void camera::PanBackward(real32 Value)
+{
+	if(InputDisabled) return;
+
+	// NOTE(Cristoffer): To get a 45 degree angle on the pan.
+	XMFLOAT3 PanAxis = XMFLOAT3(1.0f, 0.0f, 1.0f);
+
+	XMVECTOR PanDirection = XMVector3Cross(XMLoadFloat3(&PanAxis), XMLoadFloat3(&UpDirection));
+
+	PanDirection = XMVectorScale(PanDirection, -Value);
+
+	XMVECTOR OldPosition = XMLoadFloat3(&Position);
+	XMVECTOR NewPosition = XMVectorAdd(OldPosition, PanDirection);
+
+	XMStoreFloat3(&Position, NewPosition);
+
+	Update();
+}
+
+void camera::PanLeft(real32 Value)
+{
+	if(InputDisabled) return;
+
+	// NOTE(Cristoffer): To get a 45 degree angle on the pan.
+	XMFLOAT3 PanAxis = XMFLOAT3(-1.0f, 0.0f, 1.0f);
+
+	XMVECTOR PanDirection = XMVector3Cross(XMLoadFloat3(&PanAxis), XMLoadFloat3(&UpDirection));
+
+	PanDirection = XMVectorScale(PanDirection, Value);
+
+	XMVECTOR OldPosition = XMLoadFloat3(&Position);
+	XMVECTOR NewPosition = XMVectorAdd(OldPosition, PanDirection);
+
+	XMStoreFloat3(&Position, NewPosition);
+
+	Update();
+}
+
+void camera::PanRight(real32 Value)
+{
+	if(InputDisabled) return;
+
+	// NOTE(Cristoffer): To get a 45 degree angle on the pan.
+	XMFLOAT3 PanAxis = XMFLOAT3(-1.0f, 0.0f, 1.0f);
+
+	XMVECTOR PanDirection = XMVector3Cross(XMLoadFloat3(&PanAxis), XMLoadFloat3(&UpDirection));
+
+	PanDirection = XMVectorScale(PanDirection, -Value);
+
+	XMVECTOR OldPosition = XMLoadFloat3(&Position);
+	XMVECTOR NewPosition = XMVectorAdd(OldPosition, PanDirection);
+
+	XMStoreFloat3(&Position, NewPosition);
 
 	Update();
 }
 
 void camera::MoveForward(real32 Value)
 {
+	if(InputDisabled) return;
+
 	XMVECTOR ScaledViewDirection = XMVectorScale(XMLoadFloat3(&ViewDirection), Value);
 
 	XMVECTOR OldPosition = XMLoadFloat3(&Position);
@@ -59,6 +151,8 @@ void camera::MoveForward(real32 Value)
 
 void camera::MoveBackward(real32 Value)
 {
+	if(InputDisabled) return;
+
 	XMVECTOR ScaledViewDirection = XMVectorScale(XMLoadFloat3(&ViewDirection), Value);
 
 	XMVECTOR OldPosition = XMLoadFloat3(&Position);
@@ -72,6 +166,8 @@ void camera::MoveBackward(real32 Value)
 
 void camera::StrafeLeft(real32 Value)
 {
+	if(InputDisabled) return;
+
 	XMVECTOR StrafeDirection = XMVector3Cross(XMLoadFloat3(&ViewDirection), XMLoadFloat3(&UpDirection));
 
 	StrafeDirection = XMVectorScale(StrafeDirection, Value);
@@ -86,6 +182,8 @@ void camera::StrafeLeft(real32 Value)
 
 void camera::StrafeRight(real32 Value)
 {
+	if(InputDisabled) return;
+
 	XMVECTOR StrafeDirection = XMVector3Cross(XMLoadFloat3(&ViewDirection), XMLoadFloat3(&UpDirection));
 
 	StrafeDirection = XMVectorScale(StrafeDirection, Value);
@@ -100,6 +198,8 @@ void camera::StrafeRight(real32 Value)
 
 void camera::MoveUp(real32 Value)
 {
+	if(InputDisabled) return;
+
 	XMVECTOR Scale = XMVectorScale(XMLoadFloat3(&UpDirection), Value);
 
 	XMVECTOR OldPosition = XMLoadFloat3(&Position);
@@ -112,6 +212,8 @@ void camera::MoveUp(real32 Value)
 
 void camera::MoveDown(real32 Value)
 {
+	if(InputDisabled) return;
+
 	XMVECTOR Scale = XMVectorScale(XMLoadFloat3(&UpDirection), Value);
 
 	XMVECTOR OldPosition = XMLoadFloat3(&Position);
@@ -124,6 +226,8 @@ void camera::MoveDown(real32 Value)
 
 void camera::LookX(real32 Value)
 {
+	if(InputDisabled) return;
+
 	XMMATRIX RotationMatrix = XMMatrixRotationAxis(FXMVECTOR(XMLoadFloat3(&UpDirection)), Value);
 
 	XMVECTOR OldViewDirection = FXMVECTOR(XMLoadFloat3(&ViewDirection));
@@ -136,6 +240,8 @@ void camera::LookX(real32 Value)
 
 void camera::LookY(real32 Value)
 {
+	if(InputDisabled) return;
+
 	XMVECTOR RotationAxis = XMVector3Cross(XMLoadFloat3(&ViewDirection), XMLoadFloat3(&UpDirection));
 
 	XMMATRIX RotationMatrix = XMMatrixRotationAxis(RotationAxis, -Value);

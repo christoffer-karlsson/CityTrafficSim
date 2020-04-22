@@ -13,6 +13,7 @@
 #include "constant_buffer.h"
 #include "instance_buffer.h"
 #include "light_source.h"
+#include "directional_light.h"
 #include "mesh.h"
 
 #include <memory>

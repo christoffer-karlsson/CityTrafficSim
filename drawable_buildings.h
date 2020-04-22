@@ -1,5 +1,5 @@
-// drawable_cars.h
-// Instanced drawing of car model object.
+// drawable_building.h
+// Instanced drawing of building model object.
 
 #pragma once
 
@@ -8,7 +8,7 @@
 
 #define MAX_INSTANCES 5000
 
-class drawable_cars : public drawable
+class drawable_buildings : public drawable
 {
 	private:
 
@@ -23,9 +23,10 @@ class drawable_cars : public drawable
 
 	public:
 
-	drawable_cars(mesh *Asset);
+	drawable_buildings(mesh *Asset);
 
 	void Draw();
 
 	void PushInstance(XMMATRIX &Model, vec4 &Color);
+	void ClearInstances();
 };

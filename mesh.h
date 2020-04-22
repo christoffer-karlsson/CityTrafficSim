@@ -38,9 +38,19 @@ class mesh
 	std::vector<vertex> Vertices;
 	std::vector<uint32> Indices;
 
+	// NOTE(Cristoffer): Creates a mesh for rendering _without_ indices. This is useful
+	// if the object has sharp corners (for example a cube), where we need three different
+	// normals for the same vertex depending on the face.
+	void CreateMesh(obj_file &File);
+
+	// NOTE(Cristoffer): Creates a mesh for rendering _with_ indices. 
+	// This will take one normal for connecting vertices, which will then make a smoother
+	// look. Use for more complex models, like spheres.
+	void CreateIndexedMesh(obj_file &File);
+
 	public:
 
-	mesh(obj_file File);
+	mesh(obj_file File, bool32 IndexedStorage);
 
 	std::vector<vertex> &GetVertices();
 	std::vector<uint32> &GetIndices();

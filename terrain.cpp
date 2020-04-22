@@ -29,12 +29,12 @@ terrain::terrain(uint64 WidthX, uint64 WidthZ) :
 
 			vertex Vertex[6];
 
-			Vertex[0].Position = vec3((real32)X - 0.5f, 0.0f, (real32)Z - 0.5f); // 0
-			Vertex[1].Position = vec3((real32)X - 0.5f, 0.0f, (real32)Z + 0.5f); // 1
-			Vertex[2].Position = vec3((real32)X + 0.5f, 0.0f, (real32)Z - 0.5f); // 2
-			Vertex[3].Position = vec3((real32)X - 0.5f, 0.0f, (real32)Z + 0.5f); // 1
-			Vertex[4].Position = vec3((real32)X + 0.5f, 0.0f, (real32)Z + 0.5f); // 3
-			Vertex[5].Position = vec3((real32)X + 0.5f, 0.0f, (real32)Z - 0.5f); // 2
+			Vertex[0].Position = vec3((real32)X + 0.0f, 0.0f, (real32)Z + 0.0f); // 0
+			Vertex[1].Position = vec3((real32)X + 0.0f, 0.0f, (real32)Z + 1.0f); // 1
+			Vertex[2].Position = vec3((real32)X + 1.0f, 0.0f, (real32)Z + 0.0f); // 2
+			Vertex[3].Position = vec3((real32)X + 0.0f, 0.0f, (real32)Z + 1.0f); // 1
+			Vertex[4].Position = vec3((real32)X + 1.0f, 0.0f, (real32)Z + 1.0f); // 3
+			Vertex[5].Position = vec3((real32)X + 1.0f, 0.0f, (real32)Z + 0.0f); // 2
 			
 			// NOTE(Cristoffer): Normals in Y direction for now.
 			Vertex[0].Normal = vec3(0.0f, 1.0f, 0.0f); // 0

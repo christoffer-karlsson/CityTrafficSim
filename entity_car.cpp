@@ -2,7 +2,7 @@
 
 entity_car::entity_car(uint32 ID, vec3 Position)
 {
-	this->Drawable = render_manager::GetInstancedCars();
+	this->Drawable = render_manager::GetDrawableCars();
 
 	real32 R = static_cast <real32> (rand()) / static_cast <real32> (RAND_MAX);
 	real32 G = static_cast <real32> (rand()) / static_cast <real32> (RAND_MAX);
@@ -29,7 +29,7 @@ entity_car::entity_car(uint32 ID, vec3 Position)
 
 	WorldModel->Position = Position;
 	WorldModel->Rotation.y = Angle;
-	WorldModel->Scale = vec3(0.8f, 0.8f, 0.8f);
+	WorldModel->Scale = vec3(0.25f, 0.25f, 0.25f);
 
 	WorldModel->Update();
 }
@@ -43,7 +43,7 @@ void entity_car::Update()
 		Angle = Angle - 360.0f;
 	}
 
-	WorldModel->Rotation.y = Angle;
+	//WorldModel->Rotation.y = Angle;
 	WorldModel->Update();
 
 	Drawable->PushInstance(WorldModel->GetMatrix(), Color);

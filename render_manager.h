@@ -8,7 +8,12 @@
 #include "application_state.h"
 #include "logger.h"
 #include "drawable_cars.h"
+#include "drawable_buildings.h"
 #include "asset_manager.h"
+
+#if DEBUG_MODE
+#include "external/imgui/imgui_impl_dx11.h"
+#endif
 
 #include <vector>
 
@@ -27,7 +32,8 @@ class render_manager
 
 	// TODO(Cristoffer): Containter for this.
 	static drawable *Terrain;
-	static drawable_cars *InstancedCars;
+	static drawable_cars *Cars;
+	static drawable_buildings *Buildings;
 
 	static std::vector<drawable*> Agents;
 	static std::vector<drawable*> UserInterfaceLayer;
@@ -40,5 +46,6 @@ class render_manager
 	static void Render();
 	static void TestMouseCollision();
 
-	static drawable_cars *GetInstancedCars();
+	static drawable_cars *GetDrawableCars();
+	static drawable_buildings *GetDrawableBuildings();
 };

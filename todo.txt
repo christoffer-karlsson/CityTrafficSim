@@ -1,8 +1,6 @@
 TODO
-- instanced drawing for high amount of same models
 - memory copy when creating data for the gpu to read, avoid copy (object.cpp)
 - memory manager
-- fix truncate error when converting from mouse coordinates to tile coordinates
 - more ui elements (button, textbox, selecting)
 - ui picking 
 - ui tile selecting
@@ -13,6 +11,9 @@ FUTURE (MAYBE) TODO
 - implement a way to reinitialize graphics api (for changing buffer resolution etc.)
 
 FINISHED
+- fix truncate error when converting from mouse coordinates to tile coordinates
+- instanced drawing for high amount of same models
+- entity indivudal transforms
 - asset manager
 - class for handling mesh
 - model interface

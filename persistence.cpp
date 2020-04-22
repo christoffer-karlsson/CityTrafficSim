@@ -1,6 +1,6 @@
 #include "persistence.h"
 
-/*bool32 persistence::SaveWorldMap(world *World)
+bool32 persistence::SaveWorldMap(world *World)
 {
 	std::ofstream File;
 	File.open(WorldSaveFile);
@@ -62,7 +62,7 @@ bool32 persistence::LoadSavedWorldMap(world *World)
 	File.close();
 
 	return 1;
-}*/
+}
 
 obj_file persistence::LoadObjectFile(std::string Filename)
 {

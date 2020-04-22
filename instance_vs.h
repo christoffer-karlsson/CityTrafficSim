@@ -5,7 +5,7 @@
 
 using namespace DirectX;
 
-struct drawable_cars_instance
+struct instance_vs
 {
 	XMMATRIX Model;
 	vec4 Color;

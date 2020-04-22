@@ -3,9 +3,9 @@
 world::world(uint32 WidthX, uint32 WidthZ) :
 	Terrain(new terrain(WidthX, WidthZ))
 {
-	render_manager::Push(Terrain, render_layer::Terrain);
-
 	Tiles = new tile[WidthX * WidthZ];
+
+	DrawableBuildings = render_manager::GetDrawableBuildings();
 }
 
 world::~world()
@@ -25,6 +25,38 @@ void world::SetTile(vec3u Position, tile_type Type)
 void world::SetTileHighlighted(vec3u Position, bool32 Set)
 {
 	Terrain->UpdateHighlightColorResource(Position, Set);
+}
+
+void world::UpdateBuildings()
+{
+	DrawableBuildings->ClearInstances();
+
+	for(uint32 x = 0;
+		x < Terrain->GetWidthX();
+		x++)
+	{
+		for(uint32 z = 0;
+			z < Terrain->GetWidthZ();
+			z++)
+		{
+			uint32 ID = GetTileID({ x, 0, z });
+
+			tile_type Type = GetTileType(ID);
+
+			if(Type == tile_type::BUILDING)
+			{
+				world_model Model;
+
+				Model.Position = vec3((real32)x, 0, (real32)z);
+				Model.Scale = vec3(1.0f, 3.0f, 1.0f);
+				Model.Update();
+
+				vec4 Color(0.6f, 0.6f, 0.6f, 1.0f);
+
+				DrawableBuildings->PushInstance(Model.GetMatrix(), Color);
+			}
+		}
+	}
 }
 
 uint32 world::GetWidthX() const
@@ -103,4 +135,9 @@ tile &world::GetTile(vec3u Position)
 	uint32 Pitch = Terrain->GetWidthX() * Position.z;
 
 	return Tiles[Pitch + Position.x];
+}
+
+terrain *world::GetTerrain()
+{
+	return Terrain;
 }

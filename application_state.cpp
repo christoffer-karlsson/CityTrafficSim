@@ -1,6 +1,9 @@
 #include "application_state.h"
 
+context application_state::Context = context::Simulation;
+
 bool32 application_state::EditMode = 0;
+bool32 application_state::DebugMenu = 0;
 vec3   application_state::MouseCoordinateInWorld;
 vec3u  application_state::MouseCoordinateInWorldTrunc;
 
@@ -25,9 +28,36 @@ void application_state::ToggleEditMode()
 	}
 }
 
+void application_state::ToggleDebugMenu()
+{
+	if(DebugMenu == 0)
+	{
+		DebugMenu = 1;
+	}
+	else
+	{
+		DebugMenu = 0;
+	}
+}
+
+void application_state::SetContext(context Context)
+{
+	application_state::Context = Context;
+}
+
+context application_state::GetContext()
+{
+	return Context;
+}
+
 bool32 application_state::GetEditModeEnabled()
 {
 	return EditMode;
+}
+
+bool32 application_state::GetDebugMenuEnabled()
+{
+	return DebugMenu;
 }
 
 vec3 &application_state::GetMouseCoordinateInWorld()

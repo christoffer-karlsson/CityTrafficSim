@@ -17,9 +17,6 @@ struct const_rotation_vectors
 	static const XMVECTOR RotationVectorAxisZ;
 };
 
-// TODO(Cristoffer): Temp.
-XMMATRIX ConstructModelXXX(vec3 Position, vec3 Scale, vec3 Rotation);
-
 class world_model
 {
 	private:

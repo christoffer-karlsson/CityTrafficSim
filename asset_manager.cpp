@@ -14,8 +14,10 @@ void asset_manager::Init()
 	persistence Persistence;
 
 	// TODO(Cristoffer): Implement a way to look up assets via text. 
-	Mesh[0] = new mesh(Persistence.LoadObjectFile("car.obj"));
-	Mesh[1] = new mesh(Persistence.LoadObjectFile("building.obj"));
+	Mesh[ASSET_MESH_CAR] = new mesh(Persistence.LoadObjectFile("car.obj"), 0);
+	Mesh[ASSET_MESH_CAR_INDEXED] = new mesh(Persistence.LoadObjectFile("car.obj"), 1);
+	Mesh[ASSET_MESH_BUILDING] = new mesh(Persistence.LoadObjectFile("building.obj"), 0);
+	Mesh[ASSET_MESH_BUILDING_INDEXED] = new mesh(Persistence.LoadObjectFile("building.obj"), 1);
 }
 
 mesh *asset_manager::GetMesh(uint32 ID)

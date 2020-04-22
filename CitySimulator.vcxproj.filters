@@ -43,6 +43,9 @@
     <Filter Include="Resource Files\shaders">
       <UniqueIdentifier>{23338537-ca4b-4ebe-91b2-960c39f51d63}</UniqueIdentifier>
     </Filter>
+    <Filter Include="External Libraries\imgui">
+      <UniqueIdentifier>{e1072d2d-5701-4a2f-b1d1-b3fb103bfba1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="winmain.cpp">
@@ -161,6 +164,30 @@
     </ClCompile>
     <ClCompile Include="light_source.cpp">
       <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="drawable_buildings.cpp">
+      <Filter>Source Files\graphics\drawables</Filter>
+    </ClCompile>
+    <ClCompile Include="directional_light.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="external\imgui\imgui.cpp">
+      <Filter>External Libraries\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="external\imgui\imgui_demo.cpp">
+      <Filter>External Libraries\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="external\imgui\imgui_draw.cpp">
+      <Filter>External Libraries\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="external\imgui\imgui_widgets.cpp">
+      <Filter>External Libraries\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="external\imgui\imgui_impl_dx11.cpp">
+      <Filter>External Libraries\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="external\imgui\imgui_impl_win32.cpp">
+      <Filter>External Libraries\imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -299,8 +326,38 @@
     <ClInclude Include="light_source.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="drawable_cars_instance.h">
+    <ClInclude Include="drawable_buildings.h">
+      <Filter>Header Files\graphics\drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="instance_vs.h">
       <Filter>Header Files\header-only</Filter>
+    </ClInclude>
+    <ClInclude Include="directional_light.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\imconfig.h">
+      <Filter>External Libraries\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\imgui.h">
+      <Filter>External Libraries\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\imgui_internal.h">
+      <Filter>External Libraries\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\imstb_rectpack.h">
+      <Filter>External Libraries\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\imstb_textedit.h">
+      <Filter>External Libraries\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\imstb_truetype.h">
+      <Filter>External Libraries\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\imgui_impl_dx11.h">
+      <Filter>External Libraries\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\imgui_impl_win32.h">
+      <Filter>External Libraries\imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -334,10 +391,10 @@
     <FxCompile Include="object_vs.hlsl">
       <Filter>Resource Files\shaders</Filter>
     </FxCompile>
-    <FxCompile Include="cars_instanced_vs.hlsl">
+    <FxCompile Include="instanced_object_ps.hlsl">
       <Filter>Resource Files\shaders</Filter>
     </FxCompile>
-    <FxCompile Include="cars_instanced_ps.hlsl">
+    <FxCompile Include="instanced_object_vs.hlsl">
       <Filter>Resource Files\shaders</Filter>
     </FxCompile>
   </ItemGroup>

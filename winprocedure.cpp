@@ -1,7 +1,24 @@
 #include "winprocedure.h"
 
+#if DEBUG_MODE
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+#endif
+
 LRESULT CALLBACK WindowProcedure(HWND WindowHandle, UINT MessageId, WPARAM WParam, LPARAM LParam)
 {
+	#if DEBUG_MODE
+
+	// NOTE(Cristoffer): Leave message to Imgui proc handler first, if proc handler took care of the message,
+	// then this will return.
+	if(application_state::GetDebugMenuEnabled() && ImGui_ImplWin32_WndProcHandler(WindowHandle, MessageId, WParam, LParam))
+	{
+		return 1;
+	}
+
+	#endif
+
 	if(MessageId == WM_CLOSE)
 	{
 		// TODO(Cristoffer): Handle closing the window.

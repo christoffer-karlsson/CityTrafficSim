@@ -24,6 +24,8 @@ class camera
 	static real32 NearZ;
 	static real32 FarZ;
 
+	static bool32 InputDisabled;
+
 	protected:
 
 	static void Update();
@@ -32,7 +34,15 @@ class camera
 
 	static void Init();
 
+	static void DisableInput();
+	static void EnableInput();
+
 	static void SetPosition(real32 X, real32 Y, real32 Z);
+
+	static void PanForward(real32 Value);
+	static void PanBackward(real32 Value);
+	static void PanLeft(real32 Value);
+	static void PanRight(real32 Value);
 
 	static void MoveForward(real32 Value);
 	static void MoveBackward(real32 Value);

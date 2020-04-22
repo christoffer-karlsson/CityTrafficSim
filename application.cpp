@@ -17,26 +17,31 @@ void application::Run()
 	entity_manager::Init();
 	system_message::Init();
 	render_manager::Init();
-	light_source::Init(vec3(100.0f, 200.0f, 100.0f));
+	
+	light_source::Init();
 
 	world *World = new world(200, 200);
 
+	render_manager::Push(World->GetTerrain(), render_layer::Terrain);
+
 	// TODO(Cristoffer): Temporary until permanent interface classes exists. /////////
 	user_interface *UI = new user_interface();
-	///////////////////////////////////////////////////////////////////////////////////
+
+	#if DEBUG_MODE
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO &io = ImGui::GetIO(); (void)io;
+	io.WantCaptureMouse = true;
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	ImGui::StyleColorsDark();
+	ImGui_ImplWin32_Init(Window.GetHandle());
+	ImGui_ImplDX11_Init(direct3d::GetDevice(), direct3d::GetContext());
+
+	#endif
 
 	Window.ShowMouseCursor(0);
 	Window.ClipMouseCursor(1);
-
-	real32 MoveX = 0.0f;
-	real32 MoveY = 0.0f;
-	real32 MoveZ = 0.0f;
-
-	real32 PosX = 0.0f;
-	real32 PosY = 0.0f;
-	real32 PosZ = 0.0f;
-	real32 Angle = 0.0f;
-	real32 Scale = 0.0f;
 
 	uint32 SystemInfoElement = UI->CreateElement(screen_anchor::TOP_LEFT, 10.0f, 10.0f);
 	uint32 T1 = UI->AddNewText(SystemInfoElement, "<element>");
@@ -106,6 +111,18 @@ void application::Run()
 	UI->SetHidden(MouseTip, true);
 	uint32 MouseTipText = UI->AddNewText(MouseTip, "Info");
 
+	bool32 Load = Persistence.LoadSavedWorldMap(World);
+
+	if(Load)
+	{
+		SystemMessage("World map loaded.");
+		World->UpdateBuildings();
+	}
+	else
+	{
+		SystemMessage("Error! Could not open file.");
+	}
+
 	while(true)
 	{
 		Timing.StartFrameTimer();
@@ -138,6 +155,42 @@ void application::Run()
 			Running = FALSE;
 		}
 
+		#if DEBUG_MODE
+
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
+
+		if(KeyReleased(KEY_F1))
+		{
+			application_state::ToggleDebugMenu();
+		}
+
+		if(application_state::GetDebugMenuEnabled())
+		{
+			Window.ShowMouseCursor(1);
+			camera::DisableInput();
+
+			ImGui::Begin("Point light");
+
+			ImGui::SliderFloat3("LightPosition", &light_source::ConstantBuffer.LightPosition.x, -1000.0f, 1000.0f);
+			ImGui::SliderFloat3("DiffuseColor", &light_source::ConstantBuffer.DiffuseColor.x, 0.0f, 1.0f);
+			ImGui::SliderFloat3("Ambient", &light_source::ConstantBuffer.Ambient.x, 0.0f, 1.0f);
+			ImGui::SliderFloat("DiffuseIntensity", &light_source::ConstantBuffer.DiffuseIntensity, 0.0f, 1.0f);
+			ImGui::SliderFloat("AttenuationConstant", &light_source::ConstantBuffer.AttenuationConstant, 0.0f, 1.0f);
+			ImGui::SliderFloat("AttenuationLinear", &light_source::ConstantBuffer.AttenuationLinear, 0.0f, 0.1f);
+			ImGui::SliderFloat("AttenuationQuad", &light_source::ConstantBuffer.AttenuationQuad, 0.0f, 0.1f);
+
+			ImGui::End();
+		}
+		else
+		{
+			//Window.ShowMouseCursor(0);
+			camera::EnableInput();
+		}
+
+		#endif
+
 		if(KeyReleased(KEY_TAB))
 		{
 			application_state::ToggleEditMode();
@@ -146,18 +199,7 @@ void application::Run()
 			if(!application_state::GetEditModeEnabled()) Window.ShowMouseCursor(0);
 		}
 
-		real32 CameraMovementSpeed = (real32)Timing.GetFrameTimeDeltaMilliseconds() * (15.0f / 1000.0f);
-
-		if(KeyPressed(KEY_SHIFT))
-		{
-			CameraMovementSpeed *= 6.0f;
-		}
-
-		if(!application_state::GetEditModeEnabled())
-		{
-			camera::LookX(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawX() * 300.0f / 1000.0f));
-			camera::LookY(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawY() * 300.0f / 1000.0f));
-		}
+		CameraControl();
 		
 		if(application_state::GetEditModeEnabled())
 		{
@@ -247,8 +289,6 @@ void application::Run()
 					std::to_string(MousePosition.y) + ", " +
 					std::to_string(MousePosition.z) + ".");
 			}
-
-			
 		}
 
 		if(KeyReleased(KEY_8))
@@ -258,7 +298,7 @@ void application::Run()
 
 		if(KeyReleased(KEY_9))
 		{
-			for(uint32 x = 0;
+			/*for(uint32 x = 0;
 				x < 70;
 				x++)
 			{
@@ -268,43 +308,13 @@ void application::Run()
 				{
 					entity_manager::CreateEntity(vec3((real32)x + (x + 2.0f), 0.0f, (real32)z + (z + 2.0f)), entity_type::Car);
 				}
-			}
+			}*/
 			//entity_manager::CreateEntity(vec3(0.0f, 0.0f, 0.0f), entity_type::Car);
-		}
-
-		if(KeyPressed(KEY_W))
-		{
-			camera::MoveForward(CameraMovementSpeed);
-		}
-
-		if(KeyPressed(KEY_S))
-		{
-			camera::MoveBackward(CameraMovementSpeed);
-		}
-
-		if(KeyPressed(KEY_A))
-		{
-			camera::StrafeLeft(CameraMovementSpeed);
-		}
-
-		if(KeyPressed(KEY_D))
-		{
-			camera::StrafeRight(CameraMovementSpeed);
-		}
-
-		if(KeyPressed(KEY_SPACE))
-		{
-			camera::MoveUp(CameraMovementSpeed);
-		}
-
-		if(KeyPressed(KEY_CONTROL))
-		{
-			camera::MoveDown(CameraMovementSpeed);
 		}
 
 		if(KeyReleased(KEY_F5))
 		{
-			/*bool32 Save = Persistence.SaveWorldMap(World);
+			bool32 Save = Persistence.SaveWorldMap(World);
 
 			if(Save)
 			{
@@ -313,21 +323,22 @@ void application::Run()
 			else
 			{
 				SystemMessage("Error! Could not open file.");
-			}*/
+			}
 		}
 
 		if(KeyReleased(KEY_F9))
 		{
-			/*bool32 Load = Persistence.LoadSavedWorldMap(World);
+			bool32 Load = Persistence.LoadSavedWorldMap(World);
 
 			if(Load)
 			{
 				SystemMessage("World map loaded.");
+				World->UpdateBuildings();
 			}
 			else
 			{
 				SystemMessage("Error! Could not open file.");
-			}*/
+			}
 		}
 
 		if(KeyReleased(KEY_ARROWRIGHT))
@@ -356,15 +367,15 @@ void application::Run()
 		}
 		if(GetMouseScrollUp())
 		{
-			//Angle += 1.0f;
-			//light_source::Position.y += +1.0f;
-			//Object.SetRotation({ 0.0f, Angle, 0.0f });
+			vec3 Position = light_source::GetPosition();
+			Position.y += 5.0f;
+			light_source::SetPosition(Position);
 		}
 		if(GetMouseScrollDown())
 		{
-			//Angle -= 1.0f;
-			//light_source::Position.y += -1.0f;
-			//Object.SetRotation({ 0.0f, Angle, 0.0f });
+			vec3 Position = light_source::GetPosition();
+			Position.y -= 5.0f;
+			light_source::SetPosition(Position);
 		}
 
 		UI->UpdateText(SystemInfoElement, T1, ("Frame Per Second: " + 
@@ -426,5 +437,57 @@ void application::Run()
 		render_manager::Render();
 
 		Timing.EndFrameTimer();
+	}
+
+	#if DEBUG_MODE
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+	#endif
+}
+
+void application::CameraControl()
+{
+	real32 CameraMovementSpeed = (real32)Timing.GetFrameTimeDeltaMilliseconds() * (15.0f / 1000.0f);
+
+	if(KeyPressed(KEY_SHIFT))
+	{
+		CameraMovementSpeed *= 6.0f;
+	}
+
+	if(!application_state::GetEditModeEnabled())
+	{
+		camera::LookX(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawX() * 300.0f / 1000.0f));
+		camera::LookY(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawY() * 300.0f / 1000.0f));
+	}
+
+	if(KeyPressed(KEY_W))
+	{
+		camera::MoveForward(CameraMovementSpeed);
+	}
+
+	if(KeyPressed(KEY_S))
+	{
+		camera::MoveBackward(CameraMovementSpeed);
+	}
+
+	if(KeyPressed(KEY_A))
+	{
+		camera::StrafeLeft(CameraMovementSpeed);
+	}
+
+	if(KeyPressed(KEY_D))
+	{
+		camera::StrafeRight(CameraMovementSpeed);
+	}
+
+	if(KeyPressed(KEY_SPACE))
+	{
+		camera::MoveUp(CameraMovementSpeed);
+	}
+
+	if(KeyPressed(KEY_CONTROL))
+	{
+		camera::MoveDown(CameraMovementSpeed);
 	}
 }

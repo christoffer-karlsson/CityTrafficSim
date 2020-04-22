@@ -19,6 +19,14 @@
 #include "drawable_cars.h"
 #include "world.h"
 
+#if DEBUG_MODE
+
+#include "external/imgui/imgui.h"
+#include "external/imgui/imgui_impl_win32.h"
+#include "external/imgui/imgui_impl_dx11.h"
+
+#endif
+
 #include <windows.h>
 #include <string>
 
@@ -31,6 +39,14 @@ class application
 	persistence	Persistence;
 
 	bool Running;
+
+	protected:
+
+	void CameraControl();
+
+	void SimulationContext();
+	void EditContext();
+	void DebugContext();
 
 	public:
 

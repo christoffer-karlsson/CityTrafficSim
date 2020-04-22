@@ -11,8 +11,11 @@ struct input
 cbuffer light_constants
 {
     float3 LightPosition;
+    float1 byte_pad_1;
     float3 Ambient;
+    float1 byte_pad_2;
     float3 DiffuseColor;
+    float1 byte_pad_3;
     
     float1 DiffuseIntensity;
     float1 AttenuationConstant;

@@ -11,8 +11,11 @@ struct input
 cbuffer light_constants
 {
     float3 LightPosition;
+    float1 byte_pad_1;
     float3 Ambient;
+    float1 byte_pad_2;
     float3 DiffuseColor;
+    float1 byte_pad_3;
     
     float1 DiffuseIntensity;
     float1 AttenuationConstant;
@@ -21,17 +24,17 @@ cbuffer light_constants
 };
 
 float4 main(input Input) : SV_Target
-{
+{ 
     // Fragment to light vecor data
-    const float3 VectorToLight = LightPosition - Input.ModelPosition;
-    const float1 DistanceToLight = length(VectorToLight);
-    const float3 DirectionToLight = VectorToLight / DistanceToLight;
+    float3 VectorToLight = LightPosition - Input.ModelPosition;
+    float1 DistanceToLight = length(VectorToLight);
+    float3 DirectionToLight = VectorToLight / DistanceToLight;
     
     // Diffuse attenuation
-    const float1 Attenuation = 1.0f / (AttenuationConstant + AttenuationLinear * DistanceToLight + AttenuationQuad * (DistanceToLight * DistanceToLight));
+    float1 Attenuation = 1.0f / (AttenuationConstant + AttenuationLinear * DistanceToLight + AttenuationQuad * (DistanceToLight * DistanceToLight));
     
     // Diffuse intensity
-    const float3 Diffuse = DiffuseColor * DiffuseIntensity * Attenuation * max(0.0f, dot(DirectionToLight, Input.Normal));
+    float3 Diffuse = DiffuseColor * DiffuseIntensity * Attenuation * max(0.0f, dot(DirectionToLight, Input.Normal));
     
     float4 Color = float4(saturate(Diffuse + Ambient) * (float3)Input.Color, 1.0f);
     

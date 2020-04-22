@@ -13,26 +13,26 @@ using namespace DirectX;
 
 struct cbuffer_light
 {
-	alignas(16) XMFLOAT3 LightPosition;
-	alignas(16) XMFLOAT3 Ambient;
-	alignas(16) XMFLOAT3 DiffuseColor;
+	XMFLOAT3 LightPosition; alignas(16)
+	XMFLOAT3 Ambient; alignas(16)
+	XMFLOAT3 DiffuseColor; alignas(16)
 
 	// NOTE(Cristoffer): Attenuation values, see: http://wiki.ogre3d.org/-Point+Light+Attenuation
-	real32 DiffuseIntensity = 1.0f;
+	real32 DiffuseIntensity = 0.85f;
 	real32 AttenuationConstant = 1.0f;
-	real32 AttenuationLinear = 0.0014f;
+	real32 AttenuationLinear = 0.002f;
 	real32 AttenuationQuad = 0.000007f;
 };
 
 class light_source
 {
-	private:
+	public:
 
 	static cbuffer_light ConstantBuffer;
 
 	public:
 
-	static void Init(vec3 Position);
+	static void Init();
 
 	static void SetPosition(vec3 Position);
 	static void SetAmbient(vec3 Ambient);

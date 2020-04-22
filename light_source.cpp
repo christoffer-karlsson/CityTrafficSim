@@ -2,19 +2,19 @@
 
 cbuffer_light light_source::ConstantBuffer;
 
-void light_source::Init(vec3 Position)
+void light_source::Init()
 {
-	ConstantBuffer.LightPosition.x = Position.x;
-	ConstantBuffer.LightPosition.y = Position.y;
-	ConstantBuffer.LightPosition.z = Position.z;
+	ConstantBuffer.LightPosition.x = 55.0f;
+	ConstantBuffer.LightPosition.y = 735.0f;
+	ConstantBuffer.LightPosition.z = -440.f;
 
-	ConstantBuffer.DiffuseColor.x = 1.0f;
-	ConstantBuffer.DiffuseColor.y = 1.0f;
-	ConstantBuffer.DiffuseColor.z = 1.0f;
+	ConstantBuffer.DiffuseColor.x = 0.87f;
+	ConstantBuffer.DiffuseColor.y = 0.81f;
+	ConstantBuffer.DiffuseColor.z = 0.78f;
 
-	ConstantBuffer.Ambient.x = 0.15f;
-	ConstantBuffer.Ambient.y = 0.15f;
-	ConstantBuffer.Ambient.z = 0.20f;
+	ConstantBuffer.Ambient.x = 0.50f;
+	ConstantBuffer.Ambient.y = 0.61f;
+	ConstantBuffer.Ambient.z = 0.83f;
 }
 
 void light_source::SetPosition(vec3 Position)
