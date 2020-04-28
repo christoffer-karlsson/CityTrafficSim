@@ -1,4 +1,8 @@
-// application.h: The main loop, starts the window and Direct3D context.
+/*
+==========================================================
+	Main application loop where everything is ran.
+==========================================================
+*/
 
 #pragma once
 
@@ -6,13 +10,13 @@
 #include "window.h"
 #include "timing.h"
 #include "persistence.h"
-#include "direct3d.h"
+#include "d3d_api.h"
 #include "threading.h"
 #include "math.h"
 #include "entity_manager.h"
-#include "light_source.h"
+#include "light_point.h"
 #include "render_manager.h"
-#include "application_state.h"
+#include "app_state.h"
 #include "logger.h"
 #include "system_message.h"
 #include "asset_manager.h"
@@ -27,7 +31,7 @@
 
 #endif
 
-#include <windows.h>
+#include "windows.h"
 #include <string>
 
 class application
@@ -37,16 +41,6 @@ class application
 	window		Window;
 	timing		Timing;
 	persistence	Persistence;
-
-	bool Running;
-
-	protected:
-
-	void CameraControl();
-
-	void SimulationContext();
-	void EditContext();
-	void DebugContext();
 
 	public:
 

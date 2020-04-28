@@ -13,14 +13,14 @@ void asset_manager::Init()
 
 	persistence Persistence;
 
-	// TODO(Cristoffer): Implement a way to look up assets via text. 
-	Mesh[ASSET_MESH_CAR] = new mesh(Persistence.LoadObjectFile("car.obj"), 0);
-	Mesh[ASSET_MESH_CAR_INDEXED] = new mesh(Persistence.LoadObjectFile("car.obj"), 1);
-	Mesh[ASSET_MESH_BUILDING] = new mesh(Persistence.LoadObjectFile("building.obj"), 0);
-	Mesh[ASSET_MESH_BUILDING_INDEXED] = new mesh(Persistence.LoadObjectFile("building.obj"), 1);
+	// TODO: Implement a way to look up assets via text. 
+	Mesh[asset_mesh_car] = new mesh(Persistence.LoadObjectFile("car.obj"), 0);
+	Mesh[asset_mesh_car_indexed] = new mesh(Persistence.LoadObjectFile("car.obj"), 1);
+	Mesh[asset_mesh_building] = new mesh(Persistence.LoadObjectFile("building.obj"), 0);
+	Mesh[asset_mesh_building_indexed] = new mesh(Persistence.LoadObjectFile("building.obj"), 1);
 }
 
-mesh *asset_manager::GetMesh(uint32 ID)
+mesh *asset_manager::GetMesh(asset_id ID)
 {
 	mesh *Result = nullptr;
 

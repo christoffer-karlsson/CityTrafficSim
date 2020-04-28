@@ -30,16 +30,14 @@ drawable_buildings::drawable_buildings(mesh *Asset) :
 	cbuffer_input VertexShaderInput;
 	ConstantBuffer[0] = new constant_buffer(&VertexShaderInput, sizeof(VertexShaderInput));
 
-	cbuffer_light PixelShaderInput;
+	light_point PixelShaderInput;
 	ConstantBuffer[1] = new constant_buffer(&PixelShaderInput, sizeof(PixelShaderInput));
 }
 
 void drawable_buildings::Draw()
 {
 	cbuffer_input VertexShaderInput;
-	VertexShaderInput.ViewProjection = XMMATRIX(camera::GetViewMatrix()) * XMMATRIX(camera::GetProjectionMatrix());
-
-	cbuffer_light &PixelShaderInput = light_source::GetConstantBuffer();
+	VertexShaderInput.ViewProjection = XMMATRIX(ActiveCamera->GetViewMatrix()) * XMMATRIX(ActiveCamera->GetProjectionMatrix());
 
 	InstanceBuffer->UpdateDynamicBuffer(Instance.data());
 	InstanceBuffer->Bind(VertexBuffer);
@@ -50,9 +48,9 @@ void drawable_buildings::Draw()
 	ConstantBuffer[1]->Bind(0, shader_set_type::SetPixelShader);
 
 	ConstantBuffer[0]->Update(&VertexShaderInput);
-	ConstantBuffer[1]->Update(&PixelShaderInput);
+	ConstantBuffer[1]->Update(&WorldLight);
 
-	direct3d::GetContext()->DrawInstanced(VertexBuffer->GetSize(), Instance.size(), 0, 0);
+	d3d_api::GetContext()->DrawInstanced(VertexBuffer->GetSize(), Instance.size(), 0, 0);
 }
 
 void drawable_buildings::PushInstance(XMMATRIX &Model, vec4 &Color)

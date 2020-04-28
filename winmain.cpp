@@ -1,12 +1,16 @@
-// winmain.cpp: Entry point for the program to create the window.
-
 #include "application.h"
 
-#include <windows.h>
+#include "windows.h"
+
+/*
+==========================================================
+	Windows entry point.
+==========================================================
+*/
 
 int CALLBACK WinMain(HINSTANCE InstanceHandle, HINSTANCE PrevInstanceHandle, LPSTR CommandLine, int ShowCommand)
 {
-	// NOTE(Cristoffer): Initialize Microsoft COM Interface.
+	// Initialize Microsoft COM Interface.
 	CoInitialize(NULL);
 
 	application CitySimulator;

@@ -1,42 +1,52 @@
 #include "application.h"
 
+// TODO: Move?
+light_point		WorldLight;
+camera_free		DebugCamera;
+camera_pan		LockedCamera;
+camera			*ActiveCamera;
+world			World;
+
 application::application() :
 	Window("City Traffic Simulator and Planner | Mid Sweden University Thesis Project | Cristoffer Tanda", 1920, 1080), 
-	Timing(), 
-	Running(true)
+	Timing()
 {
 }
 
 void application::Run()
 {
-	// NOTE(Cristoffer): Statics.
-	direct3d::Init(Window.GetHandle());
+	// Global statics.
+	d3d_api::Init(Window.GetHandle());
 	asset_manager::Init();
-	camera::Init();
 	logger::Init();
 	entity_manager::Init();
 	system_message::Init();
 	render_manager::Init();
-	
-	light_source::Init();
 
-	world *World = new world(200, 200);
+	DebugCamera.Init();
+	LockedCamera.Init();
+	World.Init(200, 200);
 
-	render_manager::Push(World->GetTerrain(), render_layer::Terrain);
+	R_SetActiveCamera(DebugCamera);
 
-	// TODO(Cristoffer): Temporary until permanent interface classes exists. /////////
+	WorldLight.Position = XMFLOAT3(55.0f, 735.0f, -440.0f);
+	WorldLight.DiffuseColor = XMFLOAT3(0.87f, 0.81f, 0.78f);
+	WorldLight.AmbientColor = XMFLOAT3(0.50f, 0.61f, 0.83f);
+
+	render_manager::Push(World.GetTerrain(), render_layer::Terrain);
+
+	// TODO: Temporary until permanent interface classes exists. /////////
 	user_interface *UI = new user_interface();
 
-	#if DEBUG_MODE
+	#if DEBUG_IMGUI
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO &io = ImGui::GetIO(); (void)io;
 	io.WantCaptureMouse = true;
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	ImGui::StyleColorsDark();
 	ImGui_ImplWin32_Init(Window.GetHandle());
-	ImGui_ImplDX11_Init(direct3d::GetDevice(), direct3d::GetContext());
+	ImGui_ImplDX11_Init(d3d_api::GetDevice(), d3d_api::GetContext());
 
 	#endif
 
@@ -111,12 +121,12 @@ void application::Run()
 	UI->SetHidden(MouseTip, true);
 	uint32 MouseTipText = UI->AddNewText(MouseTip, "Info");
 
-	bool32 Load = Persistence.LoadSavedWorldMap(World);
+	bool32 Load = Persistence.LoadSavedWorldMap();
 
 	if(Load)
 	{
 		SystemMessage("World map loaded.");
-		World->UpdateBuildings();
+		World.UpdateBuildings();
 	}
 	else
 	{
@@ -127,13 +137,13 @@ void application::Run()
 	{
 		Timing.StartFrameTimer();
 
-		// NOTE(Cristoffer): Safely shut down all working threads before destroying
-		// all the instances and shutting down.
-		if(!Running)
+		// Safely shut down all working threads, by waiting for work
+		// to be done before destroying instances.
+		if(!app_state::IsRunning())
 		{
-			if(direct3d::Debug != nullptr)
+			if(d3d_api::Debug != nullptr)
 			{
-				direct3d::Debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+				d3d_api::Debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
 			}
 			
 			threading::GetInstance().WaitAllThreads();
@@ -152,10 +162,10 @@ void application::Run()
 
 		if(KeyReleased(KEY_ESCAPE))
 		{
-			Running = FALSE;
+			app_state::Shutdown();
 		}
 
-		#if DEBUG_MODE
+		#if DEBUG_IMGUI
 
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
@@ -163,47 +173,88 @@ void application::Run()
 
 		if(KeyReleased(KEY_F1))
 		{
-			application_state::ToggleDebugMenu();
+			app_state::ToggleDebugMenu();
 		}
 
-		if(application_state::GetDebugMenuEnabled())
+		if(app_state::GetDebugMenuEnabled())
 		{
 			Window.ShowMouseCursor(1);
-			camera::DisableInput();
 
 			ImGui::Begin("Point light");
 
-			ImGui::SliderFloat3("LightPosition", &light_source::ConstantBuffer.LightPosition.x, -1000.0f, 1000.0f);
-			ImGui::SliderFloat3("DiffuseColor", &light_source::ConstantBuffer.DiffuseColor.x, 0.0f, 1.0f);
-			ImGui::SliderFloat3("Ambient", &light_source::ConstantBuffer.Ambient.x, 0.0f, 1.0f);
-			ImGui::SliderFloat("DiffuseIntensity", &light_source::ConstantBuffer.DiffuseIntensity, 0.0f, 1.0f);
-			ImGui::SliderFloat("AttenuationConstant", &light_source::ConstantBuffer.AttenuationConstant, 0.0f, 1.0f);
-			ImGui::SliderFloat("AttenuationLinear", &light_source::ConstantBuffer.AttenuationLinear, 0.0f, 0.1f);
-			ImGui::SliderFloat("AttenuationQuad", &light_source::ConstantBuffer.AttenuationQuad, 0.0f, 0.1f);
+			ImGui::SliderFloat3("LightPosition", &WorldLight.Position.x, -1000.0f, 1000.0f);
+			ImGui::SliderFloat3("DiffuseColor", &WorldLight.DiffuseColor.x, 0.0f, 1.0f);
+			ImGui::SliderFloat3("Ambient", &WorldLight.AmbientColor.x, 0.0f, 1.0f);
+			ImGui::SliderFloat("DiffuseIntensity", &WorldLight.DiffuseIntensity, 0.0f, 1.0f);
+			ImGui::SliderFloat("AttenuationConstant", &WorldLight.AttenuationConstant, 0.0f, 1.0f);
+			ImGui::SliderFloat("AttenuationLinear", &WorldLight.AttenuationLinear, 0.0f, 0.1f);
+			ImGui::SliderFloat("AttenuationQuad", &WorldLight.AttenuationQuad, 0.0f, 0.1f);
 
 			ImGui::End();
 		}
 		else
 		{
 			//Window.ShowMouseCursor(0);
-			camera::EnableInput();
 		}
 
 		#endif
 
 		if(KeyReleased(KEY_TAB))
 		{
-			application_state::ToggleEditMode();
+			app_state::ToggleEditMode();
 
-			if(application_state::GetEditModeEnabled()) Window.ShowMouseCursor(1);
-			if(!application_state::GetEditModeEnabled()) Window.ShowMouseCursor(0);
+			if(app_state::GetEditModeEnabled()) Window.ShowMouseCursor(1);
+			if(!app_state::GetEditModeEnabled()) Window.ShowMouseCursor(0);
 		}
 
-		CameraControl();
-		
-		if(application_state::GetEditModeEnabled())
+		real32 CameraMovementSpeed = (real32)Timing.GetFrameTimeDeltaMilliseconds() * (15.0f / 1000.0f);
+
+		if(KeyPressed(KEY_SHIFT))
 		{
-			vec3u MousePosition = application_state::GetMouseCoordinateInWorldTrunc();
+			CameraMovementSpeed *= 6.0f;
+		}
+
+		if(!app_state::GetEditModeEnabled())
+		{
+
+
+			ActiveCamera->LookX(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawX() * 300.0f / 1000.0f));
+			ActiveCamera->LookY(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawY() * 300.0f / 1000.0f));
+		}
+
+		if(KeyPressed(KEY_W))
+		{
+			ActiveCamera->MoveForward(CameraMovementSpeed);
+		}
+
+		if(KeyPressed(KEY_S))
+		{
+			ActiveCamera->MoveBackward(CameraMovementSpeed);
+		}
+
+		if(KeyPressed(KEY_A))
+		{
+			ActiveCamera->MoveLeft(CameraMovementSpeed);
+		}
+
+		if(KeyPressed(KEY_D))
+		{
+			ActiveCamera->MoveRight(CameraMovementSpeed);
+		}
+
+		if(KeyPressed(KEY_SPACE))
+		{
+			ActiveCamera->MoveUp(CameraMovementSpeed);
+		}
+
+		if(KeyPressed(KEY_CONTROL))
+		{
+			ActiveCamera->MoveDown(CameraMovementSpeed);
+		}
+		
+		if(app_state::GetEditModeEnabled())
+		{
+			vec3u MousePosition = app_state::GetMouseCoordinateInWorldTruncated();
 
 			if(MouseClicked(MOUSE_BUTTON_LEFT))
 			{
@@ -212,7 +263,7 @@ void application::Run()
 
 			if(MouseClicked(MOUSE_BUTTON_RIGHT))
 			{
-				entity_manager::CreateEntity(application_state::GetMouseCoordinateInWorld(), entity_type::Car);
+				entity_manager::CreateEntity(app_state::GetMouseCoordinateInWorld(), entity_type::Car);
 			}
 
 			if(MouseClicked(MOUSE_BUTTON_MIDDLE))
@@ -222,7 +273,7 @@ void application::Run()
 
 			if(KeyReleased(KEY_DELETE))
 			{
-				World->SetTile(MousePosition, tile_type::GRASS);
+				World.SetTile(MousePosition, tile_type::GRASS);
 
 				SystemMessage("Tile deleted at " +
 					std::to_string(MousePosition.x) + ", " +
@@ -232,7 +283,7 @@ void application::Run()
 
 			if(KeyReleased(KEY_1))
 			{
-				World->SetTile(MousePosition, tile_type::ROAD_Z);
+				World.SetTile(MousePosition, tile_type::ROAD_Z);
 
 				SystemMessage("Placed north-south road tile at " +
 					std::to_string(MousePosition.x) + ", " +
@@ -242,7 +293,7 @@ void application::Run()
 
 			if(KeyReleased(KEY_2))
 			{
-				World->SetTile(MousePosition, tile_type::ROAD_X);
+				World.SetTile(MousePosition, tile_type::ROAD_X);
 
 				SystemMessage("Placed east-west road tile at " +
 					std::to_string(MousePosition.x) + ", " +
@@ -252,7 +303,7 @@ void application::Run()
 
 			if(KeyReleased(KEY_3))
 			{
-				World->SetTile(MousePosition, tile_type::CROSSROAD);
+				World.SetTile(MousePosition, tile_type::CROSSROAD);
 
 				SystemMessage("Placed crossroad tile at " +
 					std::to_string(MousePosition.x) + ", " +
@@ -262,7 +313,7 @@ void application::Run()
 
 			if(KeyReleased(KEY_4))
 			{
-				World->SetTile(MousePosition, tile_type::GROUND);
+				World.SetTile(MousePosition, tile_type::GROUND);
 
 				SystemMessage("Placed ground tile at " +
 					std::to_string(MousePosition.x) + ", " +
@@ -272,7 +323,7 @@ void application::Run()
 
 			if(KeyReleased(KEY_5))
 			{
-				World->SetTile(MousePosition, tile_type::WATER);
+				World.SetTile(MousePosition, tile_type::WATER);
 
 				SystemMessage("Placed water tile at " +
 					std::to_string(MousePosition.x) + ", " +
@@ -282,7 +333,7 @@ void application::Run()
 
 			if(KeyReleased(KEY_6))
 			{
-				World->SetTile(MousePosition, tile_type::BUILDING);
+				World.SetTile(MousePosition, tile_type::BUILDING);
 
 				SystemMessage("Placed building tile at " +
 					std::to_string(MousePosition.x) + ", " +
@@ -314,7 +365,7 @@ void application::Run()
 
 		if(KeyReleased(KEY_F5))
 		{
-			bool32 Save = Persistence.SaveWorldMap(World);
+			bool32 Save = Persistence.SaveWorldMap();
 
 			if(Save)
 			{
@@ -328,12 +379,12 @@ void application::Run()
 
 		if(KeyReleased(KEY_F9))
 		{
-			bool32 Load = Persistence.LoadSavedWorldMap(World);
+			bool32 Load = Persistence.LoadSavedWorldMap();
 
 			if(Load)
 			{
 				SystemMessage("World map loaded.");
-				World->UpdateBuildings();
+				World.UpdateBuildings();
 			}
 			else
 			{
@@ -343,39 +394,27 @@ void application::Run()
 
 		if(KeyReleased(KEY_ARROWRIGHT))
 		{
-			//PosX += 1.0f;
-			//light_source::Position.x += +1.0f;
-			//Object.SetPosition({ PosX, PosY, PosZ });
+			
 		}
 		if(KeyReleased(KEY_ARROWLEFT))
 		{
-			//PosX -= 1.0f;
-			//light_source::SetPosition.x += -1.0f;
-			//Object.SetPosition({ PosX, PosY, PosZ });
+			
 		}
 		if(KeyReleased(KEY_ARROWDOWN))
 		{
-			//PosZ -= 1.0f;
-			//light_source::Position.z += +1.0f;
-			//Object.SetPosition({ PosX, PosY, PosZ });
+			
 		}
 		if(KeyReleased(KEY_ARROWUP))
 		{
-			//PosZ += 1.0f;
-			//light_source::Position.z += +1.0f;
-			//Object.SetPosition({ PosX, PosY, PosZ });
+			
 		}
 		if(GetMouseScrollUp())
 		{
-			vec3 Position = light_source::GetPosition();
-			Position.y += 5.0f;
-			light_source::SetPosition(Position);
+			
 		}
 		if(GetMouseScrollDown())
 		{
-			vec3 Position = light_source::GetPosition();
-			Position.y -= 5.0f;
-			light_source::SetPosition(Position);
+			
 		}
 
 		UI->UpdateText(SystemInfoElement, T1, ("Frame Per Second: " + 
@@ -385,31 +424,29 @@ void application::Run()
 												std::to_string(Timing.GetFrameTimeDeltaMilliseconds())));
 
 		UI->UpdateText(SystemInfoElement, T3, ("Camera Position: " + 
-												std::to_string(camera::GetPositionX()) + ", " +
-												std::to_string(camera::GetPositionY()) + ", " +
-												std::to_string(camera::GetPositionZ())));
-
-		vec3 LightPosition = light_source::GetPosition();
+												std::to_string(ActiveCamera->GetPosition().x) + ", " +
+												std::to_string(ActiveCamera->GetPosition().y) + ", " +
+												std::to_string(ActiveCamera->GetPosition().z)));
 
 		UI->UpdateText(SystemInfoElement, T4, ("Light Source Position: " +
-			std::to_string(LightPosition.x) + ", " +
-			std::to_string(LightPosition.y) + ", " +
-			std::to_string(LightPosition.z)));
+			std::to_string(WorldLight.Position.x) + ", " +
+			std::to_string(WorldLight.Position.y) + ", " +
+			std::to_string(WorldLight.Position.z)));
 
 		UI->UpdateText(SystemInfoElement, T5, ("Entity Count: " +
 			std::to_string(logger::GetUINT(logger::ref::EntityCount))));
 
 		UI->UpdateText(SystemInfoElement, T6, ("Mouse World (Real): " +
-			std::to_string(application_state::GetMouseCoordinateInWorld().x) + ", " +
-			std::to_string(application_state::GetMouseCoordinateInWorld().y) + ", " +
-			std::to_string(application_state::GetMouseCoordinateInWorld().z)));
+			std::to_string(app_state::GetMouseCoordinateInWorld().x) + ", " +
+			std::to_string(app_state::GetMouseCoordinateInWorld().y) + ", " +
+			std::to_string(app_state::GetMouseCoordinateInWorld().z)));
 
 		UI->UpdateText(SystemInfoElement, T7, ("Mouse World (Trunc): " +
-			std::to_string(application_state::GetMouseCoordinateInWorldTrunc().x) + ", " +
-			std::to_string(application_state::GetMouseCoordinateInWorldTrunc().y) + ", " +
-			std::to_string(application_state::GetMouseCoordinateInWorldTrunc().z)));
+			std::to_string(app_state::GetMouseCoordinateInWorldTruncated().x) + ", " +
+			std::to_string(app_state::GetMouseCoordinateInWorldTruncated().y) + ", " +
+			std::to_string(app_state::GetMouseCoordinateInWorldTruncated().z)));
 
-		if(application_state::GetEditModeEnabled())
+		if(app_state::GetEditModeEnabled())
 		{
 			render_manager::TestMouseCollision();
 
@@ -418,9 +455,9 @@ void application::Run()
 			UI->SetHidden(MouseTip, false);
 
 			UI->UpdateText(MouseTip, MouseTipText,
-				World->GetTileDescription(Truncate(application_state::GetMouseCoordinateInWorld())));
+				World.GetTileDescription(Truncate(app_state::GetMouseCoordinateInWorld())));
 		}
-		else if(!application_state::GetEditModeEnabled())
+		else if(!app_state::GetEditModeEnabled())
 		{
 			UI->SetHidden(EditModeElement, true);
 			UI->SetHidden(MouseTip, true);
@@ -439,55 +476,9 @@ void application::Run()
 		Timing.EndFrameTimer();
 	}
 
-	#if DEBUG_MODE
+	#if DEBUG_IMGUI
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 	#endif
-}
-
-void application::CameraControl()
-{
-	real32 CameraMovementSpeed = (real32)Timing.GetFrameTimeDeltaMilliseconds() * (15.0f / 1000.0f);
-
-	if(KeyPressed(KEY_SHIFT))
-	{
-		CameraMovementSpeed *= 6.0f;
-	}
-
-	if(!application_state::GetEditModeEnabled())
-	{
-		camera::LookX(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawX() * 300.0f / 1000.0f));
-		camera::LookY(((real32)Timing.GetFrameTimeDeltaSeconds() * GetMouseRawY() * 300.0f / 1000.0f));
-	}
-
-	if(KeyPressed(KEY_W))
-	{
-		camera::MoveForward(CameraMovementSpeed);
-	}
-
-	if(KeyPressed(KEY_S))
-	{
-		camera::MoveBackward(CameraMovementSpeed);
-	}
-
-	if(KeyPressed(KEY_A))
-	{
-		camera::StrafeLeft(CameraMovementSpeed);
-	}
-
-	if(KeyPressed(KEY_D))
-	{
-		camera::StrafeRight(CameraMovementSpeed);
-	}
-
-	if(KeyPressed(KEY_SPACE))
-	{
-		camera::MoveUp(CameraMovementSpeed);
-	}
-
-	if(KeyPressed(KEY_CONTROL))
-	{
-		camera::MoveDown(CameraMovementSpeed);
-	}
 }

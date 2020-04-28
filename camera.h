@@ -1,64 +1,71 @@
-// camera.h: Stores position, directions for camera.
-// Methods for moving, strafing and pitching the camera object.
+/*
+==========================================================
+	Camera class that stores transformed view and projection 
+	matrices. Override virtual functions for different
+	camera functionality.
+==========================================================
+*/
 
 #pragma once
 
 #include "common.h"
-#include "direct3d.h"
+#include "d3d_api.h"
 
 class camera
 {
-	private:
-
-	static XMMATRIX View;
-	static XMMATRIX Projection;
-	static XMMATRIX Ortho;
-
-	static XMFLOAT3 Position;
-	static XMFLOAT3 ViewDirection;
-	static XMFLOAT3 UpDirection;
-	static XMFLOAT3 SideDirection;
-
-	static real32 FieldOfView;
-	static real32 AspectRatio;
-	static real32 NearZ;
-	static real32 FarZ;
-
-	static bool32 InputDisabled;
-
 	protected:
 
-	static void Update();
+	XMMATRIX View;
+	XMMATRIX Projection;
+	XMMATRIX Orthographic;
+
+	XMFLOAT3 Position;
+	XMFLOAT3 ViewDirection;
+	XMFLOAT3 UpDirection;
+	XMFLOAT3 SideDirection;
+
+	real32 FieldOfView;
+	real32 AspectRatio;
+	real32 NearZ;
+	real32 FarZ;
+
+	void Update();
 
 	public:
 
-	static void Init();
+	virtual void Init();
 
-	static void DisableInput();
-	static void EnableInput();
+	void SetPosition(real32 X, real32 Y, real32 Z);
 
-	static void SetPosition(real32 X, real32 Y, real32 Z);
+	virtual void MoveForward(real32 Value);
+	virtual void MoveBackward(real32 Value);
+	virtual void MoveLeft(real32 Value);
+	virtual void MoveRight(real32 Value);
+	virtual void MoveUp(real32 Value);
+	virtual void MoveDown(real32 Value);
 
-	static void PanForward(real32 Value);
-	static void PanBackward(real32 Value);
-	static void PanLeft(real32 Value);
-	static void PanRight(real32 Value);
+	virtual void LookY(real32 Value);
+	virtual void LookX(real32 Value);
 
-	static void MoveForward(real32 Value);
-	static void MoveBackward(real32 Value);
-	static void StrafeLeft(real32 Value);
-	static void StrafeRight(real32 Value);
-	static void MoveUp(real32 Value);
-	static void MoveDown(real32 Value);
+	vec3 GetPosition();
 
-	static void LookY(real32 Value);
-	static void LookX(real32 Value);
-
-	static real32 GetPositionX();
-	static real32 GetPositionY();
-	static real32 GetPositionZ();
-
-	static const XMMATRIX &GetViewMatrix();
-	static const XMMATRIX &GetProjectionMatrix();
-	static const XMMATRIX &GetOrthographicMatrix();
+	const XMMATRIX &GetViewMatrix();
+	const XMMATRIX &GetProjectionMatrix();
+	const XMMATRIX &GetOrthographicMatrix();
 };
+
+typedef camera camera_free;
+
+class camera_pan : public camera
+{
+	void MoveForward(real32 Value) override;
+	void MoveBackward(real32 Value) override;
+	void MoveLeft(real32 Value) override;
+	void MoveRight(real32 Value) override;
+};
+
+extern camera_free	DebugCamera;
+extern camera_pan	LockedCamera;
+extern camera		*ActiveCamera;
+
+void R_SetActiveCamera(camera &Camera);

@@ -63,7 +63,7 @@ class threading
 {
 	friend class work_id;
 
-	singleton:
+	public:
 
 	threading(const threading &Object) = delete;
 	void operator=(const threading &Object) = delete;

@@ -1,10 +1,18 @@
-// d3d.h: Direct3d pipeline
-// Documentation used: https://docs.microsoft.com/en-us/windows/win32/direct3d11/atoc-dx-graphics-direct3d-11
+// Documentation: https://docs.microsoft.com/en-us/windows/win32/direct3d11/atoc-dx-graphics-direct3d-11
+
+/*
+==========================================================
+	Static class dedicated to setting up the Direct3D
+	API pipeline. Call Init() to initiate the device.
+	Make the draw calls between BeginFrame() and
+	EndFrame(), which will clear and present the buffer.
+==========================================================
+*/
 
 #pragma once
 
 #include "common.h"
-#include "diagnostics.h"
+#include "d3d_diagnostics.h"
 
 #include <d3d11.h>
 #include <d3dcompiler.h>
@@ -17,13 +25,13 @@
 
 using namespace DirectX;
 
-class direct3d
+class d3d_api
 {
 	private:
 
-	static HWND		WindowHandle;
-	static real32	BufferWidth;
-	static real32	BufferHeight;
+	static HWND						WindowHandle;
+	static real32					BufferWidth;
+	static real32					BufferHeight;
 
 	static ID3D11Device				*Device;
 	static IDXGISwapChain			*Swap;
@@ -49,7 +57,7 @@ class direct3d
 
 	static IDXGIDebug *Debug;
 
-	~direct3d();
+	~d3d_api();
 
 	static void Init(HWND WindowHandle);
 	static void BeginFrame();

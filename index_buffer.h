@@ -1,7 +1,14 @@
+/*
+==========================================================
+	Buffer storing indicies to get loaded by gpu.
+	Make sure to use indexed drawing.
+==========================================================
+*/
+
 #pragma once
 
 #include "common.h"
-#include "direct3d.h"
+#include "d3d_api.h"
 
 class index_buffer
 {

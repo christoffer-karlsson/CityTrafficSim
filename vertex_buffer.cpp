@@ -29,7 +29,7 @@ vertex_buffer::vertex_buffer(void *VertexData, uint32 Stride, uint32 Size, acces
 	SubResourceData.SysMemPitch = 0;
 	SubResourceData.SysMemSlicePitch = 0;
 
-	HR = direct3d::GetDevice()->CreateBuffer(&BufferDesc, &SubResourceData, &Buffer);
+	HR = d3d_api::GetDevice()->CreateBuffer(&BufferDesc, &SubResourceData, &Buffer);
 	D3D_ERROR_CHECK(HR);
 }
 
@@ -37,23 +37,23 @@ void vertex_buffer::Bind()
 {
 	uint32 Offset = 0;
 
-	direct3d::GetContext()->IASetVertexBuffers(0, 1, &Buffer, &Stride, &Offset);
+	d3d_api::GetContext()->IASetVertexBuffers(0, 1, &Buffer, &Stride, &Offset);
 }
 
 void vertex_buffer::UpdateDynamicBuffer(void *Data, uint32 Stride, uint32 Size)
 {
-	// NOTE(Cristoffer): Need better structure so that objects that didn't declare
+	// TODO(Cristoffer): Need better structure so that objects that didn't declare
 	// dynamic buffer could not access this method. Assertion for now.
 
 	assert(CPUAccess == accessibility::Dynamic);
 
 	D3D11_MAPPED_SUBRESOURCE Resource;
 
-	direct3d::GetContext()->Map(Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &Resource);
+	d3d_api::GetContext()->Map(Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &Resource);
 
 	memcpy(Resource.pData, Data, (size_t)Stride * (size_t)Size);
 
-	direct3d::GetContext()->Unmap(Buffer, 0);
+	d3d_api::GetContext()->Unmap(Buffer, 0);
 }
 
 uint32 vertex_buffer::GetSize() const

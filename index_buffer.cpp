@@ -18,13 +18,13 @@ index_buffer::index_buffer(void *Data, uint32 Stride, uint32 Size) :
 	D3D11_SUBRESOURCE_DATA SubResourceData = {};
 	SubResourceData.pSysMem = Data;
 
-	HR = direct3d::GetDevice()->CreateBuffer(&BufferDesc, &SubResourceData, &Buffer);
+	HR = d3d_api::GetDevice()->CreateBuffer(&BufferDesc, &SubResourceData, &Buffer);
 	D3D_ERROR_CHECK(HR);
 }
 
 void index_buffer::Bind()
 {
-	direct3d::GetContext()->IASetIndexBuffer(Buffer, DXGI_FORMAT_R32_UINT, 0);
+	d3d_api::GetContext()->IASetIndexBuffer(Buffer, DXGI_FORMAT_R32_UINT, 0);
 }
 
 uint32 index_buffer::GetSize() const

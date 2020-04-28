@@ -27,8 +27,8 @@ class persistence
 	persistence() = default;
 	~persistence() = default;
 
-	bool32 SaveWorldMap(world *World);
-	bool32 LoadSavedWorldMap(world *World);
+	bool32 SaveWorldMap();
+	bool32 LoadSavedWorldMap();
 
 	obj_file LoadObjectFile(std::string Filename);
 };

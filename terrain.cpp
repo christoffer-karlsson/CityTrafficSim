@@ -96,7 +96,7 @@ terrain::terrain(uint64 WidthX, uint64 WidthZ) :
 
 	cbuffer_input VertexShaderInput;
 	ConstantBuffer[0] = new constant_buffer(&VertexShaderInput, sizeof(VertexShaderInput));
-	cbuffer_light LightBuffer;
+	light_point LightBuffer;
 	ConstantBuffer[1] = new constant_buffer(&LightBuffer, sizeof(LightBuffer));
 }
 
@@ -105,10 +105,8 @@ void terrain::Draw()
 	cbuffer_input VertexShaderInput;
 	VertexShaderInput.Model = XMMatrixTranspose(GetWorldModel().GetMatrix());
 	VertexShaderInput.MVP = XMMatrixTranspose(GetWorldModel().GetMatrix() *
-											  XMMATRIX(camera::GetViewMatrix()) * 
-											  XMMATRIX(camera::GetProjectionMatrix()));
-
-	cbuffer_light &PixelShaderInput = light_source::GetConstantBuffer();
+											  XMMATRIX(ActiveCamera->GetViewMatrix()) *
+											  XMMATRIX(ActiveCamera->GetProjectionMatrix()));
 
 	VertexBuffer->UpdateDynamicBuffer(Vertices.data(), sizeof(vertex), (uint32)Vertices.size());
 
@@ -122,9 +120,9 @@ void terrain::Draw()
 	ConstantBuffer[1]->Bind(0, shader_set_type::SetPixelShader);
 
 	ConstantBuffer[0]->Update(&VertexShaderInput);
-	ConstantBuffer[1]->Update(&PixelShaderInput);
+	ConstantBuffer[1]->Update(&WorldLight);
 
-	direct3d::GetContext()->DrawIndexed(IndexBuffer->GetSize(), 0, 0);
+	d3d_api::GetContext()->DrawIndexed(IndexBuffer->GetSize(), 0, 0);
 }
 
 void terrain::UpdateHighlightColorResource(vec3u Position, bool32 IsHighlighted)

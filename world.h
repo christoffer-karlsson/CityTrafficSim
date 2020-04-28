@@ -25,8 +25,9 @@ class world
 
 	public:
 
-	world(uint32 Width, uint32 Height);
 	~world();
+
+	void Init(uint32 Width, uint32 Height);
 
 	void SetTile(vec3u Position, tile_type Type);
 	void SetTileHighlighted(vec3u Position, bool32 Set);
@@ -41,3 +42,5 @@ class world
 	tile &GetTile(vec3u Position);
 	terrain *GetTerrain();
 };
+
+extern world World;

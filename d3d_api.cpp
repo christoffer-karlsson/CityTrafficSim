@@ -1,28 +1,28 @@
-#include "direct3d.h"
+#include "d3d_api.h"
 
-HWND	direct3d::WindowHandle = nullptr;
-real32	direct3d::BufferWidth = 0.0f;
-real32	direct3d::BufferHeight = 0.0f;
+HWND	d3d_api::WindowHandle = nullptr;
+real32	d3d_api::BufferWidth = 0.0f;
+real32	d3d_api::BufferHeight = 0.0f;
 
-ID3D11Device			*direct3d::Device = nullptr;
-IDXGISwapChain			*direct3d::Swap = nullptr;
-ID3D11DeviceContext		*direct3d::Context = nullptr;
-ID3D11RenderTargetView  *direct3d::Target = nullptr;
+ID3D11Device			*d3d_api::Device = nullptr;
+IDXGISwapChain			*d3d_api::Swap = nullptr;
+ID3D11DeviceContext		*d3d_api::Context = nullptr;
+ID3D11RenderTargetView  *d3d_api::Target = nullptr;
 
-ID3D11DepthStencilState	*direct3d::DepthStencilState;
-ID3D11DepthStencilView	*direct3d::DepthStencilView;
-ID3D11BlendState		*direct3d::AlphaBlendState;
-ID3D11Texture2D			*direct3d::DepthStencilBuffer;
-D3D11_VIEWPORT			 direct3d::Viewport;
+ID3D11DepthStencilState	*d3d_api::DepthStencilState;
+ID3D11DepthStencilView	*d3d_api::DepthStencilView;
+ID3D11BlendState		*d3d_api::AlphaBlendState;
+ID3D11Texture2D			*d3d_api::DepthStencilBuffer;
+D3D11_VIEWPORT			 d3d_api::Viewport;
 
-IDXGIDebug				*direct3d::Debug;
+IDXGIDebug				*d3d_api::Debug;
 
-void direct3d::Init(HWND WindowHandle)
+void d3d_api::Init(HWND WindowHandle)
 {
-	direct3d::WindowHandle = WindowHandle;
+	d3d_api::WindowHandle = WindowHandle;
 
-	direct3d::BufferWidth = 1920.0f;
-	direct3d::BufferHeight = 1080.0f;
+	d3d_api::BufferWidth = 1920.0f;
+	d3d_api::BufferHeight = 1080.0f;
 
 	SetDevice();
 	SetFrameBuffer();
@@ -31,7 +31,7 @@ void direct3d::Init(HWND WindowHandle)
 	SetViewport();
 }
 
-void direct3d::SetDevice()
+void d3d_api::SetDevice()
 {
 	// NOTE(Cristoffer): Sets up the device parent together with swap chain buffer.
 
@@ -93,7 +93,7 @@ void direct3d::SetDevice()
 	#endif
 }
 
-void direct3d::SetFrameBuffer()
+void d3d_api::SetFrameBuffer()
 {
 	// TODO(Cristoffer): Create the buffer and render target. Only single render target
 	// for now. Multiple render targets needed in future?
@@ -111,7 +111,7 @@ void direct3d::SetFrameBuffer()
 	FrameBuffer->Release();
 }
 
-void direct3d::SetDepthStencil()
+void d3d_api::SetDepthStencil()
 {
 	// NOTE(Cristoffer): Depth stencil or "Z-buffer" for sorting pixels based on depth
 	// instead of the order objects get drawn in.
@@ -146,7 +146,7 @@ void direct3d::SetDepthStencil()
 	D3D_ERROR_CHECK(HR);
 }
 
-void direct3d::SetAlphaBlender()
+void d3d_api::SetAlphaBlender()
 {
 	// NOTE(Cristoffer): Pixel alpha blending to handle transparency.
 
@@ -174,7 +174,7 @@ void direct3d::SetAlphaBlender()
 	D3D_ERROR_CHECK(HR);
 }
 
-void direct3d::SetViewport()
+void d3d_api::SetViewport()
 {
 	Viewport.Width = BufferWidth;
 	Viewport.Height = BufferHeight;
@@ -184,7 +184,7 @@ void direct3d::SetViewport()
 	Viewport.TopLeftY = 0.0f;
 }
 
-void direct3d::BeginFrame()
+void d3d_api::BeginFrame()
 {
 	// TODO(Cristoffer): Might need different setups and topologies depending
 	// on what is rendered in future.
@@ -202,63 +202,63 @@ void direct3d::BeginFrame()
 	Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void direct3d::EndFrame()
+void d3d_api::EndFrame()
 {
 	// NOTE(Cristoffer): Present new buffer to screen.
 	Swap->Present(0, 0);
 }
 
-real32 direct3d::GetBufferWidth()
+real32 d3d_api::GetBufferWidth()
 {
 	return BufferWidth;
 }
 
-real32 direct3d::GetBufferHeight()
+real32 d3d_api::GetBufferHeight()
 {
 	return BufferHeight;
 }
 
-ID3D11Device *direct3d::GetDevice()
+ID3D11Device *d3d_api::GetDevice()
 {
 	return Device;
 }
 
-ID3D11Texture2D *direct3d::GetDepthStencilBuffer()
+ID3D11Texture2D *d3d_api::GetDepthStencilBuffer()
 {
 	return DepthStencilBuffer;
 }
 
-ID3D11DepthStencilState *direct3d::GetDepthStencilState()
+ID3D11DepthStencilState *d3d_api::GetDepthStencilState()
 {
 	return DepthStencilState;
 }
 
-ID3D11DepthStencilView *direct3d::GetDepthStencilView()
+ID3D11DepthStencilView *d3d_api::GetDepthStencilView()
 {
 	return DepthStencilView;
 }
 
-ID3D11BlendState *direct3d::GetAlphaBlendState()
+ID3D11BlendState *d3d_api::GetAlphaBlendState()
 {
 	return AlphaBlendState;
 }
 
-IDXGISwapChain *direct3d::GetSwap()
+IDXGISwapChain *d3d_api::GetSwap()
 {
 	return Swap;
 }
 
-ID3D11DeviceContext *direct3d::GetContext()
+ID3D11DeviceContext *d3d_api::GetContext()
 {
 	return Context;
 }
 
-ID3D11RenderTargetView *direct3d::GetTarget()
+ID3D11RenderTargetView *d3d_api::GetTarget()
 {
 	return Target;
 }
 
-direct3d::~direct3d()
+d3d_api::~d3d_api()
 {
 	if(Context != nullptr)
 	{

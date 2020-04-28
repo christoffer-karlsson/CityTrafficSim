@@ -1,6 +1,6 @@
 #include "winprocedure.h"
 
-#if DEBUG_MODE
+#if DEBUG_IMGUI
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -8,25 +8,24 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 
 LRESULT CALLBACK WindowProcedure(HWND WindowHandle, UINT MessageId, WPARAM WParam, LPARAM LParam)
 {
-	#if DEBUG_MODE
+	#if DEBUG_IMGUI
 
-	// NOTE(Cristoffer): Leave message to Imgui proc handler first, if proc handler took care of the message,
-	// then this will return.
-	if(application_state::GetDebugMenuEnabled() && ImGui_ImplWin32_WndProcHandler(WindowHandle, MessageId, WParam, LParam))
+	// Leave message to Imgui proc handler first, if imgui procedure handler took care of the message, then this will return.
+	if(app_state::GetDebugMenuEnabled() && ImGui_ImplWin32_WndProcHandler(WindowHandle, MessageId, WParam, LParam))
 	{
-		return 1;
+		return true;
 	}
 
 	#endif
 
 	if(MessageId == WM_CLOSE)
 	{
-		// TODO(Cristoffer): Handle closing the window.
+		// TODO: Handle closing the window.
 		OutputDebugStringW(L"WM_CLOSE\n");
 	}
 	else if(MessageId == WM_SIZE)
 	{
-		// TODO(Cristoffer): Handle resizing of window.
+		// TODO: Handle resizing of window.
 
 	}
 	else if(MessageId == WM_KEYDOWN)

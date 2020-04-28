@@ -2,7 +2,7 @@
 
 #include "common.h"
 #include "world_model.h"
-#include "diagnostics.h"
+#include "d3d_diagnostics.h"
 #include "camera.h"
 #include "math.h"
 #include "texture.h"
@@ -12,8 +12,8 @@
 #include "pixel_shader.h"
 #include "constant_buffer.h"
 #include "instance_buffer.h"
-#include "light_source.h"
-#include "directional_light.h"
+#include "light_point.h"
+#include "light_directional.h"
 #include "mesh.h"
 
 #include <memory>

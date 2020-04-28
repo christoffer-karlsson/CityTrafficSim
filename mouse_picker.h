@@ -7,7 +7,7 @@
 #include "common.h"
 #include "camera.h"
 #include "mouse.h"
-#include "direct3d.h"
+#include "d3d_api.h"
 
 #include "external/SimpleMath.h"
 

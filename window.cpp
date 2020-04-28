@@ -37,7 +37,7 @@ window::window(std::string Title, int32 Width, int32 Height)
 	if(!WindowHandle)
 	{
 		MessageBoxA(WindowHandle,
-			ERROR_MESSAGE_0000,
+			"Could not create window!",
 			NULL,
 			MB_OK | MB_ICONWARNING
 			);

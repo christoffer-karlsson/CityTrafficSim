@@ -1,7 +1,14 @@
+/*
+==========================================================
+	Supply constant data to a shader.
+	Bind to either vertex or pixel shader.
+==========================================================
+*/
+
 #pragma once
 
 #include "common.h"
-#include "direct3d.h"
+#include "d3d_api.h"
 
 enum class shader_set_type
 {
@@ -12,9 +19,8 @@ class constant_buffer
 {
 	private:
 
-	ID3D11Buffer *ConstantBuffer;
-
-	uint32 Size;
+	ID3D11Buffer	*ConstantBuffer;
+	uint32			Size;
 
 	public:
 

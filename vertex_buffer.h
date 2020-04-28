@@ -1,11 +1,15 @@
+/*
+==========================================================
+	Create a dynamic or static vertex buffer.
+	If dynamic buffer is created, make sure to do
+	dynamic update every frame before calling draw.
+==========================================================
+*/
+
 #pragma once
 
 #include "common.h"
-#include "direct3d.h"
-
-// NOTE(Cristoffer): Allows to create a dynamic of static buffer.
-// If dynamic buffer is instantiated, then use the function to update
-// the vertex buffer on demand.
+#include "d3d_api.h"
 
 enum class accessibility
 {
@@ -17,9 +21,9 @@ class vertex_buffer
 {
 	private:
 
-	ID3D11Buffer *Buffer;
-	uint32		 Stride;
-	uint32		 Size;
+	ID3D11Buffer	*Buffer;
+	uint32			Stride;
+	uint32			Size;
 
 	accessibility	CPUAccess;
 

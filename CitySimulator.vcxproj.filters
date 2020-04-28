@@ -1,411 +1,392 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="external">
+      <UniqueIdentifier>{a5a9b322-3fac-4f11-acdc-db32e77d1f01}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="external\imgui">
+      <UniqueIdentifier>{e1072d2d-5701-4a2f-b1d1-b3fb103bfba1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
+    <Filter Include="resources">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\graphics">
-      <UniqueIdentifier>{d510d486-4244-42e0-a2e9-8bde08d786b8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\graphics">
-      <UniqueIdentifier>{68bdcd64-0550-4a5a-8bba-3e80072e8d04}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="External Libraries">
-      <UniqueIdentifier>{a5a9b322-3fac-4f11-acdc-db32e77d1f01}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\graphics\drawables">
-      <UniqueIdentifier>{af47c601-f608-4ee9-b5c0-d136d5a501f5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\graphics\drawables">
-      <UniqueIdentifier>{3120dd6b-c6ba-404d-993e-fd6de85c18c6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\data">
-      <UniqueIdentifier>{b5681021-cc48-4575-a7c6-99d2a90ca3b6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\header-only">
-      <UniqueIdentifier>{25f384b2-d21f-4e6b-92fc-4eef8c3e44a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\entities">
-      <UniqueIdentifier>{b283f871-e0b4-42bf-a756-c7abfc916cc2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\entity">
-      <UniqueIdentifier>{0551fedc-2107-489d-92a8-96329963b288}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\shaders">
+    <Filter Include="resources\shaders">
       <UniqueIdentifier>{23338537-ca4b-4ebe-91b2-960c39f51d63}</UniqueIdentifier>
     </Filter>
-    <Filter Include="External Libraries\imgui">
-      <UniqueIdentifier>{e1072d2d-5701-4a2f-b1d1-b3fb103bfba1}</UniqueIdentifier>
+    <Filter Include="source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="resources\data">
+      <UniqueIdentifier>{b5681021-cc48-4575-a7c6-99d2a90ca3b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\direct3d">
+      <UniqueIdentifier>{6888935d-82c3-447c-abec-5de36c7a0c3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\rendering">
+      <UniqueIdentifier>{44027ef3-035c-44a3-a831-269634f31c42}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="winmain.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="application.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="window.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="winprocedure.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="keyboard.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="mouse.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="timing.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="external\WICTextureLoader.cpp">
-      <Filter>External Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="diagnostics.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="direct3d.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="texture.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="constant_buffer.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="vertex_buffer.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>Source Files\graphics</Filter>
+      <Filter>external</Filter>
     </ClCompile>
     <ClCompile Include="world.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="mouse_picker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="line.cpp">
-      <Filter>Source Files\graphics\drawables</Filter>
-    </ClCompile>
-    <ClCompile Include="terrain.cpp">
-      <Filter>Source Files\graphics\drawables</Filter>
-    </ClCompile>
-    <ClCompile Include="user_interface.cpp">
-      <Filter>Source Files\graphics\drawables</Filter>
+      <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="threading.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="persistence.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="entity.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="entity_manager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="system_message.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="application_state.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="logger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="render_manager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="asset_manager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="entity_car.cpp">
-      <Filter>Source Files\entities</Filter>
-    </ClCompile>
-    <ClCompile Include="vertex_shader.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="pixel_shader.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="drawable_cars.cpp">
-      <Filter>Source Files\graphics\drawables</Filter>
-    </ClCompile>
-    <ClCompile Include="drawable_object.cpp">
-      <Filter>Source Files\graphics\drawables</Filter>
-    </ClCompile>
-    <ClCompile Include="instance_buffer.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="index_buffer.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="world_model.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="mesh.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="drawable.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="light_source.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="drawable_buildings.cpp">
-      <Filter>Source Files\graphics\drawables</Filter>
-    </ClCompile>
-    <ClCompile Include="directional_light.cpp">
-      <Filter>Source Files\graphics</Filter>
+      <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="external\imgui\imgui.cpp">
-      <Filter>External Libraries\imgui</Filter>
+      <Filter>external\imgui</Filter>
     </ClCompile>
     <ClCompile Include="external\imgui\imgui_demo.cpp">
-      <Filter>External Libraries\imgui</Filter>
+      <Filter>external\imgui</Filter>
     </ClCompile>
     <ClCompile Include="external\imgui\imgui_draw.cpp">
-      <Filter>External Libraries\imgui</Filter>
+      <Filter>external\imgui</Filter>
     </ClCompile>
     <ClCompile Include="external\imgui\imgui_widgets.cpp">
-      <Filter>External Libraries\imgui</Filter>
+      <Filter>external\imgui</Filter>
     </ClCompile>
     <ClCompile Include="external\imgui\imgui_impl_dx11.cpp">
-      <Filter>External Libraries\imgui</Filter>
+      <Filter>external\imgui</Filter>
     </ClCompile>
     <ClCompile Include="external\imgui\imgui_impl_win32.cpp">
-      <Filter>External Libraries\imgui</Filter>
+      <Filter>external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="entity_car.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="drawable_buildings.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="drawable_cars.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="drawable_object.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="line.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="terrain.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="user_interface.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="drawable.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="world_model.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="d3d_diagnostics.cpp">
+      <Filter>source\direct3d</Filter>
+    </ClCompile>
+    <ClCompile Include="d3d_api.cpp">
+      <Filter>source\direct3d</Filter>
+    </ClCompile>
+    <ClCompile Include="constant_buffer.cpp">
+      <Filter>source\direct3d</Filter>
+    </ClCompile>
+    <ClCompile Include="index_buffer.cpp">
+      <Filter>source\direct3d</Filter>
+    </ClCompile>
+    <ClCompile Include="vertex_buffer.cpp">
+      <Filter>source\direct3d</Filter>
+    </ClCompile>
+    <ClCompile Include="vertex_shader.cpp">
+      <Filter>source\direct3d</Filter>
+    </ClCompile>
+    <ClCompile Include="pixel_shader.cpp">
+      <Filter>source\direct3d</Filter>
+    </ClCompile>
+    <ClCompile Include="instance_buffer.cpp">
+      <Filter>source\direct3d</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>source\direct3d</Filter>
+    </ClCompile>
+    <ClCompile Include="render_manager.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="app_state.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>source\rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="application.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="winprocedure.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="keyboard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mouse.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="timing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="external\SpriteBatch.h">
-      <Filter>External Libraries</Filter>
+      <Filter>external</Filter>
     </ClInclude>
     <ClInclude Include="external\SpriteFont.h">
-      <Filter>External Libraries</Filter>
+      <Filter>external</Filter>
     </ClInclude>
     <ClInclude Include="external\WICTextureLoader.h">
-      <Filter>External Libraries</Filter>
-    </ClInclude>
-    <ClInclude Include="diagnostics.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="direct3d.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="texture.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="constant_buffer.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="vertex_buffer.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="world.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mouse_picker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="line.h">
-      <Filter>Header Files\graphics\drawables</Filter>
+      <Filter>external</Filter>
     </ClInclude>
     <ClInclude Include="external\SimpleMath.h">
-      <Filter>External Libraries</Filter>
-    </ClInclude>
-    <ClInclude Include="terrain.h">
-      <Filter>Header Files\graphics\drawables</Filter>
-    </ClInclude>
-    <ClInclude Include="user_interface.h">
-      <Filter>Header Files\graphics\drawables</Filter>
-    </ClInclude>
-    <ClInclude Include="threading.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="persistence.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="common.h">
-      <Filter>Header Files\header-only</Filter>
-    </ClInclude>
-    <ClInclude Include="types.h">
-      <Filter>Header Files\header-only</Filter>
-    </ClInclude>
-    <ClInclude Include="entity_manager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="system_message.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="math.h">
-      <Filter>Header Files\header-only</Filter>
-    </ClInclude>
-    <ClInclude Include="application_state.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="logger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="render_manager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="asset_manager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="entity_car.h">
-      <Filter>Header Files\entity</Filter>
-    </ClInclude>
-    <ClInclude Include="vertex_shader.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="pixel_shader.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="drawable_cars.h">
-      <Filter>Header Files\graphics\drawables</Filter>
-    </ClInclude>
-    <ClInclude Include="obj_file.h">
-      <Filter>Header Files\header-only</Filter>
-    </ClInclude>
-    <ClInclude Include="drawable_object.h">
-      <Filter>Header Files\graphics\drawables</Filter>
-    </ClInclude>
-    <ClInclude Include="instance_buffer.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="index_buffer.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="mesh.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="world_model.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="drawable.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="light_source.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="drawable_buildings.h">
-      <Filter>Header Files\graphics\drawables</Filter>
-    </ClInclude>
-    <ClInclude Include="instance_vs.h">
-      <Filter>Header Files\header-only</Filter>
-    </ClInclude>
-    <ClInclude Include="directional_light.h">
-      <Filter>Header Files\graphics</Filter>
+      <Filter>external</Filter>
     </ClInclude>
     <ClInclude Include="external\imgui\imconfig.h">
-      <Filter>External Libraries\imgui</Filter>
+      <Filter>external\imgui</Filter>
     </ClInclude>
     <ClInclude Include="external\imgui\imgui.h">
-      <Filter>External Libraries\imgui</Filter>
+      <Filter>external\imgui</Filter>
     </ClInclude>
     <ClInclude Include="external\imgui\imgui_internal.h">
-      <Filter>External Libraries\imgui</Filter>
+      <Filter>external\imgui</Filter>
     </ClInclude>
     <ClInclude Include="external\imgui\imstb_rectpack.h">
-      <Filter>External Libraries\imgui</Filter>
+      <Filter>external\imgui</Filter>
     </ClInclude>
     <ClInclude Include="external\imgui\imstb_textedit.h">
-      <Filter>External Libraries\imgui</Filter>
+      <Filter>external\imgui</Filter>
     </ClInclude>
     <ClInclude Include="external\imgui\imstb_truetype.h">
-      <Filter>External Libraries\imgui</Filter>
+      <Filter>external\imgui</Filter>
     </ClInclude>
     <ClInclude Include="external\imgui\imgui_impl_dx11.h">
-      <Filter>External Libraries\imgui</Filter>
+      <Filter>external\imgui</Filter>
     </ClInclude>
     <ClInclude Include="external\imgui\imgui_impl_win32.h">
-      <Filter>External Libraries\imgui</Filter>
+      <Filter>external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="world.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="winprocedure.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="entity_car.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="drawable_buildings.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="drawable_cars.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="drawable_object.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="line.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="terrain.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="user_interface.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="drawable.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="world_model.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="instance_vs.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="math.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="obj_file.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="types.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="application.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="asset_manager.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="entity.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="entity_manager.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="keyboard.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="logger.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="mouse.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="mouse_picker.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="persistence.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="system_message.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="threading.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="timing.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="window.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="d3d_diagnostics.h">
+      <Filter>source\direct3d</Filter>
+    </ClInclude>
+    <ClInclude Include="d3d_api.h">
+      <Filter>source\direct3d</Filter>
+    </ClInclude>
+    <ClInclude Include="constant_buffer.h">
+      <Filter>source\direct3d</Filter>
+    </ClInclude>
+    <ClInclude Include="index_buffer.h">
+      <Filter>source\direct3d</Filter>
+    </ClInclude>
+    <ClInclude Include="vertex_buffer.h">
+      <Filter>source\direct3d</Filter>
+    </ClInclude>
+    <ClInclude Include="vertex_shader.h">
+      <Filter>source\direct3d</Filter>
+    </ClInclude>
+    <ClInclude Include="pixel_shader.h">
+      <Filter>source\direct3d</Filter>
+    </ClInclude>
+    <ClInclude Include="instance_buffer.h">
+      <Filter>source\direct3d</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>source\direct3d</Filter>
+    </ClInclude>
+    <ClInclude Include="light_directional.h">
+      <Filter>source\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="light_point.h">
+      <Filter>source\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="render_manager.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="app_state.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>source\rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="cube_vs.hlsl">
-      <Filter>Resource Files\shaders</Filter>
+      <Filter>resources\shaders</Filter>
     </FxCompile>
     <FxCompile Include="cube_ps.hlsl">
-      <Filter>Resource Files\shaders</Filter>
+      <Filter>resources\shaders</Filter>
     </FxCompile>
     <FxCompile Include="line_vs.hlsl">
-      <Filter>Resource Files\shaders</Filter>
+      <Filter>resources\shaders</Filter>
     </FxCompile>
     <FxCompile Include="line_ps.hlsl">
-      <Filter>Resource Files\shaders</Filter>
+      <Filter>resources\shaders</Filter>
     </FxCompile>
     <FxCompile Include="user_interface_ps.hlsl">
-      <Filter>Resource Files\shaders</Filter>
+      <Filter>resources\shaders</Filter>
     </FxCompile>
     <FxCompile Include="user_interface_vs.hlsl">
-      <Filter>Resource Files\shaders</Filter>
+      <Filter>resources\shaders</Filter>
     </FxCompile>
     <FxCompile Include="terrain_ps.hlsl">
-      <Filter>Resource Files\shaders</Filter>
+      <Filter>resources\shaders</Filter>
     </FxCompile>
     <FxCompile Include="terrain_vs.hlsl">
-      <Filter>Resource Files\shaders</Filter>
+      <Filter>resources\shaders</Filter>
     </FxCompile>
     <FxCompile Include="object_ps.hlsl">
-      <Filter>Resource Files\shaders</Filter>
+      <Filter>resources\shaders</Filter>
     </FxCompile>
     <FxCompile Include="object_vs.hlsl">
-      <Filter>Resource Files\shaders</Filter>
+      <Filter>resources\shaders</Filter>
     </FxCompile>
     <FxCompile Include="instanced_object_ps.hlsl">
-      <Filter>Resource Files\shaders</Filter>
+      <Filter>resources\shaders</Filter>
     </FxCompile>
     <FxCompile Include="instanced_object_vs.hlsl">
-      <Filter>Resource Files\shaders</Filter>
+      <Filter>resources\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="instanced_object_dir_light_vs.hlsl">
+      <Filter>resources\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="instanced_object_dir_light_ps.hlsl">
+      <Filter>resources\shaders</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="todo.txt">
-      <Filter>Resource Files</Filter>
+      <Filter>resources</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\saved_map.citysim">
-      <Filter>Source Files\data</Filter>
+      <Filter>resources\data</Filter>
     </None>
   </ItemGroup>
 </Project>

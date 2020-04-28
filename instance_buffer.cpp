@@ -25,13 +25,13 @@ instance_buffer::instance_buffer(void *Data, uint32 Stride, uint32 Size) :
 	SubResourceData.SysMemPitch = 0;
 	SubResourceData.SysMemSlicePitch = 0;
 
-	HR = direct3d::GetDevice()->CreateBuffer(&BufferDesc, &SubResourceData, &Buffer);
+	HR = d3d_api::GetDevice()->CreateBuffer(&BufferDesc, &SubResourceData, &Buffer);
 	D3D_ERROR_CHECK(HR);
 }
 
 void instance_buffer::Bind(vertex_buffer *VertexBuffer)
 {
-	// NOTE(Cristoffer): Need to set up instance buffer together with vertex buffer.
+	// NOTE(Cristoffer): Set up instance buffer together with vertex buffer.
 	uint32 Offsets[2];
 	Offsets[0] = 0;
 	Offsets[1] = 0;
@@ -44,18 +44,18 @@ void instance_buffer::Bind(vertex_buffer *VertexBuffer)
 	BufferPointers[0] = VertexBuffer->GetBuffer();
 	BufferPointers[1] = Buffer;
 
-	direct3d::GetContext()->IASetVertexBuffers(0, 2, BufferPointers, Strides, Offsets);
+	d3d_api::GetContext()->IASetVertexBuffers(0, 2, BufferPointers, Strides, Offsets);
 }
 
 void instance_buffer::UpdateDynamicBuffer(void *Data)
 {
 	D3D11_MAPPED_SUBRESOURCE Resource;
 
-	direct3d::GetContext()->Map(Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &Resource);
+	d3d_api::GetContext()->Map(Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &Resource);
 
 	memcpy(Resource.pData, Data, (size_t)Stride * (size_t)Size);
 
-	direct3d::GetContext()->Unmap(Buffer, 0);
+	d3d_api::GetContext()->Unmap(Buffer, 0);
 }
 
 uint32 instance_buffer::GetStride() const

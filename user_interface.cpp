@@ -75,8 +75,8 @@ user_interface::user_interface() :
 		}
 	}
 
-	DXTKSpriteBatch = std::make_unique<SpriteBatch>(direct3d::GetContext());
-	DXTKSpriteFont = std::make_unique<SpriteFont>(direct3d::GetDevice(), L"data/bahnschrift_12.spritefont");
+	DXTKSpriteBatch = std::make_unique<SpriteBatch>(d3d_api::GetContext());
+	DXTKSpriteFont = std::make_unique<SpriteFont>(d3d_api::GetDevice(), L"data/bahnschrift_12.spritefont");
 
 	// NOTE(Cristoffer): Pre-allocate gpu memory since we have a fixed amount of UI to update
 	// every frame.
@@ -129,7 +129,7 @@ void user_interface::Draw()
 	VertexShader->Bind();
 	PixelShader->Bind();
 
-	direct3d::GetContext()->DrawIndexed(IndexBuffer->GetSize(), 0, 0);
+	d3d_api::GetContext()->DrawIndexed(IndexBuffer->GetSize(), 0, 0);
 
 	// TODO(Cristoffer): Does this need device context in order to do alpha?
 	//DXTKSpriteBatch->Begin(SpriteSortMode_Deferred, direct3d::GetAlphaBlendState());
@@ -423,8 +423,8 @@ void user_interface::CalculateTextPositions()
 	{
 		real32 OffsetX = Element[EID]->OffsetX + Element[EID]->Margin;
 		real32 OffsetY = Element[EID]->OffsetY + Element[EID]->Margin;
-		real32 ScreenWidth = direct3d::GetBufferWidth();
-		real32 ScreenHeight = direct3d::GetBufferHeight();
+		real32 ScreenWidth = d3d_api::GetBufferWidth();
+		real32 ScreenHeight = d3d_api::GetBufferHeight();
 		real32 Width = Element[EID]->Width;
 		real32 Height = Element[EID]->Height;
 
@@ -499,8 +499,8 @@ void user_interface::CalculateVertices()
 	{
 		ui_vertex Vertex[4];
 
-		real32 ScreenWidth = direct3d::GetBufferWidth();
-		real32 ScreenHeight = direct3d::GetBufferHeight();
+		real32 ScreenWidth = d3d_api::GetBufferWidth();
+		real32 ScreenHeight = d3d_api::GetBufferHeight();
 
 		real32 Width = Element[ID]->Width;
 		real32 Height = Element[ID]->Height;

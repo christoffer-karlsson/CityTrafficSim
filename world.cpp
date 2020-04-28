@@ -1,8 +1,9 @@
 #include "world.h"
 
-world::world(uint32 WidthX, uint32 WidthZ) :
-	Terrain(new terrain(WidthX, WidthZ))
+void world::Init(uint32 WidthX, uint32 WidthZ)
 {
+	Terrain = new terrain(WidthX, WidthZ);
+
 	Tiles = new tile[WidthX * WidthZ];
 
 	DrawableBuildings = render_manager::GetDrawableBuildings();

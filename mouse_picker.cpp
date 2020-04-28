@@ -4,8 +4,8 @@ bool32 mouse_picker::TestMouseCollision(XMMATRIX &Model, std::vector<vec3> &Vert
 {
 	XMMATRIX View, Projection;
 
-	View = camera::GetViewMatrix();
-	Projection = camera::GetProjectionMatrix();
+	View = ActiveCamera->GetViewMatrix();
+	Projection = ActiveCamera->GetProjectionMatrix();
 
 	XMVECTOR RayOriginScreen, RayDirectionScreen;
 	XMVECTOR RayOrigin, RayDirection;
@@ -13,8 +13,8 @@ bool32 mouse_picker::TestMouseCollision(XMMATRIX &Model, std::vector<vec3> &Vert
 	RayOriginScreen = XMVectorSet(GetMouseX(), GetMouseY(), 0.0f, 1.0f);
 	RayDirectionScreen = XMVectorSet(GetMouseX(), GetMouseY(), 1.0f, 1.0f);
 
-	RayOrigin = XMVector3Unproject(RayOriginScreen, 0.0f, 0.0f, direct3d::GetBufferWidth(), direct3d::GetBufferHeight(), 0.0f, 1.0f, Projection, View, Model);
-	RayDirection = XMVector3Unproject(RayDirectionScreen, 0.0f, 0.0f, direct3d::GetBufferWidth(), direct3d::GetBufferHeight(), 0.0f, 1.0f, Projection, View, Model);
+	RayOrigin = XMVector3Unproject(RayOriginScreen, 0.0f, 0.0f, d3d_api::GetBufferWidth(), d3d_api::GetBufferHeight(), 0.0f, 1.0f, Projection, View, Model);
+	RayDirection = XMVector3Unproject(RayDirectionScreen, 0.0f, 0.0f, d3d_api::GetBufferWidth(), d3d_api::GetBufferHeight(), 0.0f, 1.0f, Projection, View, Model);
 
 	RayDirection = XMVector3Normalize(RayDirection - RayOrigin);
 

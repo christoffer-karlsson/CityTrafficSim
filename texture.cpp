@@ -11,7 +11,7 @@ texture::texture(const wchar_t *Filename, int32 AtlasWidth, int32 AtlasHeight, i
 {
 	HRESULT HR = S_OK;
 
-	HR = CreateWICTextureFromFile(direct3d::GetDevice(), direct3d::GetContext(), Filename, nullptr, &TextureView);
+	HR = CreateWICTextureFromFile(d3d_api::GetDevice(), d3d_api::GetContext(), Filename, nullptr, &TextureView);
 	D3D_ERROR_CHECK(HR);
 
 	D3D11_SAMPLER_DESC SamplerDesc = {};
@@ -20,14 +20,14 @@ texture::texture(const wchar_t *Filename, int32 AtlasWidth, int32 AtlasHeight, i
 	SamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	SamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
-	HR = direct3d::GetDevice()->CreateSamplerState(&SamplerDesc, &Sampler);
+	HR = d3d_api::GetDevice()->CreateSamplerState(&SamplerDesc, &Sampler);
 	D3D_ERROR_CHECK(HR);
 }
 
 void texture::Bind()
 {
-	direct3d::GetContext()->PSSetShaderResources(0, 1, &TextureView);
-	direct3d::GetContext()->PSSetSamplers(0, 1, &Sampler);
+	d3d_api::GetContext()->PSSetShaderResources(0, 1, &TextureView);
+	d3d_api::GetContext()->PSSetSamplers(0, 1, &Sampler);
 }
 
 texture_coordinates texture::GetUVFromSliceCoordinates(int32 X, int32 Y)

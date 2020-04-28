@@ -1,4 +1,8 @@
-// common.h: Miscellaneous typedefs, macros, settings, etc that is used all over the place.
+/*
+==========================================================
+	Commonly used in every file.
+==========================================================
+*/
 
 #pragma once
 
@@ -6,17 +10,15 @@
 
 #include <cassert>
 
-#define BUILD_NUMBER 27
+#define BUILD_NUMBER 28
 #define SHOW_BUILD_NUMBER 1
 
-// NOTE(Cristoffer): Enable debug stuff, such as assertions. Turn off
-// when building release.
+// Enable debug stuff, such as assertions. Turn off when building release.
 #define DEBUG_MODE 1
-#define DX_DEBUG 1
+#define DEBUG_D3D 1
+#define DEBUG_IMGUI 1
 
-// NOTE(Cristoffer): Define if multi-threading should be used.
-// Supports change at run time, so maybe make a changeable variable of
-// this to experiment?
+// Define if multi-threading should be used.
 #define USE_MULTI_THREADING 1
 
 #if DEBUG_MODE
@@ -28,8 +30,3 @@
 #define ASSERT(Expression) Expression
 
 #endif
-
-#define singleton public
-
-// NOTE(Cristoffer): Predefined messages. Might be useless to do this.
-#define ERROR_MESSAGE_0000 "Could not create a handle to window."

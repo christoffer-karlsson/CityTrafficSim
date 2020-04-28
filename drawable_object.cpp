@@ -19,7 +19,7 @@ drawable_object::drawable_object(mesh *Asset, vec3 Position, vec3 Scale, vec3 Ro
 	cbuffer_input VertexShaderInput;
 	ConstantBuffer[0] = new constant_buffer(&VertexShaderInput, sizeof(VertexShaderInput));
 
-	cbuffer_light PixelShaderInput;
+	light_point PixelShaderInput;
 	ConstantBuffer[1] = new constant_buffer(&PixelShaderInput, sizeof(PixelShaderInput));
 }
 
@@ -29,12 +29,10 @@ void drawable_object::Draw()
 
 	VertexShaderInput.MVP = XMMatrixTranspose(
 		GetWorldModel().GetMatrix() * 
-		XMMATRIX(camera::GetViewMatrix()) *
-		XMMATRIX(camera::GetProjectionMatrix()));
+		XMMATRIX(ActiveCamera->GetViewMatrix()) *
+		XMMATRIX(ActiveCamera->GetProjectionMatrix()));
 
 	VertexShaderInput.Model = XMMatrixTranspose(GetWorldModel().GetMatrix());
-
-	cbuffer_light &PixelShaderInput = light_source::GetConstantBuffer();
 
 	VertexBuffer->Bind();
 	IndexBuffer->Bind();
@@ -45,9 +43,9 @@ void drawable_object::Draw()
 	ConstantBuffer[1]->Bind(0, shader_set_type::SetPixelShader);
 
 	ConstantBuffer[0]->Update(&VertexShaderInput);
-	ConstantBuffer[1]->Update(&PixelShaderInput);
+	ConstantBuffer[1]->Update(&WorldLight);
 
-	direct3d::GetContext()->DrawIndexed(IndexBuffer->GetSize(), 0, 0);
+	d3d_api::GetContext()->DrawIndexed(IndexBuffer->GetSize(), 0, 0);
 }
 
 drawable_object::~drawable_object()

@@ -5,9 +5,9 @@
 #include "keyboard.h"
 #include "mouse.h"
 
-#if DEBUG_MODE
+#if DEBUG_IMGUI
 
-#include "application_state.h"
+#include "app_state.h"
 #include "external/imgui/imgui_impl_win32.h"
 
 #else

@@ -1,6 +1,6 @@
 #include "persistence.h"
 
-bool32 persistence::SaveWorldMap(world *World)
+bool32 persistence::SaveWorldMap()
 {
 	std::ofstream File;
 	File.open(WorldSaveFile);
@@ -11,12 +11,12 @@ bool32 persistence::SaveWorldMap(world *World)
 		return 0;
 	}
 
-	for(uint32 X = 0; X < World->GetWidthX(); X++)
+	for(uint32 X = 0; X < World.GetWidthX(); X++)
 	{
-		for(uint32 Z = 0; Z < World->GetWidthZ(); Z++)
+		for(uint32 Z = 0; Z < World.GetWidthZ(); Z++)
 		{
 			File << "tile" << SPACE << X << SPACE << 0 << SPACE << Z << SPACE;
-			File << World->GetTileID(vec3u(X, 0, Z));
+			File << World.GetTileID(vec3u(X, 0, Z));
 			File << NEWLINE;
 		}
 	}
@@ -26,7 +26,7 @@ bool32 persistence::SaveWorldMap(world *World)
 	return 1;
 }
 
-bool32 persistence::LoadSavedWorldMap(world *World)
+bool32 persistence::LoadSavedWorldMap()
 {
 	std::string Word;
 
@@ -49,7 +49,7 @@ bool32 persistence::LoadSavedWorldMap(world *World)
 			std::getline(File, Z, SPACE);
 			std::getline(File, TileType, NEWLINE);
 
-			World->SetTile(vec3u(std::stoi(X), std::stoi(Y), std::stoi(Z)), World->GetTileType(std::stoi(TileType)));
+			World.SetTile(vec3u(std::stoi(X), std::stoi(Y), std::stoi(Z)), World.GetTileType(std::stoi(TileType)));
 		}
 		else
 		{

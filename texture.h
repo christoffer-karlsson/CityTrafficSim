@@ -1,17 +1,18 @@
-// d3d_texture.h: d3d texture interface
+/*
+==========================================================
+	Load texture from image file.
+==========================================================
+*/
 
 #pragma once
 
 #include "common.h"
-#include "direct3d.h"
+#include "d3d_api.h"
 #include "external/WICTextureLoader.h"
 
-using namespace DirectX;
-
-// NOTE(Cristoffer): Only supports sampling for evenly spaced
-// texture atlas for now.
-
 // TODO(Cristoffer): Add support for texture slots.
+// TODO(Cristoffer): Pull out the file loading to asset manager.
+// TODO(Cristoffer): Implement a specific texture type for tile grid.
 
 struct texture_coordinates
 {

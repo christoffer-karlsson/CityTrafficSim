@@ -11,7 +11,7 @@ vertex_shader::vertex_shader(const wchar_t *File) :
 	HR = D3DReadFileToBlob(File, &Blob);
 	D3D_ERROR_CHECK(HR);
 
-	HR = direct3d::GetDevice()->CreateVertexShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &VertexShader);
+	HR = d3d_api::GetDevice()->CreateVertexShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &VertexShader);
 	D3D_ERROR_CHECK(HR);
 
 	for(uint32 Index = 0;
@@ -30,7 +30,6 @@ void vertex_shader::AddInputElement(uint32 Slot, LPCSTR SemanticName, DXGI_FORMA
 	InputLayout.SemanticIndex = SemanticIndex;
 	InputLayout.Format = Format;
 	InputLayout.InputSlot = Slot;
-	//InputLayout.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	InputLayout.AlignedByteOffset = ByteOffset[Slot];
 	InputLayout.InputSlotClass = Class;
 
@@ -68,13 +67,13 @@ void vertex_shader::CommitInputElements()
 {
 	HRESULT HR = S_OK;
 
-	HR = direct3d::GetDevice()->CreateInputLayout(Layout.data(), (uint32)Layout.size(), Blob->GetBufferPointer(), Blob->GetBufferSize(), &InputLayout);
+	HR = d3d_api::GetDevice()->CreateInputLayout(Layout.data(), (uint32)Layout.size(), Blob->GetBufferPointer(), Blob->GetBufferSize(), &InputLayout);
 }
 
 void vertex_shader::Bind()
 {
-	direct3d::GetContext()->VSSetShader(VertexShader, nullptr, 0);
-	direct3d::GetContext()->IASetInputLayout(InputLayout);
+	d3d_api::GetContext()->VSSetShader(VertexShader, nullptr, 0);
+	d3d_api::GetContext()->IASetInputLayout(InputLayout);
 }
 
 vertex_shader::~vertex_shader()

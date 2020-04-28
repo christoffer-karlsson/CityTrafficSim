@@ -1,19 +1,20 @@
+/*
+==========================================================
+	Create the pixel shader.
+==========================================================
+*/
+
 #pragma once
 
 #include "common.h"
-#include "direct3d.h"
-
-#include <vector>
+#include "d3d_api.h"
 
 class pixel_shader
 {
 	private:
 
-	ID3DBlob *Blob;
-	ID3D11PixelShader *PixelShader;
-	ID3D11InputLayout *InputLayout;
-
-	std::vector<D3D11_INPUT_ELEMENT_DESC> Layout;
+	ID3DBlob			*Blob;
+	ID3D11PixelShader	*PixelShader;
 
 	public:
 

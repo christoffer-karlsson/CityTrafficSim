@@ -1,7 +1,16 @@
+/*
+==========================================================
+	Create buffer with instanced geometry.
+	When using instanced rendering, don't bind the
+	vertex buffer. Bind the instance buffer with a
+	pointer to the vertex buffer.
+==========================================================
+*/
+
 #pragma once
 
 #include "common.h"
-#include "direct3d.h"
+#include "d3d_api.h"
 #include "vertex_buffer.h"
 
 class instance_buffer

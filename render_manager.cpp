@@ -15,8 +15,8 @@ std::vector<drawable*> render_manager::Graphs;
 void render_manager::Init()
 {
 	// NOTE(Cristoffer): Instanced drawables.
-	Cars = new drawable_cars(asset_manager::GetMesh(ASSET_MESH_CAR_INDEXED));
-	Buildings = new drawable_buildings(asset_manager::GetMesh(ASSET_MESH_BUILDING));
+	Cars = new drawable_cars(asset_manager::GetMesh(asset_mesh_car_indexed));
+	Buildings = new drawable_buildings(asset_manager::GetMesh(asset_mesh_building));
 }
 
 void render_manager::Push(drawable *Drawable, render_layer Layer)
@@ -44,11 +44,11 @@ void render_manager::Push(drawable *Drawable, render_layer Layer)
 
 void render_manager::Render()
 {
-	direct3d::BeginFrame();
+	d3d_api::BeginFrame();
 
 	Terrain->Draw();
 
-	if(!application_state::GetEditModeEnabled())
+	if(!app_state::GetEditModeEnabled())
 	{
 		Buildings->Draw();
 	}
@@ -76,20 +76,18 @@ void render_manager::Render()
 		(*Iterator)->Draw();
 	}
 
-	#if DEBUG_MODE
+	#if DEBUG_IMGUI
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	#endif
 
-	direct3d::EndFrame();
+	d3d_api::EndFrame();
 
 	// NOTE(Cristoffer): Renderer only stores drawable pointers that
 	// should get drawn for the frame, then clears them, with some exceptions
 	// like the terrain, which is permanent.
-	//World.clear();
 	Agents.clear();
 	UserInterfaceLayer.clear();
-	//Graphs.clear();
 }
 
 void render_manager::TestMouseCollision()
@@ -106,9 +104,9 @@ void render_manager::TestMouseCollision()
 		{
 			vec3 NewCollisionPosition = WorldPicker.GetCollisionPosition();
 
-			application_state::SetMouseCoordinateInWorld(NewCollisionPosition);
+			app_state::SetMouseCoordinateInWorld(NewCollisionPosition);
 
-			vec3u NewCollisionPositionTruncated = application_state::GetMouseCoordinateInWorldTrunc();
+			vec3u NewCollisionPositionTruncated = app_state::GetMouseCoordinateInWorldTruncated();
 
 			Terrain->UpdateHighlightColorResource(NewCollisionPositionTruncated, 1);
 

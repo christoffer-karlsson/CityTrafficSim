@@ -6,7 +6,7 @@
 #include "winprocedure.h"
 
 #include <string>
-#include <windows.h>
+#include "windows.h"
 
 class window
 {

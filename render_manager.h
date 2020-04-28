@@ -1,11 +1,11 @@
 #pragma once
 
 #include "common.h"
-#include "direct3d.h"
+#include "d3d_api.h"
 #include "drawable.h"
 #include "threading.h"
 #include "mouse_picker.h"
-#include "application_state.h"
+#include "app_state.h"
 #include "logger.h"
 #include "drawable_cars.h"
 #include "drawable_buildings.h"
